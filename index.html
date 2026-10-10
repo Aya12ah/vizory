@@ -91,26 +91,10 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .mail { color: inherit; text-decoration: none; transition: color .18s ease; }
 .mail:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
-.foot-links { display: flex; align-items: flex-end; }
-.linkish { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; transition: color .18s ease; }
-.linkish:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
-
-/* Cookie consent: a small box in the corner, both choices equally visible */
-.consent {
-  position: fixed; z-index: 10; right: var(--gutter); bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
-  width: min(280px, calc(100% - 2 * var(--gutter))); background: var(--panel); border: 1px solid var(--line);
-  border-radius: var(--radius-lg); padding: var(--space-3); display: grid; gap: var(--space-3);
-  transition: background-color .3s ease;
-}
-.consent[hidden] { display: none; }
-.consent p { font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
-.consent-actions { display: flex; gap: var(--space-2); }
-.choice {
-  flex: 1; min-height: 40px; padding: 0 var(--space-3); border: none; border-radius: var(--radius-pill);
-  background: var(--signal-dim); color: var(--ink); font: 500 14px/1 var(--sans); cursor: pointer;
-  transition: background-color .18s ease, color .18s ease;
-}
-.choice:hover { background: var(--signal); color: var(--on-signal); }
+.consent-line { margin-top: var(--space-2); }
+.choice { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; transition: color .18s ease; }
+.choice:hover { color: var(--signal-text); }
+.choice[aria-pressed="true"] { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 720px) { .hero { padding-block: var(--space-6); } }
 @media (prefers-reduced-motion: reduce) {
@@ -149,20 +133,13 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
     <div>
       <p><span class="en">Copenhagen</span><span class="da" lang="da">København</span></p>
       <p><a class="mail" id="mail" data-u="olleh" data-d="kd.yroziv" hidden></a><noscript>hello [at] vizory.dk</noscript></p>
-    </div>
-    <div class="foot-links">
-      <button class="linkish" type="button" id="cookieBtn">Cookies</button>
+      <p class="consent-line" id="consent">
+        <span class="en">Cookies for Google Analytics:</span><span class="da" lang="da">Cookies til Google Analytics:</span>
+        <button class="choice" type="button" id="consentYes" aria-pressed="false"><span class="en">Yes</span><span class="da" lang="da">Ja</span></button> ·
+        <button class="choice" type="button" id="consentNo" aria-pressed="false"><span class="en">No</span><span class="da" lang="da">Nej</span></button>
+      </p>
     </div>
   </footer>
-</div>
-
-<div class="consent" id="consent" role="region" aria-label="Cookies" hidden>
-  <p class="en">May we use cookies for Google Analytics?</p>
-  <p class="da" lang="da">Må vi bruge cookies til Google Analytics?</p>
-  <div class="consent-actions">
-    <button class="choice" type="button" id="consentNo"><span class="en">No</span><span class="da" lang="da">Nej</span></button>
-    <button class="choice" type="button" id="consentYes"><span class="en">Yes</span><span class="da" lang="da">Ja</span></button>
-  </div>
 </div>
 
 <!-- Vercel Web Analytics: cookieless, no consent needed -->
@@ -219,7 +196,6 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 
   // Google Analytics: loaded only after the visitor accepts cookies.
   var GA_ID = 'G-FTP7V0WX8K';
-  var consentBar = document.getElementById('consent');
   var gaLoaded = false;
   function loadGA() {
     if (gaLoaded || location.protocol.indexOf('http') !== 0) return;
@@ -243,19 +219,21 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
       });
     });
   }
-  function showBar(on) { consentBar.hidden = !on; }
+  function showChoice(c) {
+    document.getElementById('consentYes').setAttribute('aria-pressed', String(c === 'yes'));
+    document.getElementById('consentNo').setAttribute('aria-pressed', String(c === 'no'));
+  }
   function setConsent(yes) {
     set('vz-consent', yes ? 'yes' : 'no');
-    showBar(false);
+    showChoice(yes ? 'yes' : 'no');
     if (yes) { loadGA(); }
     else { clearGACookies(); if (gaLoaded) location.reload(); }
   }
   var consent = get('vz-consent');
+  showChoice(consent);
   if (consent === 'yes') loadGA();
-  else if (consent !== 'no') showBar(true);
   document.getElementById('consentYes').addEventListener('click', function () { setConsent(true); });
   document.getElementById('consentNo').addEventListener('click', function () { setConsent(false); });
-  document.getElementById('cookieBtn').addEventListener('click', function () { showBar(true); document.getElementById('consentNo').focus(); });
   mail.addEventListener('click', function () { if (window.gtag) window.gtag('event', 'contact_email_click'); });
 
   // Theme: Fresh light and Fresh dark, following the system until the visitor chooses.

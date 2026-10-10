@@ -79,6 +79,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .scope dd { color: var(--signal-text); }
 .act { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-sm); transition: color .18s ease; }
 .act abbr { text-decoration: none; cursor: pointer; }
+.nw { white-space: nowrap; }
 .act:hover, .act[aria-expanded="true"] { color: var(--ink); }
 /* Every description sits in the same grid cell, so the space is reserved for the longest one
    and opening one never moves the page. Only the open one is visible. */
@@ -104,7 +105,15 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .choice[aria-pressed="true"] { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 720px) {
-  .hero { padding-block: var(--space-6); }
+  .hero { padding-block: var(--space-4) var(--space-5); }
+  .scope-wrap { margin-top: var(--space-5); }
+  .foot { padding-block: var(--space-4); }
+  /* Phones: the wordmark spans the column, text sizes grow with the screen */
+  .wm-lg { font-size: min(calc((100vw - 2 * var(--gutter)) * .32), 160px); }
+  .lede { max-width: none; font-size: clamp(21px, 6.4vw, 30px); line-height: 1.35; }
+  .scope { font-size: clamp(15px, 4.6vw, 20px); line-height: 1.6; }
+  .act-name { font-size: clamp(15px, 4.6vw, 20px); }
+  .act-text { font-size: clamp(14px, 4.2vw, 18px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

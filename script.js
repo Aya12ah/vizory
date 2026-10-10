@@ -21,11 +21,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     root.setAttribute('data-lang', l); root.lang = l;
     langBtn.textContent = l === 'en' ? 'DA' : 'EN';
     langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
-    // Full names of the acts follow the language
-    document.querySelectorAll('abbr[data-da]').forEach(function (a) {
-      if (!a.hasAttribute('data-en')) a.setAttribute('data-en', a.title);
-      a.title = a.getAttribute(l === 'da' ? 'data-da' : 'data-en');
-    });
   }
   var chosen = get('vz-lang');
   if (chosen === 'en' || chosen === 'da') {

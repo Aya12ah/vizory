@@ -4,7 +4,7 @@ Website for Vizory, a Copenhagen advisory for authorisations, compliance and the
 
 ## Status
 
-MVP: the front page only (`index.html`, styles in `styles.css`). Static files, no build step.
+MVP: the front page only (`index.html`, styles in `styles.css`, scripts in `script.js`). Static files, no build step.
 
 - Fresh theme from the Vizory design system (light and dark, follows the system setting, with a toggle).
 - English and Danish. On Vercel, visitors in Denmark, Greenland and the Faroe Islands get Danish and everyone else English (`api/geo.js` reads the visitor's country). Opened locally, the browser language decides. Visitors can always switch in the header.

@@ -74,6 +74,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .scope dt, .scope dd { display: inline; margin: 0; }
 .scope dt { color: var(--ink-soft); }
 .scope dd { color: var(--signal-text); }
+.scope abbr { text-decoration: none; cursor: help; }
 .scope dd::before { content: "·"; color: #ffffff; margin: 0 .45em; }
 
 /* Footer */

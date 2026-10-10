@@ -79,7 +79,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .act { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-sm); transition: color .18s ease; }
 .act abbr { text-decoration: none; cursor: pointer; }
 .act:hover, .act[aria-expanded="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-.act-info { background: var(--panel); border-radius: var(--radius-lg); padding: var(--space-4); max-width: 46ch; display: grid; gap: var(--space-2); transition: background-color .3s ease; }
+.act-info { max-width: 46ch; display: grid; gap: var(--space-2); }
 .act-info[hidden] { display: none; }
 .act-name { font-size: 15px; font-weight: 500; color: var(--ink); }
 .act-text { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }

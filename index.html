@@ -197,6 +197,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
   // Google Analytics: loaded only after the visitor accepts cookies.
   var GA_ID = 'G-FTP7V0WX8K';
   var gaLoaded = false;
+  // Theme as GA sees it: the visitor's choice, else their system setting.
+  function themeNow() {
+    var t = root.getAttribute('data-theme');
+    return t || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
   function loadGA() {
     if (gaLoaded || location.protocol.indexOf('http') !== 0) return;
     gaLoaded = true;
@@ -204,6 +209,8 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
     window.gtag('config', GA_ID, { anonymize_ip: true });
+    window.gtag('set', 'user_properties', { theme: themeNow() });
+    window.gtag('event', 'theme_view', { theme: themeNow() });
     var sc = document.createElement('script'); sc.async = true;
     sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
     document.head.appendChild(sc);
@@ -252,6 +259,10 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
   themeBtn.addEventListener('click', function () {
     var next = isDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next); set('vz-theme', next); syncThemeBtn();
+    if (window.gtag) {
+      window.gtag('set', 'user_properties', { theme: next });
+      window.gtag('event', 'theme_change', { theme: next });
+    }
     pop(themeBtn);
   });
 

@@ -32,6 +32,7 @@ body {
 }
 .wrap { max-width: 1120px; margin: 0 auto; padding-inline: var(--gutter); min-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; }
 main { flex: 1; display: flex; align-items: center; }
+main > section { width: 100%; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: var(--radius-sm); }
 p { margin: 0; }
@@ -78,16 +79,16 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .scope dd { color: var(--signal-text); }
 .act { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-sm); transition: color .18s ease; }
 .act abbr { text-decoration: none; cursor: pointer; }
-.act:hover, .act[aria-expanded="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.act:hover, .act[aria-expanded="true"] { color: var(--ink); }
 /* Every description sits in the same grid cell, so the space is reserved for the longest one
    and opening one never moves the page. Only the open one is visible. */
-.act-info { max-width: 46ch; display: grid; }
+.act-info { display: grid; }
 .act-item { grid-area: 1 / 1; display: grid; gap: var(--space-2); align-content: start; visibility: hidden; }
 .act-item.open { visibility: visible; }
 .act-name { font-size: 15px; font-weight: 500; color: var(--ink); }
 .act-text { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 @media (min-width: 900px) {
-  .scope-wrap { grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-5); }
+  .scope-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); }
 }
 .scope dd::before { content: "·"; color: var(--dot); margin: 0 .45em; }
 

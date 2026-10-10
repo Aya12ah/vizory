@@ -70,10 +70,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 /* Hero */
 .hero { padding-block: var(--space-6) var(--space-7); }
 .lede { margin-top: var(--space-3); max-width: 34ch; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
-.scope { margin: var(--space-6) 0 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-1) var(--space-4); font-size: 15px; line-height: 1.7; }
-.scope div { display: contents; }
+.scope { margin: var(--space-6) 0 0; font-size: 15px; line-height: 1.7; }
+.scope dt, .scope dd { display: inline; margin: 0; }
 .scope dt { color: var(--ink-soft); }
-.scope dd { margin: 0; color: var(--signal-text); }
+.scope dd { color: var(--signal-text); }
+.scope dd::before { content: "·"; color: #ffffff; margin: 0 .45em; }
 
 /* Footer */
 .foot { padding-block: var(--space-5) var(--space-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
@@ -87,8 +88,6 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .choice[aria-pressed="true"] { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 720px) {
-  .scope { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
-  .scope dd { margin-bottom: var(--space-2); }
   .hero { padding-block: var(--space-6); }
 }
 @media (prefers-reduced-motion: reduce) {

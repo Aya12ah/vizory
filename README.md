@@ -8,7 +8,7 @@ MVP: the front page only (`index.html`). One static file, no build step.
 
 - Fresh theme from the Vizory design system (light and dark, follows the system setting, with a toggle).
 - English and Danish. On Vercel, visitors in Denmark, Greenland and the Faroe Islands get Danish and everyone else English (`api/geo.js` reads the visitor's country). Opened locally, the browser language decides. Visitors can always switch in the header.
-- The footer email (hello@vizory.dk) is assembled by script, so it is not in the page source as plain text.
+- The footer email address is assembled by script, so it is not in the page source as plain text.
 
 The planned sitemap is in [docs/sitemap.md](docs/sitemap.md).
 

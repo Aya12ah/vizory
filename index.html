@@ -64,9 +64,14 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .ib:focus-visible { border-radius: var(--radius-full); }
 .ib svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .ib.pop { animation: pop .32s ease; }
-.ib.spin svg { animation: spin .45s ease; }
 @keyframes pop { 40% { transform: scale(.86); } 100% { transform: scale(1); } }
-@keyframes spin { from { transform: rotate(-90deg); opacity: .2; } to { transform: rotate(0); opacity: 1; } }
+/* Theme toggle: one button, moon in day mode, sun in night mode, turning into each other */
+.toggle { position: relative; }
+.toggle svg { position: absolute; top: 12px; left: 12px; }
+.toggle.ready svg { transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .3s ease; }
+#iconSun { opacity: 0; transform: rotate(-90deg) scale(.4); }
+.toggle[aria-pressed="true"] #iconMoon { opacity: 0; transform: rotate(90deg) scale(.4); }
+.toggle[aria-pressed="true"] #iconSun { opacity: 1; transform: rotate(0) scale(1); }
 
 /* Wordmark */
 .wm { display: inline-flex; align-items: center; font-weight: 500; line-height: 1; letter-spacing: -0.025em; color: var(--ink); }
@@ -99,9 +104,9 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
     <span></span>
     <div class="actions">
       <button class="ib" id="langBtn" type="button" aria-label="Skift til dansk">DA</button>
-      <button class="ib" id="themeBtn" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+      <button class="ib toggle" id="themeBtn" type="button" aria-label="Switch to dark mode" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true" id="iconMoon"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
-        <svg viewBox="0 0 24 24" aria-hidden="true" id="iconSun" hidden><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 12H2.2M21.8 12h-2.4M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" id="iconSun"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 12H2.2M21.8 12h-2.4M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></svg>
       </button>
     </div>
   </header>
@@ -181,18 +186,17 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
   function isDark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : mq.matches; }
   function syncThemeBtn() {
     var d = isDark();
-    document.getElementById('iconMoon').hidden = d;
-    document.getElementById('iconSun').hidden = !d;
     themeBtn.setAttribute('aria-pressed', String(d));
     themeBtn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode');
   }
   var st = get('vz-theme'); if (st === 'dark' || st === 'light') root.setAttribute('data-theme', st);
   syncThemeBtn();
+  requestAnimationFrame(function () { requestAnimationFrame(function () { themeBtn.classList.add('ready'); }); });
   mq.addEventListener && mq.addEventListener('change', syncThemeBtn);
   themeBtn.addEventListener('click', function () {
     var next = isDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next); set('vz-theme', next); syncThemeBtn();
-    themeBtn.classList.remove('spin'); void themeBtn.offsetWidth; themeBtn.classList.add('spin'); pop(themeBtn);
+    pop(themeBtn);
   });
 
 })();

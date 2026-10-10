@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vizory</title>
+<meta name="description" content="Vizory is a Copenhagen advisory for authorisations, compliance and the dialogue with regulators in payments, crypto-assets, DLT-based capital markets and AML/CFT.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F4F8F6'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%230B9C86'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Vizory MVP front page. Design system v2, Fresh theme pair. One screen: header icons, hero, footer. */
+:root {
+  --bg: #F4F8F6; --panel: #FFFFFF; --ink: #0E1B18; --ink-soft: #44544F; --line: #D5E2DC;
+  --signal: #0B9C86; --signal-text: #08705F; --on-signal: #04120F; --mint: #5EEBCF;
+  --signal-dim: rgba(11, 156, 134, 0.12);
+  --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px; --space-5: 40px; --space-6: 56px; --space-7: 80px;
+  --radius-sm: 2px; --radius-md: 8px; --radius-lg: 16px; --radius-pill: 999px; --radius-full: 50%;
+  --gutter: clamp(24px, 4vw, 40px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1110; --panel: #111B19; --ink: #EEF5F2; --ink-soft: #8FA39D; --line: #1C2B28;
+    --signal: #3DF0C8; --signal-text: #3DF0C8; --on-signal: #04120F; --mint: #3DF0C8;
+    --signal-dim: rgba(61, 240, 200, 0.14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1110; --panel: #111B19; --ink: #EEF5F2; --ink-soft: #8FA39D; --line: #1C2B28;
+  --signal: #3DF0C8; --signal-text: #3DF0C8; --on-signal: #04120F; --mint: #3DF0C8;
+  --signal-dim: rgba(61, 240, 200, 0.14); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--sans);
+  font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  transition: background-color .3s ease, color .3s ease;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: var(--gutter); min-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; }
+main { flex: 1; display: flex; align-items: center; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: var(--radius-sm); }
+p { margin: 0; }
+h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
+
+/* Language: both languages ship in the markup; one is hidden */
+html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
+
+/* Header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-4); }
+.actions { display: flex; gap: var(--space-1); }
+.ib {
+  display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+  border-radius: var(--radius-full); color: var(--ink); background: transparent; border: none; padding: 0;
+  cursor: pointer; font: 500 13px/1 var(--sans); letter-spacing: .02em; text-decoration: none;
+  transition: color .18s ease, transform .18s ease;
+}
+.ib:hover { color: var(--signal); transform: translateY(-1px) scale(1.06); }
+.ib:focus-visible { border-radius: var(--radius-full); }
+.ib svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.ib.pop { animation: pop .32s ease; }
+.ib.spin svg { animation: spin .45s ease; }
+@keyframes pop { 40% { transform: scale(.86); } 100% { transform: scale(1); } }
+@keyframes spin { from { transform: rotate(-90deg); opacity: .2; } to { transform: rotate(0); opacity: 1; } }
+
+/* Wordmark */
+.wm { display: inline-flex; align-items: center; font-weight: 500; line-height: 1; letter-spacing: -0.025em; color: var(--ink); }
+.wm-lg { font-size: clamp(35px, 10vw, 70px); }
+.cur { display: inline-block; width: .16em; height: .78em; margin-left: .05em; border-radius: var(--radius-sm); background: var(--signal); animation: blink 1s step-end infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* Hero */
+.hero { padding-block: var(--space-6) var(--space-7); }
+.lede { margin-top: var(--space-3); max-width: 34ch; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
+.scope { margin-top: var(--space-6); max-width: 52ch; font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+.scope b { font-weight: 400; color: var(--signal-text); }
+
+/* Footer */
+.foot { padding-block: var(--space-5) var(--space-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+
+@media (max-width: 720px) { .hero { padding-block: var(--space-6); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <span></span>
+    <div class="actions">
+      <button class="ib" id="langBtn" type="button" aria-label="Skift til dansk">DA</button>
+      <button class="ib" id="themeBtn" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" id="iconMoon"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" id="iconSun" hidden><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 12H2.2M21.8 12h-2.4M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section>
+      <div class="hero">
+        <h1 class="wm wm-lg">vizory<span class="cur"></span></h1>
+        <p class="lede en">Authorisations, compliance, mock-inspections, and the dialogue with regulators, handled.</p>
+        <p class="lede da" lang="da">Tilladelser, compliance, mock-inspektioner og dialogen med tilsynet, håndteret.</p>
+        <p class="scope en">Payments <b>PSD3, PSR</b>, crypto-assets <b>MiCAR</b>, DLT-based capital markets <b>MiFID II, DLTR, MiFIR, CSDR</b>, and AML/CFT.</p>
+        <p class="scope da" lang="da">Betalinger <b>PSD3, PSR</b>, kryptoaktiver <b>MiCAR</b>, DLT-baserede kapitalmarkeder <b>MiFID II, DLTR, MiFIR, CSDR</b> og hvidvask.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div>
+      <p><span class="en">Copenhagen</span><span class="da" lang="da">København</span></p>
+      <p>[email address]</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // Language: stored choice, else browser language or Danish time zone, else English.
+  // A static page cannot read the visitor's location; the live site would do this on the server.
+  function detectLang() {
+    var s = get('vz-lang'); if (s === 'en' || s === 'da') return s;
+    var langs = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < langs.length; i++) if (/^(da|kl|fo)\b/i.test(langs[i])) return 'da';
+    try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Europe/Copenhagen') return 'da'; } catch (e) {}
+    return 'en';
+  }
+  var langBtn = document.getElementById('langBtn');
+  function applyLang(l) {
+    root.setAttribute('data-lang', l); root.lang = l;
+    langBtn.textContent = l === 'en' ? 'DA' : 'EN';
+    langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
+  }
+  applyLang(detectLang());
+
+  function pop(el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  langBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-lang') === 'en' ? 'da' : 'en';
+    applyLang(next); set('vz-lang', next); pop(langBtn);
+  });
+
+  // Theme: Fresh light and Fresh dark, following the system until the visitor chooses.
+  var themeBtn = document.getElementById('themeBtn');
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function isDark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : mq.matches; }
+  function syncThemeBtn() {
+    var d = isDark();
+    document.getElementById('iconMoon').hidden = d;
+    document.getElementById('iconSun').hidden = !d;
+    themeBtn.setAttribute('aria-pressed', String(d));
+    themeBtn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  var st = get('vz-theme'); if (st === 'dark' || st === 'light') root.setAttribute('data-theme', st);
+  syncThemeBtn();
+  mq.addEventListener && mq.addEventListener('change', syncThemeBtn);
+  themeBtn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next); set('vz-theme', next); syncThemeBtn();
+    themeBtn.classList.remove('spin'); void themeBtn.offsetWidth; themeBtn.classList.add('spin'); pop(themeBtn);
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -95,16 +95,18 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .linkish { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; transition: color .18s ease; }
 .linkish:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Cookie consent: one quiet line at the bottom, both choices equally visible */
+/* Cookie consent: a small box in the corner, both choices equally visible */
 .consent {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--panel); border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom, 0px); transition: background-color .3s ease;
+  position: fixed; z-index: 10; right: var(--gutter); bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  width: min(280px, calc(100% - 2 * var(--gutter))); background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: var(--space-3); display: grid; gap: var(--space-3);
+  transition: background-color .3s ease;
 }
-.consent-in { max-width: 1120px; margin: 0 auto; padding: var(--space-3) var(--gutter); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-4); }
-.consent p { font-size: 14px; line-height: 1.5; color: var(--ink-soft); max-width: 62ch; min-width: 0; }
+.consent[hidden] { display: none; }
+.consent p { font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
 .consent-actions { display: flex; gap: var(--space-2); }
 .choice {
-  min-height: 44px; padding: 0 var(--space-4); border: none; border-radius: var(--radius-pill);
+  flex: 1; min-height: 40px; padding: 0 var(--space-3); border: none; border-radius: var(--radius-pill);
   background: var(--signal-dim); color: var(--ink); font: 500 14px/1 var(--sans); cursor: pointer;
   transition: background-color .18s ease, color .18s ease;
 }
@@ -155,13 +157,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 </div>
 
 <div class="consent" id="consent" role="region" aria-label="Cookies" hidden>
-  <div class="consent-in">
-    <p class="en">We use Google Analytics to see how the site is used. It sets cookies only if you accept.</p>
-    <p class="da" lang="da">Vi bruger Google Analytics til at se, hvordan siden bliver brugt. Den sætter kun cookies, hvis du accepterer.</p>
-    <div class="consent-actions">
-      <button class="choice" type="button" id="consentNo"><span class="en">Decline</span><span class="da" lang="da">Afvis</span></button>
-      <button class="choice" type="button" id="consentYes"><span class="en">Accept</span><span class="da" lang="da">Acceptér</span></button>
-    </div>
+  <p class="en">May we use cookies for Google Analytics?</p>
+  <p class="da" lang="da">Må vi bruge cookies til Google Analytics?</p>
+  <div class="consent-actions">
+    <button class="choice" type="button" id="consentNo"><span class="en">No</span><span class="da" lang="da">Nej</span></button>
+    <button class="choice" type="button" id="consentYes"><span class="en">Yes</span><span class="da" lang="da">Ja</span></button>
   </div>
 </div>
 
@@ -243,10 +243,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
       });
     });
   }
-  function showBar(on) {
-    consentBar.hidden = !on;
-    document.body.style.paddingBottom = on ? consentBar.offsetHeight + 'px' : '';
-  }
+  function showBar(on) { consentBar.hidden = !on; }
   function setConsent(yes) {
     set('vz-consent', yes ? 'yes' : 'no');
     showBar(false);

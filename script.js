@@ -21,6 +21,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     root.setAttribute('data-lang', l); root.lang = l;
     langBtn.textContent = l === 'en' ? 'DA' : 'EN';
     langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
+    if (window.renderAct) window.renderAct();
   }
   var chosen = get('vz-lang');
   if (chosen === 'en' || chosen === 'da') {
@@ -96,6 +97,40 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   document.getElementById('consentYes').addEventListener('click', function () { setConsent(true); });
   document.getElementById('consentNo').addEventListener('click', function () { setConsent(false); });
   mail.addEventListener('click', function () { if (window.gtag) window.gtag('event', 'contact_email_click'); });
+
+  // Scope list: tap an act to read what it covers. Tap it again, or press Escape, to close.
+  var ACTS = {
+    "PSD3": { en: "EU directive on the authorisation and supervision of payment institutions and e-money institutions. It replaces PSD2 and the E-Money Directive.", da: "EU-direktiv om tilladelse til og tilsyn med betalingsinstitutter og e-pengeinstitutter. Det afløser PSD2 og e-pengedirektivet." },
+    "PSR": { en: "EU regulation with the rules for providing payment services: transparency, rights and obligations, fraud prevention and access to accounts.", da: "EU-forordning med reglerne for udbud af betalingstjenester: gennemsigtighed, rettigheder og pligter, forebyggelse af svindel og adgang til konti." },
+    "MiCAR": { en: "EU regulation 2023/1114 on crypto-assets. It sets authorisation and conduct rules for crypto-asset service providers and issuers of tokens.", da: "EU-forordning 2023/1114 om kryptoaktiver. Den fastsætter krav til tilladelse og adfærd for udbydere af kryptoaktivtjenester og udstedere af tokens." },
+    "MiFID II": { en: "EU directive 2014/65/EU on investment services and trading venues. It applies to tokenised financial instruments as to any other.", da: "EU-direktiv 2014/65/EU om investeringsservice og handelspladser. Det gælder for tokeniserede finansielle instrumenter som for alle andre." },
+    "MiFIR": { en: "EU regulation 600/2014 on transparency, transaction reporting and trading obligations for financial instruments.", da: "EU-forordning 600/2014 om gennemsigtighed, transaktionsindberetning og handelsforpligtelser for finansielle instrumenter." },
+    "DLTR": { en: "EU regulation 2022/858. It lets market infrastructures trade and settle tokenised securities on DLT with targeted exemptions.", da: "EU-forordning 2022/858. Den lader markedsinfrastrukturer handle og afvikle tokeniserede værdipapirer på DLT med målrettede undtagelser." },
+    "CSDR": { en: "EU regulation 909/2014 on securities settlement and the central securities depositories that run it.", da: "EU-forordning 909/2014 om afvikling af værdipapirer og de værdipapircentraler, der står for den." },
+    "AMLD": { en: "EU directive on the national side of anti-money laundering: supervisors, financial intelligence units and registers.", da: "EU-direktiv om den nationale del af hvidvaskreglerne: tilsyn, finansielle efterretningsenheder og registre." },
+    "AMLR": { en: "EU regulation 2024/1624 with one directly applicable rulebook for obliged entities on customer due diligence, reporting and internal controls.", da: "EU-forordning 2024/1624 med ét direkte gældende regelsæt for omfattede virksomheder om kundekendskab, indberetning og interne kontroller." }
+  };
+  var actInfo = document.getElementById('actInfo');
+  var actButtons = document.querySelectorAll('.act');
+  var openAct = null;
+  window.renderAct = function () {
+    actButtons.forEach(function (b) { b.setAttribute('aria-expanded', String(b.getAttribute('data-act') === openAct)); });
+    if (!openAct) { actInfo.hidden = true; return; }
+    var btn = document.querySelector('.act[data-act="' + openAct + '"]');
+    var lang = root.getAttribute('data-lang') === 'da' ? 'da' : 'en';
+    document.getElementById('actName').textContent = openAct + ' · ' + btn.querySelector('abbr').title;
+    document.getElementById('actText').textContent = ACTS[openAct][lang];
+    actInfo.hidden = false;
+  };
+  actButtons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var key = b.getAttribute('data-act');
+      openAct = openAct === key ? null : key;
+      window.renderAct();
+      if (openAct && window.gtag) window.gtag('event', 'act_open', { act: key });
+    });
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
 
   // Theme: Fresh light and Fresh dark, following the system until the visitor chooses.
   var themeBtn = document.getElementById('themeBtn');

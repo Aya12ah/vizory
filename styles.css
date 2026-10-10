@@ -71,11 +71,21 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 /* Hero */
 .hero { padding-block: var(--space-6) var(--space-7); }
 .lede { margin-top: var(--space-3); max-width: 34ch; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
-.scope { margin: var(--space-6) 0 0; font-size: 15px; line-height: 1.7; }
+.scope-wrap { margin-top: var(--space-6); display: grid; gap: var(--space-4); align-items: start; }
+.scope { margin: 0; font-size: 15px; line-height: 1.7; }
 .scope dt, .scope dd { display: inline; margin: 0; }
 .scope dt { color: var(--ink-soft); }
 .scope dd { color: var(--signal-text); }
-.scope abbr { text-decoration: none; cursor: help; }
+.act { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-sm); transition: color .18s ease; }
+.act abbr { text-decoration: none; cursor: pointer; }
+.act:hover, .act[aria-expanded="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.act-info { background: var(--panel); border-radius: var(--radius-lg); padding: var(--space-4); max-width: 46ch; display: grid; gap: var(--space-2); transition: background-color .3s ease; }
+.act-info[hidden] { display: none; }
+.act-name { font-size: 15px; font-weight: 500; color: var(--ink); }
+.act-text { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+@media (min-width: 900px) {
+  .scope-wrap { grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-5); }
+}
 .scope dd::before { content: "·"; color: var(--dot); margin: 0 .45em; }
 
 /* Footer */

@@ -21,7 +21,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     root.setAttribute('data-lang', l); root.lang = l;
     langBtn.textContent = l === 'en' ? 'DA' : 'EN';
     langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
-    if (window.renderAct) window.renderAct();
   }
   var chosen = get('vz-lang');
   if (chosen === 'en' || chosen === 'da') {
@@ -113,14 +112,28 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   var actInfo = document.getElementById('actInfo');
   var actButtons = document.querySelectorAll('.act');
   var openAct = null;
+  // One block per act, both languages; the page's language rule hides the other one.
+  actButtons.forEach(function (b) {
+    var key = b.getAttribute('data-act');
+    if (actInfo.querySelector('[data-act="' + key + '"]')) return;
+    var item = document.createElement('div');
+    item.className = 'act-item'; item.setAttribute('data-act', key);
+    var name = document.createElement('p'); name.className = 'act-name';
+    name.textContent = key + ' · ' + b.querySelector('abbr').title;
+    item.appendChild(name);
+    ['en', 'da'].forEach(function (l) {
+      var t = document.createElement('p'); t.className = 'act-text ' + l;
+      if (l === 'da') t.lang = 'da';
+      t.textContent = ACTS[key][l];
+      item.appendChild(t);
+    });
+    actInfo.appendChild(item);
+  });
   window.renderAct = function () {
     actButtons.forEach(function (b) { b.setAttribute('aria-expanded', String(b.getAttribute('data-act') === openAct)); });
-    if (!openAct) { actInfo.hidden = true; return; }
-    var btn = document.querySelector('.act[data-act="' + openAct + '"]');
-    var lang = root.getAttribute('data-lang') === 'da' ? 'da' : 'en';
-    document.getElementById('actName').textContent = openAct + ' · ' + btn.querySelector('abbr').title;
-    document.getElementById('actText').textContent = ACTS[openAct][lang];
-    actInfo.hidden = false;
+    actInfo.querySelectorAll('.act-item').forEach(function (it) {
+      it.classList.toggle('open', it.getAttribute('data-act') === openAct);
+    });
   };
   actButtons.forEach(function (b) {
     b.addEventListener('click', function () {

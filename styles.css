@@ -79,8 +79,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .act { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-sm); transition: color .18s ease; }
 .act abbr { text-decoration: none; cursor: pointer; }
 .act:hover, .act[aria-expanded="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-.act-info { max-width: 46ch; display: grid; gap: var(--space-2); }
-.act-info[hidden] { display: none; }
+/* Every description sits in the same grid cell, so the space is reserved for the longest one
+   and opening one never moves the page. Only the open one is visible. */
+.act-info { max-width: 46ch; display: grid; }
+.act-item { grid-area: 1 / 1; display: grid; gap: var(--space-2); align-content: start; visibility: hidden; }
+.act-item.open { visibility: visible; }
 .act-name { font-size: 15px; font-weight: 500; color: var(--ink); }
 .act-text { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 @media (min-width: 900px) {

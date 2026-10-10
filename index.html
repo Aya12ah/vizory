@@ -130,10 +130,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
-  // Language: stored choice, else browser language or Danish time zone, else English.
-  // A static page cannot read the visitor's location; the live site would do this on the server.
-  function detectLang() {
-    var s = get('vz-lang'); if (s === 'en' || s === 'da') return s;
+  // Language: the visitor's own choice wins. Otherwise Danish for visitors in Denmark,
+  // Greenland and the Faroe Islands (country from Vercel), English elsewhere.
+  // Without the location lookup (opened locally) the browser language decides.
+  var DA_COUNTRIES = ['DK', 'GL', 'FO'];
+  function browserLang() {
     var langs = navigator.languages || [navigator.language || ''];
     for (var i = 0; i < langs.length; i++) if (/^(da|kl|fo)\b/i.test(langs[i])) return 'da';
     try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Europe/Copenhagen') return 'da'; } catch (e) {}
@@ -145,7 +146,18 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
     langBtn.textContent = l === 'en' ? 'DA' : 'EN';
     langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
   }
-  applyLang(detectLang());
+  var chosen = get('vz-lang');
+  if (chosen === 'en' || chosen === 'da') {
+    applyLang(chosen);
+  } else {
+    applyLang(browserLang());
+    if (location.protocol.indexOf('http') === 0 && window.fetch) {
+      fetch('/api/geo').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (!d || !d.country || get('vz-lang')) return;
+        applyLang(DA_COUNTRIES.indexOf(d.country) > -1 ? 'da' : 'en');
+      }).catch(function () {});
+    }
+  }
 
   function pop(el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
   langBtn.addEventListener('click', function () {

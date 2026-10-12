@@ -50,6 +50,12 @@ jobs:
           for q in new:
               o = byid.get(q['id'])
               print(q['id'], 'new' if o is None else ' '.join(k for k in q if q[k] != o.get(k)) or 'same')
+              if o and '${{ inputs.dry_run }}' == 'true':
+                  for k in ('submitted', 'question', 'answer'):
+                      if q[k] != o.get(k):
+                          a, b = json.dumps(o.get(k), ensure_ascii=False), json.dumps(q[k], ensure_ascii=False)
+                          n = next((i for i in range(min(len(a), len(b))) if a[i] != b[i]), min(len(a), len(b)))
+                          print('   ', k, 'before:', a[max(0, n - 40):n + 60]); print('   ', k, 'now:   ', b[max(0, n - 40):n + 60])
           open('/tmp/changed', 'w').write('yes' if changed else 'no')
           PY
           if [ "${{ inputs.dry_run }}" = true ]; then echo 'Dry run: nothing is published.'; exit 0; fi

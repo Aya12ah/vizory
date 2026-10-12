@@ -19,7 +19,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   var langBtn = document.getElementById('langBtn');
   function applyLang(l) {
     root.setAttribute('data-lang', l); root.lang = l;
-    langBtn.textContent = l === 'en' ? 'DA' : 'EN';
+    // The button shows the flag of the language it switches to (see the .flag rules in styles.css).
     langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
   }
   var chosen = get('vz-lang');

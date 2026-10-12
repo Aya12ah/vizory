@@ -53,6 +53,8 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .ib:hover { color: var(--signal); transform: translateY(-1px) scale(1.06); }
 .ib:focus-visible { border-radius: var(--radius-full); }
 .ib svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+/* Language button: Danish flag while the page is in English, British flag while it is in Danish */
+.ib svg.flag { width: 22px; height: 16px; stroke: none; fill: none; border-radius: var(--radius-sm); }
 .ib.pop { animation: pop .32s ease; }
 @keyframes pop { 40% { transform: scale(.86); } 100% { transform: scale(1); } }
 /* Theme toggle: one button, moon in day mode, sun in night mode, turning into each other */

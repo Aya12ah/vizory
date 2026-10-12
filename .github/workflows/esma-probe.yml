@@ -1,0 +1,18 @@
+name: esma-probe
+on:
+  push:
+    branches: [esma-probe]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          mkdir out; cd out
+          UA="vizory.dk ESMA Q&A page (contact via vizory.dk)"
+          B='https://www.esma.europa.eu/esma-qa-search-page/final'
+          curl -sS -A "$UA" -o list0.html -w '%{http_code}\n' "$B?field_qa_level1_target_id%5B0%5D=20011"; sleep 3
+          curl -sS -A "$UA" -o list1.html -w '%{http_code}\n' "$B?field_qa_level1_target_id%5B0%5D=20011&page=1"; sleep 3
+          curl -sS -A "$UA" -o detail.html -w '%{http_code}\n' "https://www.esma.europa.eu/publications-data/questions-answers/2883"
+          for f in *.html; do echo "== $f"; grep -o 'Displaying[^<]*' $f; grep -oiE 'href="[^"]*(pdf|xls|csv|export|print)[^"]*"' $f | sort -u | head -20; done
+      - uses: actions/upload-artifact@v4
+        with: { name: esma, path: out }

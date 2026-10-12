@@ -81,9 +81,11 @@ def mark_footnotes(text, count):
 
 def parse(text):
     # \x02 is how the export writes a hyphen at a line break ("crypto\x02asset").
-    text = text.replace('\r', '').replace('\f', '\n').replace('\x02', '-')
+    text = text.replace('\r', '').replace('\f', '\n').replace('\x02', '-').replace('\u00ad', '-')
+    # Different PDF-to-text tools differ in blank lines and trailing spaces; neither carries meaning here.
+    text = '\n'.join(l.strip() for l in text.split('\n') if l.strip())
     hyph = {w.replace('-', '').lower(): w for w in re.findall(r"\b[A-Za-z]+-[A-Za-z]+\b", text)}
-    blocks = re.split(r"\n(?=ESMA_QA_\d+\n)", text)
+    blocks = re.split(r"\n(?=ESMA_QA_\d+\n(?:Submission Date))", text)
     items = []
     for b in blocks:
         lines = b.split('\n')

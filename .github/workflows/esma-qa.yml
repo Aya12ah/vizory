@@ -32,6 +32,12 @@ jobs:
           print(f'{len(old)} Q&As before, {len(new)} now')
           # A broken download or a changed export format must not empty the page.
           if len(new) < max(1, len(old) - 3) or not all(q['subject'] and q['question'] for q in new):
+              import collections, re
+              lines = [l.strip() for l in open('/tmp/esma.txt', encoding='utf-8')]
+              print('Lines:', len(lines), 'IDs:', sum(bool(re.match(r'ESMA_QA_\d+', l)) for l in lines))
+              print('Labels:', collections.Counter(l for l in lines if l in ('Submission Date', 'Topic', 'Subject Matter', 'Question', 'ESMA Answer')))
+              i = next((n for n, l in enumerate(lines) if re.fullmatch(r'ESMA_QA_\d+', l)), 0)
+              print('Lines after the first Q&A id:', lines[i:i + 6])
               sys.exit('The export looks wrong; the page is left as it is.')
           changed = old != new
           open('/tmp/changed', 'w').write('yes' if changed else 'no')

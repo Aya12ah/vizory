@@ -606,7 +606,7 @@
    "legal_reference": "Article 75 MiCA",
    "subject": "Clarification on Withdrawal Requirements under Article 75 of MiCA for CASPs",
    "question": [
-    "I seek clarification regarding the obligations of Crypto-Asset Service Providers (CASPs) under Article 75 of the Markets in Crypto-Assets Regulation (MiCA) concerning the ability for customers to withdraw specific crypto assets. Specifically, does Article 75 require CASPs to enable customers to withdraw every cryptocurrency offered for trading on the platform? For example, if a cryptocurrency exchange allows customers to trade Dogecoin but faces technical limitations in facilitating direct Dogecoin withdrawals, would it suffice to offer a conversion option, allowing customers to exchange Dogecoin for Bitcoin, Ethereum, or fiat currency, which they can then withdraw?"
+    "I seek clarification regarding the obligations of Crypto-Asset Service Providers (CASPs) under Article 75 of the Markets in Crypto-Assets Regulation (MiCA) concerning the ability for customers to withdraw specific crypto assets. Specifically, does Article 75 require CASPs to enable customers to withdraw every crypto-currency offered for trading on the platform? For example, if a crypto-currency exchange allows customers to trade Dogecoin but faces technical limitations in facilitating direct Dogecoin withdrawals, would it suffice to offer a conversion option, allowing customers to exchange Dogecoin for Bitcoin, Ethereum, or fiat currency, which they can then withdraw?"
    ],
    "answered": "18/02/2026",
    "answer": [
@@ -626,7 +626,7 @@
    "status": "Answer Published",
    "topic": "Crypto-Asset Service Provider (CASP)",
    "legal_reference": "",
-   "subject": "Status of entities providing crypto-asset services as part of the grand-fathering regime",
+   "subject": "Status of entities providing crypto-asset services as part of the grandfathering regime",
    "question": [
     "Are Crypto-asset service providers that provided their services in accordance with applicable law before 30 December 2024 and which are authorised to continue to do so under the law of a Member State in accordance with Article 143 of MiCA, considered to be crypto-asset service providers under the terms of MICA during the transitional period until they are authorised?"
    ],
@@ -678,12 +678,12 @@
    "legal_reference": "Article 75.4 MiCA",
    "subject": "Custody agreements in the exercise of rights attached to crypto-assets",
    "question": [
-    "Would the ‘terms of service’ or any type of non-negotiated standard user agreement between a client and a crypto-asset service provider (CASP) providing custody services constitute a ‘valid agreement’ that ‘expressly provides otherwise’ per the clause in the second sub-paragraph of Article 75(4) of MiCA?",
+    "Would the ‘terms of service’ or any type of non-negotiated standard user agreement between a client and a crypto-asset service provider (CASP) providing custody services constitute a ‘valid agreement’ that ‘expressly provides otherwise’ per the clause in the second subparagraph of Article 75(4) of MiCA?",
     "If so, can this agreement stipulate that a CASP providing custody services may be unable to facilitate the exercise of client rights with respect to a crypto-asset in the event of any modifications to those rights?"
    ],
    "answered": "17/06/2025",
    "answer": [
-    "No. The principle expressed in the first sub-paragraph of Article 75(4) is that CASPs providing custody and administration of crypto-assets on behalf of clients shall facilitate the exercise of the rights attached to the crypto-assets and that any event likely to create or modify the rights of a client shall immediately be recorded in the client’s register of positions.",
+    "No. The principle expressed in the first subparagraph of Article 75(4) is that CASPs providing custody and administration of crypto-assets on behalf of clients shall facilitate the exercise of the rights attached to the crypto-assets and that any event likely to create or modify the rights of a client shall immediately be recorded in the client’s register of positions.",
     "In addition, where there are changes to the underlying distributed ledger technology or any other event likely to create or modify a client’s rights, the client shall be entitled to any crypto-assets or any rights newly created on the basis and to the extent of the client’s positions at the time of the occurrence of that change or event, except in cases where, “a valid agreement signed with the crypto-asset service provider providing custody and administration of crypto-assets on behalf of clients pursuant to paragraph 1 prior to that change or event expressly provides otherwise”. Thus, CASPs may derogate to that principle only where:",
     "i) there are changes to the underlying distributed ledger technology or another event likely to create or modify a client’s right; and",
     "ii) the CASP has obtained from the client prior express and signed consent to the derogation.",
@@ -725,7 +725,7 @@
    ],
    "answered": "04/07/2024",
    "answer": [
-    "Article 143(3) of MiCA provides that “crypto-asset service providers that provided their services in accordance with applicable law before 30 December 2024, may continue to do so until 1 July 2026 or until they are granted or refused an authorisation pursuant to Article 63, whichever is sooner. Member States may decide not to apply the transitional regime for crypto-asset service providers provided for in the first sub-paragraph or to reduce its duration where they consider that their national regulatory framework applicable before 30 December 2024 is less strict than this Regulation.” Where an entity providing crypto-asset services in accordance with applicable law before 30 December 2024 has not been authorised as a CASP by the end of the transition period applicable in the relevant Member State, they must cease providing crypto-asset services until they are granted authorisation as a CASP under MiCA. An entity providing crypto-asset services in accordance with applicable law before 30 December 2024 and wishing to continue providing services under MiCA should therefore apply for authorisation as a CASP as early as possible in order to ensure NCAs have the time to assess their applications without disrupting their services."
+    "Article 143(3) of MiCA provides that “crypto-asset service providers that provided their services in accordance with applicable law before 30 December 2024, may continue to do so until 1 July 2026 or until they are granted or refused an authorisation pursuant to Article 63, whichever is sooner. Member States may decide not to apply the transitional regime for crypto-asset service providers provided for in the first subparagraph or to reduce its duration where they consider that their national regulatory framework applicable before 30 December 2024 is less strict than this Regulation.” Where an entity providing crypto-asset services in accordance with applicable law before 30 December 2024 has not been authorised as a CASP by the end of the transition period applicable in the relevant Member State, they must cease providing crypto-asset services until they are granted authorisation as a CASP under MiCA. An entity providing crypto-asset services in accordance with applicable law before 30 December 2024 and wishing to continue providing services under MiCA should therefore apply for authorisation as a CASP as early as possible in order to ensure NCAs have the time to assess their applications without disrupting their services."
    ],
    "footnotes": [],
    "disclaimer": []
@@ -865,17 +865,17 @@
    "status": "Answer Published",
    "topic": "Crypto-Asset Service Provider (CASP)",
    "legal_reference": "Article 143",
-   "subject": "Passporting rights for entities benefiting from grand-fathering",
+   "subject": "Passporting rights for entities benefiting from grandfathering",
    "question": [
-    "1) Are entities benefiting from grand-fathering eligible to passport their crypto services to other Member States?",
-    "2) Can an entity grandfathered to provide crypto services in one Member State provide cross-border activities in another Member State that has elected not to allow grand-fathering (i.e., shortened or opted out of the transitional period)?"
+    "1) Are entities benefiting from grandfathering eligible to passport their crypto services to other Member States?",
+    "2) Can an entity grandfathered to provide crypto services in one Member State provide cross-border activities in another Member State that has elected not to allow grandfathering (i.e., shortened or opted out of the transitional period)?"
    ],
    "answered": "29/01/2024",
    "answer": [
-    "1) No. Grandfathered entities do not benefit from an EU passport (unless they were to acquire a MiCA license starting from 2025 and therefore cease being a ‘grandfathered’ entity). Cross-border activities by an entity benefiting from grand-fathering may occur only if the entity complies with relevant legislation applicable in both the home and host Member States. The provision of crypto-asset services during the transitional period should in any case always comply with the applicable national laws in the Member State where the services are provided. Indeed, the Anti-Money Laundering framework (AMLD5) does not offer a harmonised passporting regime, but certain Member States might allow in their national law the provision of crypto services from an entity established in another Member State.",
+    "1) No. Grandfathered entities do not benefit from an EU passport (unless they were to acquire a MiCA license starting from 2025 and therefore cease being a ‘grandfathered’ entity). Cross-border activities by an entity benefiting from grandfathering may occur only if the entity complies with relevant legislation applicable in both the home and host Member States. The provision of crypto-asset services during the transitional period should in any case always comply with the applicable national laws in the Member State where the services are provided. Indeed, the Anti-Money Laundering framework (AMLD5) does not offer a harmonised passporting regime, but certain Member States might allow in their national law the provision of crypto services from an entity established in another Member State.",
     "Therefore, during the transitional period of MiCA, the only possibility to offer cross-border services (beyond MiCA authorisation of course) would be in the scenario in which the national regimes of the home and host Member States (i.e., the Member State where the service is provided) allows.",
-    "2) No. Entities benefiting from grand-fathering will be forbidden from conducting cross-border activities in Member States where the grand-fathering clause is not (or no longer) applicable.",
-    "For those entities offering crypto services who did not provide such services (or exist as a legal entity) under any applicable laws before 30 December 2024, they will not benefit from grand-fathering. To provide services in the transitional period (and after), they must acquire a MiCA authorisation."
+    "2) No. Entities benefiting from grand-fathering will be forbidden from conducting cross-border activities in Member States where the grandfathering clause is not (or no longer) applicable.",
+    "For those entities offering crypto services who did not provide such services (or exist as a legal entity) under any applicable laws before 30 December 2024, they will not benefit from grandfathering. To provide services in the transitional period (and after), they must acquire a MiCA authorisation."
    ],
    "footnotes": [],
    "disclaimer": []
@@ -890,12 +890,12 @@
    "legal_reference": "Article 143",
    "subject": "New CASPs established before (and after) 30 December 2024",
    "question": [
-    "Does Article 143 allow for new CASPs established between MiCA’s entry into force (June 2022) and 30 December 2024 to continue providing crypto-asset services (under national applicable law) until 1 July 2026 (assuming the MS allows the full duration of the grand-fathering period)?"
+    "Does Article 143 allow for new CASPs established between MiCA’s entry into force (June 2022) and 30 December 2024 to continue providing crypto-asset services (under national applicable law) until 1 July 2026 (assuming the MS allows the full duration of the grandfathering period)?"
    ],
    "answered": "29/01/2024",
    "answer": [
-    "Yes. Article 143(3) of MiCA allows entities providing crypto services to benefit from grand-fathering if they provided their services in accordance with applicable national law before 30 December 2024. There is no effective ‘date of initiation’ related to entry into force or other temporal constraint (i.e., if the entity providing crypto services began offering services in 2014, it would still be eligible for grand-fathering).",
-    "For those entities offering crypto services who did not provide such services (or exist as a legal entity) under any applicable laws before 30 December 2024, they will not benefit from grand-fathering. To provide services in the transitional period (and after), they must acquire a MiCA authorisation."
+    "Yes. Article 143(3) of MiCA allows entities providing crypto services to benefit from grandfathering if they provided their services in accordance with applicable national law before 30 December 2024. There is no effective ‘date of initiation’ related to entry into force or other temporal constraint (i.e., if the entity providing crypto services began offering services in 2014, it would still be eligible for grandfathering).",
+    "For those entities offering crypto services who did not provide such services (or exist as a legal entity) under any applicable laws before 30 December 2024, they will not benefit from grandfathering. To provide services in the transitional period (and after), they must acquire a MiCA authorisation."
    ],
    "footnotes": [],
    "disclaimer": []
@@ -960,14 +960,14 @@
    "status": "Answer Published",
    "topic": "Crypto-Asset Service Provider (CASP)",
    "legal_reference": "Article 143(3)",
-   "subject": "grand-fathering clause and applicable AML laws",
+   "subject": "Grandfathering clause and applicable AML laws",
    "question": [
-    "Can entities providing crypto asset services registered under national arrangements that transpose the AML/CFT framework into national law benefit from the grand-fathering clause set out under Article 143(3) MiCA?"
+    "Can entities providing crypto asset services registered under national arrangements that transpose the AML/CFT framework into national law benefit from the grandfathering clause set out under Article 143(3) MiCA?"
    ],
    "answered": "20/06/2024",
    "answer": [
     "Answer provided by the European Commission",
-    "Yes, entities that provided crypto asset services in accordance with applicable law before 30 December 2024 may benefit from the grand-fathering clause to continue providing those services in the Member State in which they are registered until they are granted or refused authorisation pursuant to Article 63 MiCA.",
+    "Yes, entities that provided crypto asset services in accordance with applicable law before 30 December 2024 may benefit from the grandfathering clause to continue providing those services in the Member State in which they are registered until they are granted or refused authorisation pursuant to Article 63 MiCA.",
     "Article 143(3) MiCA refers to crypto-asset service providers that provided their services “in accordance with applicable law” before 30 December 2024. Therefore, any national arrangements put in place for the provision of crypto-asset services before entry into application of MiCA, should be covered.",
     "The entities authorised under national law before 30 December 2024 do not benefit from a passporting regime under MiCA but can provide crypto-asset services within the jurisdiction they are registered in."
    ],
@@ -1039,7 +1039,7 @@
    ],
    "answered": "07/11/2023",
    "answer": [
-    "Answer provided by the European Commission in accordance with Article 16b(5) of the ESMA Regulation Following entry into application of Regulation (EU) 2023/1114, persons wishing to provide crypto-assets services will have to obtain an authorsation under that regulation. However, as a derogation to that general rule, certain financial entities referred to in Article 60 of Regulation (EU) 2023/1114 may provide specified crypto-asset services without an additional MICA licence where they notify their intention to do so to their home NCA and follow the procedure set out in Article 60 of Regulation (EU) 2023/1114. This includes investment firms and central securities depositaries, which are eligible participants in the DLTPR. In the period until the entry into application of Regulation (EU) 2023/1114, a DLT MI will have to comply with national rules on the provision of crypto-asset services, where such services are regulated at national level. Furthermore, in accordance with Article 143(3) of that regulation, a DLT MI may be able to continue to provide crypto-asset services in accordance with national rules until 18 months after the date of application of the regulation or until it is granted or refused an authorisation pursuant to Article 63 of the regulation, whichever is sooner. However, Member States may also decide not to apply this transitional regime for crypto-asset service providers, or reduce its duration, in accordance with the second sub-paragraph of Article 143(3) referred above, in which case MICA shall start applying in accordance with that decision. The answers clarify provisions already contained in the applicable legislation. They do not extend in any way the rights and obligations deriving from such legislation nor do they introduce any additional requirements for the concerned operators and competent authorities. The answers are merely intended to assist natural or legal persons, including competent authorities and Union institutions and bodies in clarifying the application or implementation of the relevant legal provisions. Only the Court of Justice of the European Union is competent to authoritatively interpret Union law. The views expressed in the internal Commission Decision cannot prejudge the position that the European Commission might take before the Union and national courts.",
+    "Answer provided by the European Commission in accordance with Article 16b(5) of the ESMA Regulation Following entry into application of Regulation (EU) 2023/1114, persons wishing to provide crypto-assets services will have to obtain an authorsation under that regulation. However, as a derogation to that general rule, certain financial entities referred to in Article 60 of Regulation (EU) 2023/1114 may provide specified crypto-asset services without an additional MICA licence where they notify their intention to do so to their home NCA and follow the procedure set out in Article 60 of Regulation (EU) 2023/1114. This includes investment firms and central securities depositaries, which are eligible participants in the DLTPR. In the period until the entry into application of Regulation (EU) 2023/1114, a DLT MI will have to comply with national rules on the provision of crypto-asset services, where such services are regulated at national level. Furthermore, in accordance with Article 143(3) of that regulation, a DLT MI may be able to continue to provide crypto-asset services in accordance with national rules until 18 months after the date of application of the regulation or until it is granted or refused an authorisation pursuant to Article 63 of the regulation, whichever is sooner. However, Member States may also decide not to apply this transitional regime for crypto-asset service providers, or reduce its duration, in accordance with the second subparagraph of Article 143(3) referred above, in which case MICA shall start applying in accordance with that decision. The answers clarify provisions already contained in the applicable legislation. They do not extend in any way the rights and obligations deriving from such legislation nor do they introduce any additional requirements for the concerned operators and competent authorities. The answers are merely intended to assist natural or legal persons, including competent authorities and Union institutions and bodies in clarifying the application or implementation of the relevant legal provisions. Only the Court of Justice of the European Union is competent to authoritatively interpret Union law. The views expressed in the internal Commission Decision cannot prejudge the position that the European Commission might take before the Union and national courts.",
     "No hay parametros en la URL."
    ],
    "footnotes": [],

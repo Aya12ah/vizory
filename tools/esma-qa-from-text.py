@@ -18,13 +18,46 @@ NUM_OK = {'article', 'articles', 'paragraph', 'paragraphs', 'recital', 'recitals
           'after', 'for', 'chapter', 'section', 'tier', 'step', 'phase', 'from', 'until', 'by', 'next', 'first', 'last'}
 
 
-def dehyphenate(text, hyphenated):
-    # pdftotext joins words split over a line ("crypto-" + "asset" -> "cryptoasset"); put the hyphen back
-    # when the hyphenated form occurs elsewhere in the export.
+# Prefixes ESMA writes with a hyphen ("non-regulated", "crypto-service", "EU-authorised").
+PREFIXES = ('non', 'crypto', 'eu', 'cross', 'self', 'multi', 'third', 'anti', 'semi', 'quasi', 'intra')
+
+
+def hyphen_fixer(text, known_text=''):
+    """Put back hyphens lost where a word was split over two lines ("crypto-" + "asset").
+
+    Some PDF-to-text tools drop that hyphen and join the halves ("cryptoasset", "nonregulated").
+    A joined word gets its hyphen back when the hyphenated form occurs elsewhere, or when it is a
+    known prefix plus a word that occurs elsewhere. Words that occur joined in the text already on
+    the page (known_text) are left alone, so real words such as "cryptocurrency" stay as they are.
+    """
+    both = text + '\n' + known_text
+    hyph, nhyph = {}, {}
+    for w in re.findall(r"\b[A-Za-z]+-[A-Za-z]+\b", text):
+        k = w.replace('-', '').lower()
+        hyph.setdefault(k, w.index('-')); nhyph[k] = nhyph.get(k, 0) + 1
+    joined = {}
+    for w in re.findall(r"[A-Za-z]+", text):
+        joined[w.lower()] = joined.get(w.lower(), 0) + 1
+    for w in re.findall(r"\b[A-Za-z]+-[A-Za-z]+\b", known_text):
+        hyph.setdefault(w.replace('-', '').lower(), w.index('-'))
+    words = set(w.lower() for w in re.findall(r"[A-Za-z]+", both))
+    genuine = set(w.lower() for w in re.findall(r"[A-Za-z]+", known_text))
+
     def fix(m):
-        w = m.group(0)
-        return hyphenated.get(w.lower(), w) if w.lower() in hyphenated else w
-    return re.sub(r"[A-Za-z]{6,}", fix, text) if hyphenated else text
+        w = m.group(0); lw = w.lower()
+        if lw in genuine:
+            return w
+        # A word ESMA itself writes both ways ("grandfathering", "grand-fathering") is joined too
+        # often to be a line-break accident; line-break joins are rare next to the hyphenated form.
+        if lw in hyph and joined.get(lw, 0) <= max(2, nhyph.get(lw, 0) // 4):
+            i = hyph[lw]
+            return w[:i] + '-' + w[i:]
+        for p in PREFIXES:
+            rest = lw[len(p):]
+            if lw.startswith(p) and len(rest) >= 4 and rest in words:
+                return w[:len(p)] + '-' + w[len(p):]
+        return w
+    return lambda t: re.sub(r"\b[A-Za-z]{6,}\b", fix, t)
 
 
 def stray_numbers(text):
@@ -79,12 +112,12 @@ def mark_footnotes(text, count):
     return re.sub(r"([\.\,;:\)a-z’”])\s?(\d{1,2})(?=[\s\.\,;]|$)", fix, text)
 
 
-def parse(text):
+def parse(text, known_text=''):
     # \x02 is how the export writes a hyphen at a line break ("crypto\x02asset").
     text = text.replace('\r', '').replace('\f', '\n').replace('\x02', '-').replace('\u00ad', '-')
     # Different PDF-to-text tools differ in blank lines and trailing spaces; neither carries meaning here.
     text = '\n'.join(l.strip() for l in text.split('\n') if l.strip())
-    hyph = {w.replace('-', '').lower(): w for w in re.findall(r"\b[A-Za-z]+-[A-Za-z]+\b", text)}
+    dehyphenate = hyphen_fixer(text, known_text)
     # A Q&A starts at its id line when "Submission Date" follows within a few lines (the summary
     # table at the top lists the ids too, without that label).
     lines_all = text.split('\n')
@@ -123,7 +156,7 @@ def parse(text):
         qa['status'] = meta.get('status', '')
         qa['topic'] = meta.get('Topic', '')
         qa['legal_reference'] = meta.get('Additional Legal Reference', '')
-        qa['subject'] = dehyphenate(meta.get('Subject Matter', ''), hyph)
+        qa['subject'] = dehyphenate(meta.get('Subject Matter', ''))
         rest = lines[i + 1:]
         if 'ESMA Answer' in [l.strip() for l in rest]:
             k = [l.strip() for l in rest].index('ESMA Answer')
@@ -133,7 +166,7 @@ def parse(text):
         # Some PDF-to-text tools put the submission date after the "Question" label.
         while qlines and re.fullmatch(r"\d{2}/\d{2}/\d{4}", qlines[0].strip()):
             qa['submitted'] = qa['submitted'] or qlines.pop(0).strip()
-        qa['question'] = [stray_numbers(dehyphenate(p, hyph)) for p in paragraphs(qlines)]
+        qa['question'] = [stray_numbers(dehyphenate(p)) for p in paragraphs(qlines)]
         qa['answered'] = ''
         qa['answer'], qa['footnotes'], qa['disclaimer'] = [], [], []
         if alines:
@@ -145,8 +178,8 @@ def parse(text):
                 qa['disclaimer'] = [' '.join(l.strip() for l in alines[dis + 1:] if l.strip())]
                 alines = alines[:dis]
             body, notes = split_footnotes(alines)
-            qa['footnotes'] = [stray_numbers(dehyphenate(n, hyph)) for n in notes]
-            qa['answer'] = [mark_footnotes(stray_numbers(dehyphenate(p, hyph)), len(notes)) for p in paragraphs(body)]
+            qa['footnotes'] = [stray_numbers(dehyphenate(n)) for n in notes]
+            qa['answer'] = [mark_footnotes(stray_numbers(dehyphenate(p)), len(notes)) for p in paragraphs(body)]
         items.append(qa)
     return items
 
@@ -154,12 +187,14 @@ def parse(text):
 if __name__ == '__main__':
     src = sys.argv[1]
     m = re.search(r"Download date: (.+)", open(src, encoding='utf-8').read())
-    items = parse(open(src, encoding='utf-8').read())
+    known = json.load(open(OUT, encoding='utf-8'))['items'] if os.path.exists(OUT) else []
+    known_text = json.dumps(known, ensure_ascii=False)
+    items = parse(open(src, encoding='utf-8').read(), known_text)
     # Keep the text already on the page for Q&As that ESMA has not changed (same status and answer
     # date). Different PDF-to-text tools break lines and hyphens differently, so re-reading an
     # unchanged Q&A would only make its text worse or different, never better.
-    if os.path.exists(OUT):
-        known = {q['id']: q for q in json.load(open(OUT, encoding='utf-8'))['items']}
+    if known:
+        known = {q['id']: q for q in known}
         items = [known[q['id']] if q['id'] in known and (known[q['id']]['status'], known[q['id']]['answered'])
                  == (q['status'], q['answered']) else q for q in items]
     data = {'source': 'ESMA Q&A tool, legal act MiCA', 'downloaded': m.group(1).strip() if m else '', 'items': items}

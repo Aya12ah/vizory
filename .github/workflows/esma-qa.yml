@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download ESMA's MiCA Q&A export
         run: |
-          sudo apt-get install -y -qq poppler-utils >/dev/null
+          command -v pdftotext || { sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils >/dev/null; }
           URL='https://www.esma.europa.eu/print/view/pdf/esma_q_a_search_page/page_2?field_qa_serial_value=&combine_keywords_qa_search=&field_qa_level1_target_id%5B0%5D=20011&created%5Bmin%5D=&created%5Bmax%5D=&&moderation_state%5B0%5D=qna_workflow-question_published&moderation_state%5B1%5D=qna_workflow-response_published&moderation_state%5B2%5D=qna_workflow-published_reponse_updated'
           curl -sSfL --retry 2 --retry-delay 30 -A 'vizory.dk ESMA Q&A page (twice weekly)' -o /tmp/esma.pdf "$URL"
           file /tmp/esma.pdf | grep -q PDF

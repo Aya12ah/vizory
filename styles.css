@@ -115,3 +115,19 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* People page */
+.wm-sm { font-size: 20px; text-decoration: none; }
+.ib[aria-current="page"] { color: var(--signal-text); }
+.people { padding-block: var(--space-6) var(--space-7); }
+.page-title { font-size: 28px; letter-spacing: -0.02em; }
+.people-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: grid; gap: var(--space-5); }
+.person { display: grid; gap: var(--space-2); max-width: 56ch; }
+.person-name { font-size: 17px; }
+.person-bio { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.person-link { font-size: 14px; color: var(--signal-text); text-decoration: none; }
+.person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 720px) {
+  .people { padding-block: var(--space-4); }
+  .page-title { font-size: 24px; }
+}

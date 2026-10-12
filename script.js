@@ -110,7 +110,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     "AMLR": { en: "EU regulation 2024/1624 with one directly applicable rulebook for obliged entities on customer due diligence, reporting and internal controls.", da: "EU-forordning 2024/1624 med ét direkte gældende regelsæt for omfattede virksomheder om kundekendskab, indberetning og interne kontroller." }
   };
   var actInfo = document.getElementById('actInfo');
-  var actButtons = document.querySelectorAll('.act');
+  // Only the front page has the scope list.
+  var actButtons = actInfo ? document.querySelectorAll('.act') : [];
   var openAct = null;
   // One block per act, both languages; the page's language rule hides the other one.
   actButtons.forEach(function (b) {
@@ -129,7 +130,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     });
     actInfo.appendChild(item);
   });
-  window.renderAct = function () {
+  if (actInfo) window.renderAct = function () {
     actButtons.forEach(function (b) { b.setAttribute('aria-expanded', String(b.getAttribute('data-act') === openAct)); });
     actInfo.querySelectorAll('.act-item').forEach(function (it) {
       it.classList.toggle('open', it.getAttribute('data-act') === openAct);
@@ -143,7 +144,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       if (openAct && window.gtag) window.gtag('event', 'act_open', { act: key });
     });
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
+  if (actInfo) document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
 
   // Theme: Fresh light and Fresh dark, following the system until the visitor chooses.
   var themeBtn = document.getElementById('themeBtn');

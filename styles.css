@@ -54,6 +54,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .ib:focus-visible { border-radius: var(--radius-full); }
 .ib svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 /* Language button: Danish flag while the page is in English, British flag while it is in Danish */
+/* The British flag is filled in ink with background-coloured bands, so it reads as a Union Jack in both themes */
+.ib svg.uk { width: 24px; height: 15px; stroke: none; border-radius: var(--radius-sm); overflow: hidden; }
+.uk-field { fill: currentColor; }
+.uk-light { stroke: var(--bg); }
+.uk-dark { stroke: currentColor; }
 .ib.pop { animation: pop .32s ease; }
 @keyframes pop { 40% { transform: scale(.86); } 100% { transform: scale(1); } }
 /* Theme toggle: one button, moon in day mode, sun in night mode, turning into each other */

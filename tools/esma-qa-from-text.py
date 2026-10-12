@@ -130,6 +130,9 @@ def parse(text):
             qlines, alines = rest[:k], rest[k + 1:]
         else:
             qlines, alines = rest, []
+        # Some PDF-to-text tools put the submission date after the "Question" label.
+        while qlines and re.fullmatch(r"\d{2}/\d{2}/\d{4}", qlines[0].strip()):
+            qa['submitted'] = qa['submitted'] or qlines.pop(0).strip()
         qa['question'] = [stray_numbers(dehyphenate(p, hyph)) for p in paragraphs(qlines)]
         qa['answered'] = ''
         qa['answer'], qa['footnotes'], qa['disclaimer'] = [], [], []
@@ -152,6 +155,13 @@ if __name__ == '__main__':
     src = sys.argv[1]
     m = re.search(r"Download date: (.+)", open(src, encoding='utf-8').read())
     items = parse(open(src, encoding='utf-8').read())
+    # Keep the text already on the page for Q&As that ESMA has not changed (same status and answer
+    # date). Different PDF-to-text tools break lines and hyphens differently, so re-reading an
+    # unchanged Q&A would only make its text worse or different, never better.
+    if os.path.exists(OUT):
+        known = {q['id']: q for q in json.load(open(OUT, encoding='utf-8'))['items']}
+        items = [known[q['id']] if q['id'] in known and (known[q['id']]['status'], known[q['id']]['answered'])
+                 == (q['status'], q['answered']) else q for q in items]
     data = {'source': 'ESMA Q&A tool, legal act MiCA', 'downloaded': m.group(1).strip() if m else '', 'items': items}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(data, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

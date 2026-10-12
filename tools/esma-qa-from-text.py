@@ -88,9 +88,11 @@ def parse(text):
     # A Q&A starts at its id line when "Submission Date" follows within a few lines (the summary
     # table at the top lists the ids too, without that label).
     lines_all = text.split('\n')
-    # pdftotext puts that label just before the id, other tools just after it.
+    # pdftotext puts that label just before the id, other tools just after it. The status line
+    # follows the id in both, and the summary table has no status lines.
     starts = [n for n, l in enumerate(lines_all) if re.fullmatch(r"ESMA_QA_\d+", l)
-              and 'Submission Date' in lines_all[max(0, n - 2):n + 4]]
+              and 'Submission Date' in lines_all[max(0, n - 2):n + 4]
+              and any(l.startswith('Status:') for l in lines_all[n + 1:n + 5])]
     blocks = []
     for a, b in zip(starts, starts[1:] + [len(lines_all)]):
         chunk = lines_all[a:b]

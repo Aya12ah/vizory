@@ -37,7 +37,8 @@ jobs:
               print('Lines:', len(lines), 'IDs:', sum(bool(re.match(r'ESMA_QA_\d+', l)) for l in lines))
               print('Labels:', collections.Counter(l for l in lines if l in ('Submission Date', 'Topic', 'Subject Matter', 'Question', 'ESMA Answer')))
               i = next((n for n, l in enumerate(lines) if re.fullmatch(r'ESMA_QA_\d+', l)), 0)
-              print('Lines after the first Q&A id:', lines[i:i + 6])
+              j = next((n for n, l in enumerate(lines) if l.startswith('Status:')), 0)
+              print('Lines around the first status line:', lines[max(0, j - 6):j + 3])
               sys.exit('The export looks wrong; the page is left as it is.')
           changed = old != new
           open('/tmp/changed', 'w').write('yes' if changed else 'no')

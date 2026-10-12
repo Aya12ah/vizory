@@ -85,12 +85,17 @@ def parse(text):
     # Different PDF-to-text tools differ in blank lines and trailing spaces; neither carries meaning here.
     text = '\n'.join(l.strip() for l in text.split('\n') if l.strip())
     hyph = {w.replace('-', '').lower(): w for w in re.findall(r"\b[A-Za-z]+-[A-Za-z]+\b", text)}
-    blocks = re.split(r"\n(?=ESMA_QA_\d+\n(?:Submission Date))", text)
+    # A Q&A starts at its id line when "Submission Date" follows within a few lines (the summary
+    # table at the top lists the ids too, without that label).
+    lines_all = text.split('\n')
+    starts = [n for n, l in enumerate(lines_all) if re.fullmatch(r"ESMA_QA_\d+", l)
+              and 'Submission Date' in lines_all[n + 1:n + 5]]
+    blocks = ['\n'.join(lines_all[a:b]) for a, b in zip(starts, starts[1:] + [len(lines_all)])]
     items = []
     for b in blocks:
         lines = b.split('\n')
         m = re.match(r"^ESMA_QA_(\d+)$", lines[0].strip())
-        if not m or len(lines) < 4 or lines[1].strip() != 'Submission Date':
+        if not m:
             continue
         qa = {'id': 'ESMA_QA_' + m.group(1), 'number': int(m.group(1)),
               'url': 'https://www.esma.europa.eu/publications-data/questions-answers/' + m.group(1)}

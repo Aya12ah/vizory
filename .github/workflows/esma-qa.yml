@@ -1,0 +1,47 @@
+# Keeps the ESMA Q&A page (vizory.dk/mica-qa) up to date.
+# Twice a week it downloads ESMA's own PDF export of the MiCA Q&As (one request), rebuilds
+# data/esma-mica-qa.json and the pages, and pushes to main only when a Q&A was added or changed.
+# Every push to main deploys to Vercel. It can also be started by hand under Actions.
+name: ESMA Q&A update
+on:
+  schedule:
+    - cron: '17 5 * * 1,4'   # Mondays and Thursdays, 05:17 UTC
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: esma-qa
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download ESMA's MiCA Q&A export
+        run: |
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          URL='https://www.esma.europa.eu/print/view/pdf/esma_q_a_search_page/page_2?field_qa_serial_value=&combine_keywords_qa_search=&field_qa_level1_target_id%5B0%5D=20011&created%5Bmin%5D=&created%5Bmax%5D=&&moderation_state%5B0%5D=qna_workflow-question_published&moderation_state%5B1%5D=qna_workflow-response_published&moderation_state%5B2%5D=qna_workflow-published_reponse_updated'
+          curl -sSfL --retry 2 --retry-delay 30 -A 'vizory.dk ESMA Q&A page (twice weekly)' -o /tmp/esma.pdf "$URL"
+          file /tmp/esma.pdf | grep -q PDF
+          pdftotext /tmp/esma.pdf /tmp/esma.txt
+      - name: Rebuild data and pages
+        run: |
+          cp data/esma-mica-qa.json /tmp/old.json
+          python3 tools/esma-qa-from-text.py /tmp/esma.txt
+          python3 - <<'PY'
+          import json, sys
+          old = json.load(open('/tmp/old.json'))['items']; new = json.load(open('data/esma-mica-qa.json'))['items']
+          print(f'{len(old)} Q&As before, {len(new)} now')
+          # A broken download or a changed export format must not empty the page.
+          if len(new) < max(1, len(old) - 3) or not all(q['subject'] and q['question'] for q in new):
+              sys.exit('The export looks wrong; the page is left as it is.')
+          changed = old != new
+          open('/tmp/changed', 'w').write('yes' if changed else 'no')
+          PY
+          if [ "$(cat /tmp/changed)" = no ]; then git checkout data/esma-mica-qa.json; echo 'No new or changed Q&As.'; exit 0; fi
+          python3 tools/build-esma-qa.py
+          python3 tools/build-da.py
+          sed -i "/vizory.dk\/\(da\/\)\?mica-qa<\/loc>/{n;n;n;s#<lastmod>.*</lastmod>#<lastmod>$(date -u +%F)</lastmod>#}" sitemap.xml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data mica-qa da/mica-qa sitemap.xml
+          git commit -m 'ESMA Q&A page: new or changed Q&As from ESMA'
+          git push

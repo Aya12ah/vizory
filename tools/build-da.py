@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the Danish pages (da/index.html, da/people/index.html, da/mica/index.html, da/regulation/index.html) from the English ones.
+"""Build the Danish pages (da/index.html, da/people/index.html, da/mica/index.html, da/regulation/index.html, da/mica-qa/index.html) from the English ones.
 
 The English pages are the source. Both languages already sit in the markup; this script only
 changes what differs per address: language, title, description, links and canonical URL.
-Run it after every change to index.html, people/index.html, mica/index.html or regulation/index.html:  python3 tools/build-da.py
+Run it after every change to index.html, people/index.html, mica/index.html, regulation/index.html or mica-qa/index.html:  python3 tools/build-da.py
 """
 import os
 
@@ -53,6 +53,8 @@ PAGES = {
         ('"@id": "https://vizory.dk/mica#page", "url": "https://vizory.dk/mica", "name": "MiCA and CASP authorisation"',
          '"@id": "https://vizory.dk/da/mica#page", "url": "https://vizory.dk/da/mica", "name": "MiCA og CASP-tilladelse", "inLanguage": "da"'),
         ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
+        ('href="/mica"', 'href="/da/mica"'),
+        ('href="/mica-qa"', 'href="/da/mica-qa"'),
     ]),
     'regulation/index.html': ('da/regulation/index.html', [
         ('<title>Regulation · Vizory</title>', '<title>Regulering · Vizory</title>'),
@@ -63,6 +65,18 @@ PAGES = {
         ('<meta property="og:url" content="https://vizory.dk/regulation">', '<meta property="og:url" content="https://vizory.dk/da/regulation">'),
         ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
         ('href="/mica"', 'href="/da/mica"'),
+        ('href="/mica-qa"', 'href="/da/mica-qa"'),
+    ]),
+    'mica-qa/index.html': ('da/mica-qa/index.html', [
+        ('<title>ESMA Q&amp;As on MiCA · Vizory</title>', '<title>ESMA&#39;s spørgsmål og svar om MiCA · Vizory</title>'),
+        ('<meta property="og:title" content="ESMA Q&amp;As on MiCA · Vizory">', '<meta property="og:title" content="ESMA&#39;s spørgsmål og svar om MiCA · Vizory">'),
+        ('content="All questions and answers on MiCA published by ESMA, grouped by topic, with links to ESMA&#39;s own versions."',
+         'content="Alle spørgsmål og svar om MiCA, som ESMA har offentliggjort, sorteret efter emne og med links til ESMA&#39;s egne versioner."'),
+        ('<link rel="canonical" href="https://vizory.dk/mica-qa">', '<link rel="canonical" href="https://vizory.dk/da/mica-qa">'),
+        ('<meta property="og:url" content="https://vizory.dk/mica-qa">', '<meta property="og:url" content="https://vizory.dk/da/mica-qa">'),
+        ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
+        ('href="/mica"', 'href="/da/mica"'),
+        ('href="/mica-qa"', 'href="/da/mica-qa"'),
     ]),
 }
 

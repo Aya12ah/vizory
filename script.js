@@ -123,6 +123,11 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   });
   if (actInfo) document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
 
+  // Regulation menu: mark the link to the page being shown.
+  document.querySelectorAll('.reg-nav a').forEach(function (a) {
+    if (a.getAttribute('href').replace(/\/$/, '') === path.replace(/\/$/, '')) a.setAttribute('aria-current', 'page');
+  });
+
   // Theme: Fresh light and Fresh dark. The script in <head> picks it before the page paints:
   // the visitor's own choice, else light in daytime (07–19 on their clock) and dark otherwise.
   var themeBtn = document.getElementById('themeBtn');

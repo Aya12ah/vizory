@@ -117,7 +117,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 /* People page */
 .wm-sm { font-size: 20px; text-decoration: none; }
 .ib[aria-current="page"] { color: var(--signal-text); }
-.people { padding-block: var(--space-6) var(--space-7); }
+.people, .reg { padding-block: var(--space-6) var(--space-7); }
 .page-title { font-size: 28px; letter-spacing: -0.02em; }
 .people-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: grid; gap: var(--space-5); }
 .person { display: grid; gap: var(--space-2); max-width: 56ch; }
@@ -162,3 +162,39 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .ib-text span { font: 400 21px/1 var(--sans); }
 .guide-link { color: inherit; text-decoration: none; }
 .guide-link:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ESMA Q&A page: one closed block per Q&A */
+.qa-source { margin-top: var(--space-3); font-size: 13px; line-height: 1.6; }
+.qa-count { color: var(--ink-soft); font-size: 12px; }
+.qa { border-bottom: 1px solid var(--line); }
+.doc h2 + .qa { margin-top: var(--space-2); }
+.qa summary { cursor: pointer; padding-block: var(--space-3); display: grid; gap: 4px; list-style: none; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa-subject { color: var(--ink); font-weight: 500; }
+.qa summary:hover .qa-subject { color: var(--signal-text); }
+.qa-meta { font-size: 13px; color: var(--ink-soft); }
+.qa-body { padding-bottom: var(--space-4); }
+.qa-label { font-size: 13px; font-weight: 500; color: var(--ink) !important; margin-top: var(--space-3) !important; }
+.qa-label:first-child { margin-top: 0 !important; }
+.qa-notes { font-size: 13px; color: var(--ink-soft); padding-left: 1.4em; margin-top: var(--space-3); }
+.qa-disclaimer { font-size: 13px; font-style: italic; }
+.doc sup { font-size: .7em; line-height: 0; }
+
+/* Regulation pages: topic menu on the left, content on the right; menu on top on phones */
+.reg { width: 100%; display: grid; gap: var(--space-5); align-self: start; }
+.reg .mica, .reg .people { padding: 0; }
+.reg-nav { font-size: 14px; display: grid; gap: var(--space-2); align-content: start; }
+.reg-nav a { color: var(--ink-soft); text-decoration: none; }
+.reg-nav a:hover { color: var(--signal-text); }
+.reg-nav a[aria-current="page"] { color: var(--signal-text); }
+.reg-nav-title a { color: var(--ink); font-weight: 500; }
+.reg-topic { margin-top: var(--space-2) !important; color: var(--ink); font-weight: 500; }
+.reg-nav ul { list-style: none; margin: 0; padding: 0 0 0 var(--space-3); border-left: 1px solid var(--line); display: grid; gap: 6px; }
+@media (min-width: 900px) {
+  .reg { grid-template-columns: 200px minmax(0, 1fr); gap: var(--space-6); }
+  .reg-nav { position: sticky; top: var(--space-4); }
+}
+@media (max-width: 720px) {
+  .reg { padding-block: var(--space-4); }
+  .reg-nav { padding-bottom: var(--space-4); border-bottom: 1px solid var(--line); }
+}

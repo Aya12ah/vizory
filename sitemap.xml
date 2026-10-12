@@ -48,4 +48,16 @@
     <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/regulation"/>
     <lastmod>2026-10-12</lastmod>
   </url>
+  <url>
+    <loc>https://vizory.dk/mica-qa</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/mica-qa"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/mica-qa"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/da/mica-qa</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/mica-qa"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/mica-qa"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
 </urlset>

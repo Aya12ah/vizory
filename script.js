@@ -110,19 +110,17 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   });
   if (actInfo) document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
 
-  // Theme: Fresh light and Fresh dark, following the system until the visitor chooses.
+  // Theme: Fresh light and Fresh dark. The script in <head> picks it before the page paints:
+  // the visitor's own choice, else light in daytime (07–19 on their clock) and dark otherwise.
   var themeBtn = document.getElementById('themeBtn');
-  var mq = window.matchMedia('(prefers-color-scheme: dark)');
-  function isDark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : mq.matches; }
+  function isDark() { return root.getAttribute('data-theme') === 'dark'; }
   function syncThemeBtn() {
     var d = isDark();
     themeBtn.setAttribute('aria-pressed', String(d));
     themeBtn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode');
   }
-  var st = get('vz-theme'); if (st === 'dark' || st === 'light') root.setAttribute('data-theme', st);
   syncThemeBtn();
   requestAnimationFrame(function () { requestAnimationFrame(function () { themeBtn.classList.add('ready'); }); });
-  mq.addEventListener && mq.addEventListener('change', syncThemeBtn);
   themeBtn.addEventListener('click', function () {
     var next = isDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next); set('vz-theme', next); syncThemeBtn();

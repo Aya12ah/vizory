@@ -10,6 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<script>
+// Theme before first paint: the visitor's own choice, else light from 07:00 to 19:00 on their clock and dark otherwise.
+(function () { var t; try { t = localStorage.getItem('vz-theme'); } catch (e) {}
+  if (t !== 'light' && t !== 'dark') { var h = new Date().getHours(); t = h >= 7 && h < 19 ? 'light' : 'dark'; }
+  document.documentElement.setAttribute('data-theme', t); })();
+</script>
 </head>
 <body>
 

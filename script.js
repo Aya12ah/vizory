@@ -48,28 +48,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   var addr = rev(mail.getAttribute('data-u')) + '@' + rev(mail.getAttribute('data-d'));
   mail.href = 'mailto:' + addr; mail.textContent = addr; mail.hidden = false;
 
-  // Google Analytics: loaded only after the visitor accepts cookies.
-  var GA_ID = 'G-FTP7V0WX8K';
-  var gaLoaded = false;
-  // Theme as GA sees it: the visitor's choice, else their system setting.
-  function themeNow() {
-    var t = root.getAttribute('data-theme');
-    return t || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  }
-  function loadGA() {
-    if (gaLoaded || location.protocol.indexOf('http') !== 0) return;
-    gaLoaded = true;
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', GA_ID, { anonymize_ip: true });
-    window.gtag('set', 'user_properties', { theme: themeNow() });
-    window.gtag('event', 'theme_view', { theme: themeNow() });
-    var sc = document.createElement('script'); sc.async = true;
-    sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(sc);
-  }
-  function clearGACookies() {
+  // Google Analytics was removed. Clear the cookies and stored choice it left with earlier visitors.
+  (function clearGA() {
     var host = location.hostname, parts = host.split('.');
     var domains = ['', host, '.' + host, '.' + parts.slice(-2).join('.')];
     document.cookie.split(';').forEach(function (c) {
@@ -79,23 +59,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         document.cookie = name + '=; Max-Age=0; path=/' + (d ? '; domain=' + d : '');
       });
     });
-  }
-  function showChoice(c) {
-    document.getElementById('consentYes').setAttribute('aria-pressed', String(c === 'yes'));
-    document.getElementById('consentNo').setAttribute('aria-pressed', String(c === 'no'));
-  }
-  function setConsent(yes) {
-    set('vz-consent', yes ? 'yes' : 'no');
-    showChoice(yes ? 'yes' : 'no');
-    if (yes) { loadGA(); }
-    else { clearGACookies(); if (gaLoaded) location.reload(); }
-  }
-  var consent = get('vz-consent');
-  showChoice(consent);
-  if (consent === 'yes') loadGA();
-  document.getElementById('consentYes').addEventListener('click', function () { setConsent(true); });
-  document.getElementById('consentNo').addEventListener('click', function () { setConsent(false); });
-  mail.addEventListener('click', function () { if (window.gtag) window.gtag('event', 'contact_email_click'); });
+    try { localStorage.removeItem('vz-consent'); } catch (e) {}
+  })();
 
   // Scope list: tap an act to read what it covers. Tap it again, or press Escape, to close.
   var ACTS = {
@@ -141,7 +106,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       var key = b.getAttribute('data-act');
       openAct = openAct === key ? null : key;
       window.renderAct();
-      if (openAct && window.gtag) window.gtag('event', 'act_open', { act: key });
     });
   });
   if (actInfo) document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
@@ -162,10 +126,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   themeBtn.addEventListener('click', function () {
     var next = isDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next); set('vz-theme', next); syncThemeBtn();
-    if (window.gtag) {
-      window.gtag('set', 'user_properties', { theme: next });
-      window.gtag('event', 'theme_change', { theme: next });
-    }
     pop(themeBtn);
   });
 

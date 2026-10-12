@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the Danish pages (da/index.html, da/people/index.html, da/mica/index.html) from the English ones.
+"""Build the Danish pages (da/index.html, da/people/index.html, da/mica/index.html, da/regulation/index.html) from the English ones.
 
 The English pages are the source. Both languages already sit in the markup; this script only
 changes what differs per address: language, title, description, links and canonical URL.
-Run it after every change to index.html, people/index.html or mica/index.html:  python3 tools/build-da.py
+Run it after every change to index.html, people/index.html, mica/index.html or regulation/index.html:  python3 tools/build-da.py
 """
 import os
 
@@ -16,6 +16,8 @@ COMMON = [
     ('content="https://vizory.dk/og.png"', 'content="https://vizory.dk/og-da.png"'),
     ('href="/people"', 'href="/da/people"'),
     ('aria-label="People"', 'aria-label="Mennesker"'),
+    ('href="/regulation"', 'href="/da/regulation"'),
+    ('aria-label="Regulation"', 'aria-label="Regulering"'),
     ('aria-label="Skift til dansk">DA</button>', 'aria-label="Switch to English">EN</button>'),
 ]
 
@@ -51,6 +53,16 @@ PAGES = {
         ('"@id": "https://vizory.dk/mica#page", "url": "https://vizory.dk/mica", "name": "MiCA and CASP authorisation"',
          '"@id": "https://vizory.dk/da/mica#page", "url": "https://vizory.dk/da/mica", "name": "MiCA og CASP-tilladelse", "inLanguage": "da"'),
         ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
+    ]),
+    'regulation/index.html': ('da/regulation/index.html', [
+        ('<title>Regulation · Vizory</title>', '<title>Regulering · Vizory</title>'),
+        ('<meta property="og:title" content="Regulation · Vizory">', '<meta property="og:title" content="Regulering · Vizory">'),
+        ('content="Guides to EU financial regulation from Vizory, starting with MiCA and CASP authorisation."',
+         'content="Vejledninger om EU\'s finansielle regulering fra Vizory, begyndende med MiCA og CASP-tilladelse."'),
+        ('<link rel="canonical" href="https://vizory.dk/regulation">', '<link rel="canonical" href="https://vizory.dk/da/regulation">'),
+        ('<meta property="og:url" content="https://vizory.dk/regulation">', '<meta property="og:url" content="https://vizory.dk/da/regulation">'),
+        ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
+        ('href="/mica"', 'href="/da/mica"'),
     ]),
 }
 

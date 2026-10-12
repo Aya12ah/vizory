@@ -36,4 +36,16 @@
     <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/mica"/>
     <lastmod>2026-10-12</lastmod>
   </url>
+  <url>
+    <loc>https://vizory.dk/regulation</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/regulation"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/regulation"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/da/regulation</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/regulation"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/regulation"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
 </urlset>

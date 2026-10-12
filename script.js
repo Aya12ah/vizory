@@ -6,39 +6,45 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
-  // Language: the visitor's own choice wins. Otherwise Danish for visitors in Denmark,
-  // Greenland and the Faroe Islands (country from Vercel), English elsewhere.
-  // Without the location lookup (opened locally) the browser language decides.
+  // Language: each page exists in English (/, /people) and Danish (/da, /da/people), so search
+  // engines can index both. The visitor's own choice wins. Otherwise visitors in Denmark,
+  // Greenland and the Faroe Islands who land on an English page are sent to the Danish one
+  // (country from Vercel). Without the location lookup (opened locally) the browser language decides.
   var DA_COUNTRIES = ['DK', 'GL', 'FO'];
+  var path = location.pathname.replace(/\/index\.html$/, '/');
+  var pageLang = /^\/da(\/|$)/.test(path) ? 'da' : 'en';
+  function otherUrl() {
+    if (pageLang === 'da') return path.replace(/^\/da\/?/, '/');
+    return '/da' + (path === '/' ? '' : path.replace(/\/$/, ''));
+  }
   function browserLang() {
     var langs = navigator.languages || [navigator.language || ''];
     for (var i = 0; i < langs.length; i++) if (/^(da|kl|fo)\b/i.test(langs[i])) return 'da';
     try { if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Europe/Copenhagen') return 'da'; } catch (e) {}
     return 'en';
   }
-  var langBtn = document.getElementById('langBtn');
-  function applyLang(l) {
-    root.setAttribute('data-lang', l); root.lang = l;
-    langBtn.textContent = l === 'en' ? 'DA' : 'EN';
-    langBtn.setAttribute('aria-label', l === 'en' ? 'Skift til dansk' : 'Switch to English');
-  }
+  var onWeb = location.protocol.indexOf('http') === 0;
+  function goTo(l) { if (onWeb && l !== pageLang) location.replace(otherUrl() + location.search + location.hash); }
   var chosen = get('vz-lang');
   if (chosen === 'en' || chosen === 'da') {
-    applyLang(chosen);
-  } else {
-    applyLang(browserLang());
-    if (location.protocol.indexOf('http') === 0 && window.fetch) {
+    goTo(chosen);
+  } else if (pageLang === 'en') {
+    if (onWeb && window.fetch) {
       fetch('/api/geo').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-        if (!d || !d.country || get('vz-lang')) return;
-        applyLang(DA_COUNTRIES.indexOf(d.country) > -1 ? 'da' : 'en');
-      }).catch(function () {});
+        if (get('vz-lang')) return;
+        goTo(d && d.country ? (DA_COUNTRIES.indexOf(d.country) > -1 ? 'da' : 'en') : browserLang());
+      }).catch(function () { if (!get('vz-lang')) goTo(browserLang()); });
+    } else {
+      goTo(browserLang());
     }
   }
 
   function pop(el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  var langBtn = document.getElementById('langBtn');
   langBtn.addEventListener('click', function () {
-    var next = root.getAttribute('data-lang') === 'en' ? 'da' : 'en';
-    applyLang(next); set('vz-lang', next); pop(langBtn);
+    var next = pageLang === 'en' ? 'da' : 'en';
+    set('vz-lang', next); pop(langBtn);
+    location.href = otherUrl() + location.hash;
   });
 
   // Email: assembled here from reversed parts, so the address is not in the page source

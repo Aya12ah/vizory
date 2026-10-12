@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://vizory.dk/</loc><lastmod>2026-10-12</lastmod></url>
-  <url><loc>https://vizory.dk/people</loc><lastmod>2026-10-12</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://vizory.dk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/da</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/people</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/people"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/people"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/da/people</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/people"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/people"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
 </urlset>

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the Danish pages (da/index.html, da/people/index.html) from the English ones.
+"""Build the Danish pages (da/index.html, da/people/index.html, da/mica/index.html) from the English ones.
 
 The English pages are the source. Both languages already sit in the markup; this script only
 changes what differs per address: language, title, description, links and canonical URL.
-Run it after every change to index.html or people/index.html:  python3 tools/build-da.py
+Run it after every change to index.html, people/index.html or mica/index.html:  python3 tools/build-da.py
 """
 import os
 
@@ -37,6 +37,19 @@ PAGES = {
          'content="Danny Dehghani har ni års erfaring fra Finanstilsynet med fintech, kryptoaktiver, betalinger og DLT og har forhandlet MiCA på Danmarks vegne."'),
         ('<link rel="canonical" href="https://vizory.dk/people">', '<link rel="canonical" href="https://vizory.dk/da/people">'),
         ('<meta property="og:url" content="https://vizory.dk/people">', '<meta property="og:url" content="https://vizory.dk/da/people">'),
+        ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
+    ]),
+    'mica/index.html': ('da/mica/index.html', [
+        ('<title>MiCA and CASP authorisation: application, compliance and governance · Vizory</title>',
+         '<title>MiCA og CASP-tilladelse: ansøgning, compliance og governance · Vizory</title>'),
+        ('<meta property="og:title" content="MiCA and CASP authorisation: application, compliance and governance · Vizory">',
+         '<meta property="og:title" content="MiCA og CASP-tilladelse: ansøgning, compliance og governance · Vizory">'),
+        ('content="What an application for CASP authorisation under MiCA must contain, how the Danish FSA assesses it, and the compliance and governance requirements that apply afterwards."',
+         'content="Hvad en ansøgning om CASP-tilladelse efter MiCA skal indeholde, hvordan Finanstilsynet behandler den, og hvilke krav til compliance og governance der gælder bagefter."'),
+        ('<link rel="canonical" href="https://vizory.dk/mica">', '<link rel="canonical" href="https://vizory.dk/da/mica">'),
+        ('<meta property="og:url" content="https://vizory.dk/mica">', '<meta property="og:url" content="https://vizory.dk/da/mica">'),
+        ('"@id": "https://vizory.dk/mica#page", "url": "https://vizory.dk/mica", "name": "MiCA and CASP authorisation"',
+         '"@id": "https://vizory.dk/da/mica#page", "url": "https://vizory.dk/da/mica", "name": "MiCA og CASP-tilladelse", "inLanguage": "da"'),
         ('<a class="wm wm-sm" href="/" aria-label="vizory, front page">', '<a class="wm wm-sm" href="/da" aria-label="vizory, forside">'),
     ]),
 }

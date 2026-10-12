@@ -72,7 +72,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   var ACTS = {
     "PSD3": { en: "EU directive on the authorisation and supervision of payment institutions and e-money institutions. It replaces PSD2 and the E-Money Directive.", da: "EU-direktiv om tilladelse til og tilsyn med betalingsinstitutter og e-pengeinstitutter. Det afløser PSD2 og e-pengedirektivet." },
     "PSR": { en: "EU regulation with the rules for providing payment services: transparency, rights and obligations, fraud prevention and access to accounts.", da: "EU-forordning med reglerne for udbud af betalingstjenester: gennemsigtighed, rettigheder og pligter, forebyggelse af svindel og adgang til konti." },
-    "MiCAR": { en: "EU regulation 2023/1114 on crypto-assets. It sets authorisation and conduct rules for crypto-asset service providers and issuers of tokens.", da: "EU-forordning 2023/1114 om kryptoaktiver. Den fastsætter krav til tilladelse og adfærd for udbydere af kryptoaktivtjenester og udstedere af tokens." },
+    "MiCAR": { en: "EU regulation 2023/1114 on crypto-assets. It sets authorisation and conduct rules for crypto-asset service providers and issuers of tokens.", da: "EU-forordning 2023/1114 om kryptoaktiver. Den fastsætter krav til tilladelse og adfærd for udbydere af kryptoaktivtjenester og udstedere af tokens.", page: { href: "/mica", en: "MiCA and CASP authorisation", da: "MiCA og CASP-tilladelse" } },
     "MiFID II": { en: "EU directive 2014/65/EU on investment services and trading venues. It applies to tokenised financial instruments as to any other.", da: "EU-direktiv 2014/65/EU om investeringsservice og handelspladser. Det gælder for tokeniserede finansielle instrumenter som for alle andre." },
     "MiFIR": { en: "EU regulation 600/2014 on transparency, transaction reporting and trading obligations for financial instruments.", da: "EU-forordning 600/2014 om gennemsigtighed, transaktionsindberetning og handelsforpligtelser for finansielle instrumenter." },
     "DLTR": { en: "EU regulation 2022/858. It lets market infrastructures trade and settle tokenised securities on DLT with targeted exemptions.", da: "EU-forordning 2022/858. Den lader markedsinfrastrukturer handle og afvikle tokeniserede værdipapirer på DLT med målrettede undtagelser." },
@@ -99,6 +99,13 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       t.textContent = ACTS[key][l];
       item.appendChild(t);
     });
+    // Acts with their own page get a link to it, in the page's language.
+    if (ACTS[key].page) {
+      var a = document.createElement('a'); a.className = 'act-link';
+      a.href = (pageLang === 'da' ? '/da' : '') + ACTS[key].page.href;
+      a.textContent = ACTS[key].page[pageLang];
+      item.appendChild(a);
+    }
     actInfo.appendChild(item);
   });
   if (actInfo) window.renderAct = function () {

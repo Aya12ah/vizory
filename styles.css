@@ -88,6 +88,8 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .act-item.open { visibility: visible; }
 .act-name { font-size: 14px; font-weight: 500; color: var(--ink); }
 .act-text { font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+.act-link { justify-self: start; font-size: 14px; color: var(--signal-text); text-decoration: none; }
+.act-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 900px) {
   .scope-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); }
 }
@@ -126,4 +128,32 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 @media (max-width: 720px) {
   .people { padding-block: var(--space-4); }
   .page-title { font-size: 24px; }
+}
+
+/* MiCA page: a long reading page */
+.mica { padding-block: var(--space-6) var(--space-7); }
+.doc { max-width: 68ch; font-size: 15px; line-height: 1.65; }
+.doc .page-title { margin-bottom: var(--space-3); }
+.doc .lede { max-width: none; margin-top: var(--space-3); font-size: 17px; }
+.doc h2 { font-size: 21px; letter-spacing: -0.015em; margin-top: var(--space-6); scroll-margin-top: var(--space-4); }
+.doc h3 { font-size: 16px; margin-top: var(--space-4); scroll-margin-top: var(--space-4); }
+.doc p, .doc ul { margin-top: var(--space-2); }
+.doc p:not(.lede):not(.toc-title), .doc li { color: var(--ink-soft); }
+.doc strong { color: var(--ink); font-weight: 500; }
+.doc ul { padding-left: 1.2em; }
+.doc li { margin-top: 4px; }
+.doc li::marker { color: var(--signal-text); }
+.doc a { color: var(--signal-text); text-decoration: none; }
+.doc a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.toc { margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--line); font-size: 14px; }
+.toc-title { font-weight: 500; color: var(--ink); }
+.toc ol { margin: var(--space-2) 0 0; padding-left: 1.4em; }
+.toc ol ol { margin: 4px 0 var(--space-2); list-style: lower-alpha; }
+.toc li { margin-top: 4px; color: var(--ink-soft); }
+.toc li::marker { color: var(--ink-soft); }
+.sources { font-size: 14px; }
+@media (max-width: 720px) {
+  .mica { padding-block: var(--space-4); }
+  .doc h2 { font-size: 19px; margin-top: var(--space-5); }
+  .doc .lede { font-size: 16px; }
 }

@@ -24,4 +24,16 @@
     <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/people"/>
     <lastmod>2026-10-12</lastmod>
   </url>
+  <url>
+    <loc>https://vizory.dk/mica</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/mica"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/mica"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://vizory.dk/da/mica</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vizory.dk/mica"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://vizory.dk/da/mica"/>
+    <lastmod>2026-10-12</lastmod>
+  </url>
 </urlset>

@@ -88,9 +88,15 @@ def parse(text):
     # A Q&A starts at its id line when "Submission Date" follows within a few lines (the summary
     # table at the top lists the ids too, without that label).
     lines_all = text.split('\n')
+    # pdftotext puts that label just before the id, other tools just after it.
     starts = [n for n, l in enumerate(lines_all) if re.fullmatch(r"ESMA_QA_\d+", l)
-              and 'Submission Date' in lines_all[n + 1:n + 5]]
-    blocks = ['\n'.join(lines_all[a:b]) for a, b in zip(starts, starts[1:] + [len(lines_all)])]
+              and 'Submission Date' in lines_all[max(0, n - 2):n + 4]]
+    blocks = []
+    for a, b in zip(starts, starts[1:] + [len(lines_all)]):
+        chunk = lines_all[a:b]
+        while chunk and chunk[-1] == 'Submission Date':
+            chunk.pop()
+        blocks.append('\n'.join(chunk))
     items = []
     for b in blocks:
         lines = b.split('\n')
@@ -103,7 +109,9 @@ def parse(text):
         meta = {}
         while i < len(lines) and lines[i].strip() != 'Question':
             l = lines[i].strip(); i += 1
-            if l.startswith('Status:'):
+            if re.fullmatch(r"\d{2}/\d{2}/\d{4}", l) and 'Submission Date' not in meta:
+                meta['Submission Date'] = l; field = None
+            elif l.startswith('Status:'):
                 meta['status'] = l.split(':', 1)[1].strip(); field = None
             elif l in LABELS:
                 field = l

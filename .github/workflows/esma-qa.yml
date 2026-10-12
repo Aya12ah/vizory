@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: '17 5 * * 1,4'   # Mondays and Thursdays, 05:17 UTC
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only report what would change'
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency: esma-qa
@@ -41,8 +46,13 @@ jobs:
               print('Lines around the first status line:', lines[max(0, j - 6):j + 3])
               sys.exit('The export looks wrong; the page is left as it is.')
           changed = old != new
+          byid = {q['id']: q for q in old}
+          for q in new:
+              o = byid.get(q['id'])
+              print(q['id'], 'new' if o is None else ' '.join(k for k in q if q[k] != o.get(k)) or 'same')
           open('/tmp/changed', 'w').write('yes' if changed else 'no')
           PY
+          if [ "${{ inputs.dry_run }}" = true ]; then echo 'Dry run: nothing is published.'; exit 0; fi
           if [ "$(cat /tmp/changed)" = no ]; then git checkout data/esma-mica-qa.json; echo 'No new or changed Q&As.'; exit 0; fi
           python3 tools/build-esma-qa.py
           python3 tools/build-da.py

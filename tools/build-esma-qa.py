@@ -24,7 +24,9 @@ def esc(t):
 
 def para(t):
     t = esc(t)
-    t = re.sub(r'https?://[^\s<]+[^\s<.,;:)]', r'<a href="\g<0>" rel="noopener">\g<0></a>', t)
+    # [title](url) shows the title as the link; a bare URL links itself.
+    t = re.sub(r'\[([^\]]+)\]\((https?://[^\s)]+)\)', r'<a href="\2" rel="noopener">\1</a>', t)
+    t = re.sub(r'(?<!href=")https?://[^\s<"]+[^\s<".,;:)]', r'<a href="\g<0>" rel="noopener">\g<0></a>', t)
     return re.sub(r'\[\[fn(\d+)\]\]', r'<sup>\1</sup>', t)
 
 
@@ -80,7 +82,14 @@ for t, qs in topics.items():
         for p in q['question']: o.append(f'            <p>{para(p)}</p>')
         if q['answer']:
             o.append('            <p class="qa-label">' + bi('ESMA answer', 'ESMA&#39;s svar') + '</p>')
-            for p in q['answer']: o.append(f'            <p>{para(p)}</p>')
+            # Paragraphs starting with "• " form a bulleted list.
+            items = []
+            for p in q['answer'] + ['']:
+                if p.startswith('• '):
+                    items.append(f'<li>{para(p[2:])}</li>'); continue
+                if items:
+                    o.append('            <ul>' + ''.join(items) + '</ul>'); items = []
+                if p: o.append(f'            <p>{para(p)}</p>')
         if q['footnotes']:
             o.append('            <ol class="qa-notes">' + ''.join(f'<li>{para(n)}</li>' for n in q['footnotes']) + '</ol>')
         for p in q['disclaimer']: o.append(f'            <p class="qa-disclaimer">{para(p)}</p>')

@@ -83,8 +83,8 @@ for t, qs in topics.items():
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
-        # Row 1: the status in brackets with its dot (mint: answer updated, amber: not answered yet)
-        # and the date on the left, the ID as a link to ESMA's own version on the right. Unanswered
+        # Row 1: the date, then a dot and the status in brackets (mint: answer updated, amber: not
+        # answered yet) on the left, the ID as a link to ESMA's own version on the right. Unanswered
         # Q&As show the submission date. Row 2: subject. Row 3 (if any): the legal reference tag,
         # cut short with an ellipsis until the Q&A is opened.
         st = STATUS.get(q['status'])
@@ -94,7 +94,7 @@ for t, qs in topics.items():
         link = f'<a class="qa-id" href="{q["url"]}" target="_blank" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>'
         lr = esc(q['legal_reference'])
         ref = f'<span class="qa-ref" title="{lr}">{lr}</span>' if lr else ''
-        top = f'<span class="qa-top">{stx}<span class="qa-date">{date}</span>{link}</span>'
+        top = f'<span class="qa-top"><span class="qa-date">{date}</span>{stx}{link}</span>'
         meta = f'<span class="qa-meta">{ref}</span>' if ref else ''
         o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span>{meta}</summary>')
         o.append('          <div class="qa-body">')

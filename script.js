@@ -163,7 +163,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         if (openBtn === b) { closeMenu(false); return; }
         closeMenu(false);
         var r = h.getBoundingClientRect();
-        menu.style.top = Math.max(r.bottom, 0) + 6 + 'px';
+        menu.style.top = Math.max(r.bottom, 0) + 'px';
         menu.style.left = r.left + 'px'; menu.style.width = r.width + 'px';
         menu.querySelectorAll('a').forEach(function (a) {
           if (a.getAttribute('href') === '#' + h.id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');

@@ -178,7 +178,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 @media (hover: hover) and (pointer: fine) { .qa summary:hover .qa-subject { color: var(--signal-text); } }
 .qa-top { display: flex; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 /* Tags hang 7px (their padding) outside the column, so their text lines up with the title and the date. */
-.doc .qa-id { flex-shrink: 0; margin-left: -7px; font-size: 11px; font-weight: 500; color: var(--ink); box-shadow: inset 0 0 0 1px var(--outline); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+.doc .qa-id { flex-shrink: 0; margin-left: -7px; font-size: 11px; font-weight: 500; color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--outline); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
 .qa-status { font-size: 11px; white-space: nowrap; }
 .qa-status::after { content: ""; display: inline-block; vertical-align: middle; width: 5px; height: 5px; margin-left: 5px; border-radius: var(--radius-full); background: currentColor; }
 .qa-status-updated { color: var(--signal-text); }

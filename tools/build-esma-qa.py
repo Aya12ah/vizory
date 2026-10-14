@@ -84,13 +84,13 @@ for t, qs in topics.items():
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
         # Row 1: date, then status. Unanswered Q&As show the submission date. Row 2: subject.
-        # Row 3: ID left, legal reference tag right.
+        # Row 3: the ID as a link to ESMA's own version (left), legal reference tag (right).
         st = STATUS.get(q['status'])
         date = fmt_date(q['answered'] or q['submitted'])
         stx = (f'<span class="qa-status{" qa-status-pending" if q["status"] == "Question Published" else ""}">' + bi(*st) + '</span>') if st else ''
         top = f'<span class="qa-top"><span class="qa-date">{date}</span>{stx}</span>'
         ref = f'<span class="qa-ref">{esc(q["legal_reference"])}</span>' if q['legal_reference'] else ''
-        meta = f'<span class="qa-meta"><span class="qa-id">({esc(q["id"])})</span>{ref}</span>'
+        meta = f'<span class="qa-meta"><a class="qa-id" href="{q["url"]}" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>{ref}</span>'
         o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span>{meta}</summary>')
         o.append('          <div class="qa-body">')
         o.append('            <p class="qa-label">' + bi('Question', 'Spørgsmål') + '</p>')
@@ -108,7 +108,6 @@ for t, qs in topics.items():
         if q['footnotes']:
             o.append('            <ol class="qa-notes">' + ''.join(f'<li>{para(n)}</li>' for n in q['footnotes']) + '</ol>')
         for p in q['disclaimer']: o.append(f'            <p class="qa-disclaimer">{para(p)}</p>')
-        o.append(f'            <p><a href="{q["url"]}" rel="noopener">' + bi(f'{esc(q["id"])} on ESMA&#39;s website', f'{esc(q["id"])} på ESMA&#39;s hjemmeside') + '</a></p>')
         o.append('          </div>')
         o.append('        </details>')
 o.append('      </article>')

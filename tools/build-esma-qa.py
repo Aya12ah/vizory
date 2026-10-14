@@ -24,6 +24,7 @@ def esc(t):
 
 def para(t):
     t = esc(t)
+    t = re.sub(r'https?://[^\s<]+[^\s<.,;:)]', r'<a href="\g<0>" rel="noopener">\g<0></a>', t)
     return re.sub(r'\[\[fn(\d+)\]\]', r'<sup>\1</sup>', t)
 
 

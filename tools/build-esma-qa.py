@@ -83,13 +83,13 @@ for t, qs in topics.items():
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
-        # Row 1: date left, status right. Row 2: subject, then the ID in grey. Row 3 (if any): the legal reference as a tag.
+        # Row 1: date left, status right. Row 2: subject. Row 3: the legal reference as a tag (if any) and the ID.
         st = STATUS.get(q['status'])
         date = fmt_date(q['answered'])
         stx = (f'<span class="qa-status{" qa-status-pending" if q["status"] == "Question Published" else ""}">' + bi(*st) + '</span>') if st else ''
         top = f'<span class="qa-top"><span class="qa-date">{date}</span>{stx}</span>' if (date or stx) else ''
-        ref = f'<span class="qa-meta"><span class="qa-ref">{esc(q["legal_reference"])}</span></span>' if q['legal_reference'] else ''
-        o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])} <span class="qa-id">({esc(q["id"])})</span></span>{ref}</summary>')
+        ref = f'<span class="qa-ref">{esc(q["legal_reference"])}</span>' if q['legal_reference'] else ''
+        o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span><span class="qa-meta">{ref}<span class="qa-id">({esc(q["id"])})</span></span></summary>')
         o.append('          <div class="qa-body">')
         o.append('            <p class="qa-label">' + bi('Question', 'Spørgsmål') + '</p>')
         for p in q['question']: o.append(f'            <p>{para(p)}</p>')

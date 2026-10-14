@@ -67,7 +67,7 @@ for t, qs in topics.items():
     tid = re.sub(r'[^a-z0-9]+', '-', t.lower()).strip('-')
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
-        o.append(f'        <details class="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
+        o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
         st = STATUS.get(q['status'])
         meta = [esc(q['id'])]
         if q['answered']: meta.append(esc(q['answered']))

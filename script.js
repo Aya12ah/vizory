@@ -123,6 +123,14 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   });
   if (actInfo) document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openAct) { openAct = null; window.renderAct(); } });
 
+  // ESMA Q&A: only one Q&A is open at a time (name="qa" on <details>). When a long
+  // answer above closes, the page shifts up, so bring the opened question back into view.
+  document.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (!d.classList || !d.classList.contains('qa') || !d.open) return;
+    if (d.getBoundingClientRect().top < 0) d.scrollIntoView({ block: 'start' });
+  }, true);
+
   // Regulation menu: mark the link to the page being shown.
   document.querySelectorAll('.reg-nav a').forEach(function (a) {
     if (a.getAttribute('href').replace(/\/$/, '') === path.replace(/\/$/, '')) a.setAttribute('aria-current', 'page');

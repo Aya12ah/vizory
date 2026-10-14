@@ -132,7 +132,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 
 /* MiCA page: a long reading page */
 .mica { padding-block: var(--space-6) var(--space-7); }
-.doc { max-width: 68ch; font-size: 15px; line-height: 1.65; }
+.doc { max-width: 68ch; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
 .doc .page-title { margin-bottom: var(--space-3); }
 .doc .lede { max-width: none; margin-top: var(--space-3); font-size: 17px; }
 .doc h2 { font-size: 21px; letter-spacing: -0.015em; margin-top: var(--space-6); scroll-margin-top: var(--space-4); }
@@ -164,7 +164,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 /* ESMA Q&A page: one closed block per Q&A */
 .qa-source { margin-top: var(--space-3); font-size: 13px; line-height: 1.6; }
 .qa-count { color: var(--ink-soft); font-size: 12px; }
-.qa { border-bottom: 1px solid var(--line); }
+.qa { border-bottom: 1px solid var(--line); scroll-margin-top: var(--space-3); }
 .doc h2 + .qa { margin-top: var(--space-2); }
 .qa summary { cursor: pointer; padding-block: var(--space-3); display: grid; gap: 4px; list-style: none; }
 .qa summary::-webkit-details-marker { display: none; }
@@ -179,7 +179,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .doc sup { font-size: .7em; line-height: 0; }
 
 /* Regulation pages: topic menu on the left, content on the right; menu on top on phones */
-.reg { width: 100%; display: grid; gap: var(--space-5); align-self: start; }
+.reg { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-self: start; }
 .reg .mica, .reg .people { padding: 0; }
 .reg-nav { font-size: 14px; display: grid; gap: var(--space-2); align-content: start; }
 .reg-nav a { color: var(--ink-soft); text-decoration: none; }

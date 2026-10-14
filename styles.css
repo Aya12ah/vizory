@@ -175,8 +175,7 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .qa-subject { color: var(--ink); font-weight: 500; line-height: 1.4; }
 .qa summary:hover .qa-subject { color: var(--signal-text); }
 .qa-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2px var(--space-3); font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.qa-key { display: flex; align-items: center; column-gap: 6px; white-space: nowrap; }
-.qa-key time + .qa-id::before { content: "·"; margin-right: 6px; }
+.qa-id { font-size: 12px; font-weight: 400; color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .qa-status { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: var(--signal-text); white-space: nowrap; }
 .qa-status::before { content: ""; width: 5px; height: 5px; border-radius: var(--radius-full); background: currentColor; }
 .qa-status .en, .qa-status .da { display: inline; }

@@ -14,7 +14,8 @@ frame = open(os.path.join(ROOT, 'mica', 'index.html'), encoding='utf-8').read()
 
 T = 'ESMA Q&amp;As on MiCA · Vizory'
 D = 'All questions and answers on MiCA published by ESMA, grouped by topic, with links to ESMA&#39;s own versions.'
-STATUS = {'Question Published': ('Not answered yet', 'Ej besvaret')}
+STATUS = {'Published Answer Updated': ('Updated', 'Opdateret'),
+          'Question Published': ('Not answered yet', 'Ej besvaret')}
 
 
 def esc(t):
@@ -82,13 +83,14 @@ for t, qs in topics.items():
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
-        # Row 1: date with a dot (mint: answer updated, amber: not answered yet), "(not answered yet)" after it,
+        # Row 1: date with a dot (mint: answer updated, amber: not answered yet), the status in brackets after it,
         # and the ID as a link to ESMA's own version on the right. Unanswered Q&As show the
         # submission date. Row 2: subject. Row 3 (if any): the legal reference tag.
         st = STATUS.get(q['status'])
         date = fmt_date(q['answered'] or q['submitted'])
-        stx = ('<span class="qa-status">(' + bi(*st) + ')</span>') if st else ''
-        dot = {'Published Answer Updated': ' qa-date-updated', 'Question Published': ' qa-date-pending'}.get(q['status'], '')
+        kind = {'Published Answer Updated': 'updated', 'Question Published': 'pending'}.get(q['status'])
+        dot = f' qa-date-{kind}' if kind else ''
+        stx = (f'<span class="qa-status qa-status-{kind}">(' + bi(*st) + ')</span>') if st else ''
         link = f'<a class="qa-id" href="{q["url"]}" target="_blank" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>'
         top = f'<span class="qa-top"><span class="qa-date{dot}">{date}</span>{stx}{link}</span>'
         meta = f'<span class="qa-meta"><span class="qa-ref">{esc(q["legal_reference"])}</span></span>' if q['legal_reference'] else ''

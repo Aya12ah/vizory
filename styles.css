@@ -176,12 +176,12 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .qa summary:hover .qa-subject { color: var(--signal-text); }
 .qa-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2px var(--space-3); font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .qa-id { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.qa-status { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: var(--signal-text); white-space: nowrap; }
+.qa-status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--signal-text); white-space: nowrap; }
 .qa-status::before { content: ""; width: 5px; height: 5px; border-radius: var(--radius-full); background: currentColor; }
 .qa-status .en, .qa-status .da { display: inline; }
 .qa-status-pending { color: var(--ink-soft); }
 .qa-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 11px; line-height: 1.45; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.qa-ref { font-weight: 500; color: var(--ref-text); background: var(--ref-bg); padding: 2px 7px; border-radius: 5px; }
+.qa-ref { margin-left: auto; font-weight: 500; color: var(--ref-text); background: var(--ref-bg); padding: 2px 7px; border-radius: 5px; }
 .qa-body { padding-bottom: var(--space-4); }
 .qa-label { font-size: 13px; line-height: 1.45; font-weight: 500; color: var(--ink) !important; margin-top: var(--space-3) !important; }
 .qa-label:first-child { margin-top: 0 !important; }

@@ -173,6 +173,9 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .qa summary { cursor: pointer; padding-block: var(--space-3); display: grid; gap: var(--space-2); list-style: none; }
 .qa summary::-webkit-details-marker { display: none; }
 .qa-subject { color: var(--ink); font-weight: 500; line-height: 1.4; }
+.qa[open] .qa-subject { color: var(--signal-text); }
+/* Hover only where there is a real pointer: on touch screens :hover sticks after a tap. */
+@media (hover: hover) and (pointer: fine) { .qa summary:hover .qa-subject { color: var(--signal-text); } }
 .qa-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .qa-date { display: inline-flex; align-items: center; gap: 5px; }
 .qa-date-updated::before, .qa-date-pending::before { content: ""; width: 5px; height: 5px; border-radius: var(--radius-full); background: var(--signal); }

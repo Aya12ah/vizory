@@ -88,9 +88,9 @@ for t, qs in topics.items():
         st = STATUS.get(q['status'])
         date = fmt_date(q['answered'] or q['submitted'])
         stx = (f'<span class="qa-status{" qa-status-pending" if q["status"] == "Question Published" else ""}">' + bi(*st) + '</span>') if st else ''
-        top = f'<span class="qa-top"><span class="qa-date">{date}</span>{stx}</span>'
+        top = f'<span class="qa-top"><span class="qa-date{" qa-date-updated" if q["status"] == "Published Answer Updated" else ""}">{date}</span>{stx}</span>'
         ref = f'<span class="qa-ref">{esc(q["legal_reference"])}</span>' if q['legal_reference'] else ''
-        meta = f'<span class="qa-meta"><a class="qa-id" href="{q["url"]}" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>{ref}</span>'
+        meta = f'<span class="qa-meta"><a class="qa-id" href="{q["url"]}" target="_blank" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>{ref}</span>'
         o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span>{meta}</summary>')
         o.append('          <div class="qa-body">')
         o.append('            <p class="qa-label">' + bi('Question', 'Spørgsmål') + '</p>')

@@ -83,17 +83,20 @@ for t, qs in topics.items():
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
-        # Row 1: date with a dot (mint: answer updated, amber: not answered yet), the status in brackets after it,
-        # and the ID as a link to ESMA's own version on the right. Unanswered Q&As show the
-        # submission date. Row 2: subject. Row 3 (if any): the legal reference tag.
+        # Row 1: the legal reference tag (left, cut short with an ellipsis until the Q&A is opened)
+        # and the ID as a link to ESMA's own version (right). Row 2: subject. Row 3: date with a dot
+        # (mint: answer updated, amber: not answered yet) and the status in brackets after it.
+        # Unanswered Q&As show the submission date.
         st = STATUS.get(q['status'])
         date = fmt_date(q['answered'] or q['submitted'])
         kind = {'Published Answer Updated': 'updated', 'Question Published': 'pending'}.get(q['status'])
         dot = f' qa-date-{kind}' if kind else ''
         stx = (f'<span class="qa-status qa-status-{kind}">(' + bi(*st) + ')</span>') if st else ''
         link = f'<a class="qa-id" href="{q["url"]}" target="_blank" rel="noopener">{esc(q["id"])}<span aria-hidden="true"> ↗</span></a>'
-        top = f'<span class="qa-top"><span class="qa-date{dot}">{date}</span>{stx}{link}</span>'
-        meta = f'<span class="qa-meta"><span class="qa-ref">{esc(q["legal_reference"])}</span></span>' if q['legal_reference'] else ''
+        lr = esc(q['legal_reference'])
+        ref = f'<span class="qa-ref" title="{lr}">{lr}</span>' if lr else ''
+        top = f'<span class="qa-top">{ref}{link}</span>'
+        meta = f'<span class="qa-meta"><span class="qa-date{dot}">{date}</span>{stx}</span>'
         o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span>{meta}</summary>')
         o.append('          <div class="qa-body">')
         o.append('            <p class="qa-label">' + bi('Question', 'Spørgsmål') + '</p>')

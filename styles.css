@@ -176,15 +176,15 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .qa[open] .qa-subject { color: var(--signal-text); }
 /* Hover only where there is a real pointer: on touch screens :hover sticks after a tap. */
 @media (hover: hover) and (pointer: fine) { .qa summary:hover .qa-subject { color: var(--signal-text); } }
-.qa-top { display: flex; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-/* Tags hang 7px (their padding) outside the column, so their text lines up with the title and the date. */
-.doc .qa-id { flex-shrink: 0; margin-left: -7px; font-size: 11px; font-weight: 500; color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--outline); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+.qa-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.4; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+/* Tags hang 7px (their padding) outside the column, so their text lines up with the column edge. */
+.doc .qa-id { flex-shrink: 0; margin: 0 -7px 0 auto; font-size: 11px; font-weight: 500; color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--outline); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
 .qa-status { font-size: 11px; white-space: nowrap; }
 .qa-status::after { content: ""; display: inline-block; vertical-align: middle; width: 5px; height: 5px; margin-left: 10px; border-radius: var(--radius-full); background: currentColor; }
 .qa-status-updated { color: var(--signal-text); }
 .qa-status-pending { color: var(--amber); }
-.qa-meta { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.45; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.qa-ref { margin-left: auto; margin-right: -7px; min-width: 0; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; color: var(--ref-text); background: var(--ref-bg); padding: 2px 7px; border-radius: 5px; }
+.qa-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; line-height: 1.45; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.qa-ref { margin-left: -7px; min-width: 0; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; color: var(--ref-text); background: var(--ref-bg); padding: 2px 7px; border-radius: 5px; }
 .qa[open] .qa-ref { max-width: none; white-space: normal; }
 .qa-body { padding-bottom: var(--space-4); }
 .qa-label { font-size: 13px; line-height: 1.45; font-weight: 500; color: var(--ink) !important; margin-top: var(--space-3) !important; }

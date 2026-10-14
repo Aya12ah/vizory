@@ -118,11 +118,11 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .wm-sm { font-size: 20px; text-decoration: none; }
 .ib[aria-current="page"] { color: var(--signal-text); }
 .people, .reg { padding-block: var(--space-6) var(--space-7); }
-.page-title { font-size: 28px; letter-spacing: -0.02em; }
+.page-title { font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; }
 .people-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: grid; gap: var(--space-5); }
 .person { display: grid; gap: var(--space-2); max-width: 56ch; }
-.person-name { font-size: 17px; }
-.person-bio { font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.person-name { font-size: 17px; line-height: 1.35; }
+.person-bio { font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
 .person-link { font-size: 14px; color: var(--signal-text); text-decoration: none; }
 .person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 720px) {
@@ -132,11 +132,12 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 
 /* MiCA page: a long reading page */
 .mica { padding-block: var(--space-6) var(--space-7); }
+/* Line height falls as text grows: body 1.65, small text 1.55, lede 1.5, headings 1.4 to 1.2. */
 .doc { max-width: 68ch; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
 .doc .page-title { margin-bottom: var(--space-3); }
 .doc .lede { max-width: none; margin-top: var(--space-3); font-size: 17px; }
-.doc h2 { font-size: 21px; letter-spacing: -0.015em; margin-top: var(--space-6); scroll-margin-top: var(--space-4); }
-.doc h3 { font-size: 16px; margin-top: var(--space-4); scroll-margin-top: var(--space-4); }
+.doc h2 { font-size: 21px; line-height: 1.3; letter-spacing: -0.015em; margin-top: var(--space-6); scroll-margin-top: var(--space-4); }
+.doc h3 { font-size: 16px; line-height: 1.4; margin-top: var(--space-4); scroll-margin-top: var(--space-4); }
 .doc p, .doc ul { margin-top: var(--space-2); }
 .doc p:not(.lede):not(.toc-title), .doc li { color: var(--ink-soft); }
 .doc strong { color: var(--ink); font-weight: 500; }
@@ -145,13 +146,13 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .doc li::marker { color: var(--signal-text); }
 .doc a { color: var(--signal-text); text-decoration: none; }
 .doc a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.toc { margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--line); font-size: 14px; }
+.toc { margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--line); font-size: 14px; line-height: 1.55; }
 .toc-title { font-weight: 500; color: var(--ink); }
 .toc ol { margin: var(--space-2) 0 0; padding-left: 1.4em; }
 .toc ol ol { margin: 4px 0 var(--space-2); list-style: lower-alpha; }
 .toc li { margin-top: 4px; color: var(--ink-soft); }
 .toc li::marker { color: var(--ink-soft); }
-.sources { font-size: 14px; }
+.sources { font-size: 14px; line-height: 1.55; }
 @media (max-width: 720px) {
   .mica { padding-block: var(--space-4); }
   .doc h2 { font-size: 19px; margin-top: var(--space-5); }
@@ -162,20 +163,20 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .guide-link:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 
 /* ESMA Q&A page: one closed block per Q&A */
-.qa-source { margin-top: var(--space-3); font-size: 13px; line-height: 1.6; }
+.doc .qa-source { margin-top: var(--space-4); font-size: 13px; line-height: 1.55; }
 .qa-count { color: var(--ink-soft); font-size: 12px; }
 .qa { border-bottom: 1px solid var(--line); scroll-margin-top: var(--space-3); }
 .doc h2 + .qa { margin-top: var(--space-2); }
 .qa summary { cursor: pointer; padding-block: var(--space-3); display: grid; gap: 4px; list-style: none; }
 .qa summary::-webkit-details-marker { display: none; }
-.qa-subject { color: var(--ink); font-weight: 500; }
+.qa-subject { color: var(--ink); font-weight: 500; line-height: 1.4; }
 .qa summary:hover .qa-subject { color: var(--signal-text); }
-.qa-meta { font-size: 13px; color: var(--ink-soft); }
+.qa-meta { font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
 .qa-body { padding-bottom: var(--space-4); }
-.qa-label { font-size: 13px; font-weight: 500; color: var(--ink) !important; margin-top: var(--space-3) !important; }
+.qa-label { font-size: 13px; line-height: 1.45; font-weight: 500; color: var(--ink) !important; margin-top: var(--space-3) !important; }
 .qa-label:first-child { margin-top: 0 !important; }
-.qa-notes { font-size: 13px; color: var(--ink-soft); padding-left: 1.4em; margin-top: var(--space-3); }
-.qa-disclaimer { font-size: 13px; font-style: italic; }
+.qa-notes { font-size: 13px; line-height: 1.55; color: var(--ink-soft); padding-left: 1.4em; margin-top: var(--space-3); }
+.qa-disclaimer { font-size: 13px; line-height: 1.55; font-style: italic; }
 .doc sup { font-size: .7em; line-height: 0; }
 
 /* Regulation pages: topic menu on the left, content on the right; menu on top on phones */

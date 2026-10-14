@@ -14,7 +14,7 @@ frame = open(os.path.join(ROOT, 'mica', 'index.html'), encoding='utf-8').read()
 
 T = 'ESMA Q&amp;As on MiCA · Vizory'
 D = 'All questions and answers on MiCA published by ESMA, grouped by topic, with links to ESMA&#39;s own versions.'
-STATUS = {'Published Answer Updated': ('Answer updated', 'Svar opdateret'),
+STATUS = {'Published Answer Updated': ('Updated', 'Opdateret'),
           'Question Published': ('Not answered yet', 'Ikke besvaret endnu')}
 
 

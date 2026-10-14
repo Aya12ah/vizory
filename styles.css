@@ -158,8 +158,6 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
   .doc .lede { font-size: 16px; }
 }
 
-/* § link to the regulation pages; a text glyph sized like the icons */
-.ib-text span { font: 400 21px/1 var(--sans); }
 .guide-link { color: inherit; text-decoration: none; }
 .guide-link:hover { color: var(--signal-text); text-decoration: underline; text-underline-offset: 3px; }
 

@@ -36,6 +36,18 @@ def sort_key(q):
     return (yy, mm, dd, q['number'])
 
 
+MON_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+MON_DA = ['jan.', 'feb.', 'mar.', 'apr.', 'maj', 'jun.', 'jul.', 'aug.', 'sep.', 'okt.', 'nov.', 'dec.']
+
+
+def fmt_date(d):
+    """'18/02/2026' -> '18 Feb 2026' / '18. feb. 2026' (both languages in the markup)."""
+    if not d or d.count('/') != 2:
+        return ''
+    dd, mm, yy = d.split('/')
+    return f'<time datetime="{yy}-{mm}-{dd}">' + bi(f'{int(dd)} {MON_EN[int(mm) - 1]} {yy}', f'{int(dd)}. {MON_DA[int(mm) - 1]} {yy}') + '</time>'
+
+
 def bi(en, da, tag='span'):
     return f'<{tag} class="en">{en}</{tag}><{tag} class="da" lang="da">{da}</{tag}>'
 
@@ -71,12 +83,13 @@ for t, qs in topics.items():
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
+        # Row 1: date left, status right. Row 2: subject. Row 3: ID, then the legal reference as a tag.
         st = STATUS.get(q['status'])
-        meta = [esc(q['id'])]
-        if q['answered']: meta.append(esc(q['answered']))
-        if q['legal_reference']: meta.append(esc(q['legal_reference']))
-        stx = (' · ' + bi(*st)) if st else ''
-        o.append(f'          <summary><span class="qa-subject">{esc(q["subject"])}</span><span class="qa-meta">{" · ".join(meta)}{stx}</span></summary>')
+        date = fmt_date(q['answered'])
+        stx = (f'<span class="qa-status{" qa-status-pending" if q["status"] == "Question Published" else ""}">' + bi(*st) + '</span>') if st else ''
+        top = f'<span class="qa-top"><span class="qa-date">{date}</span>{stx}</span>' if (date or stx) else ''
+        ref = f'<span class="qa-ref">{esc(q["legal_reference"])}</span>' if q['legal_reference'] else ''
+        o.append(f'          <summary>{top}<span class="qa-subject">{esc(q["subject"])}</span><span class="qa-meta"><span class="qa-id">{esc(q["id"])}</span>{ref}</span></summary>')
         o.append('          <div class="qa-body">')
         o.append('            <p class="qa-label">' + bi('Question', 'Spørgsmål') + '</p>')
         for p in q['question']: o.append(f'            <p>{para(p)}</p>')

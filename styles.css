@@ -170,6 +170,9 @@ html[data-lang="en"] .da, html[data-lang="da"] .en { display: none !important; }
 .qa-count { color: var(--ink-soft); font-size: 12px; }
 .qa { border-bottom: 1px solid var(--line); scroll-margin-top: var(--space-3); }
 .doc h2 + .qa { margin-top: var(--space-2); }
+/* Topic headings stay at the top while their Q&As scroll past; the next topic replaces them. */
+.qa-page h2 { position: sticky; top: 0; z-index: 1; margin-inline: -8px; padding: 10px 8px; background: var(--bg); box-shadow: 0 1px 0 var(--line); }
+.qa-page .qa { scroll-margin-top: 72px; }
 .qa summary { cursor: pointer; padding-block: var(--space-3); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); list-style: none; }
 .qa summary::-webkit-details-marker { display: none; }
 .qa-subject { margin: 3px 0 4px; color: var(--ink); font-weight: 500; line-height: 1.4; }

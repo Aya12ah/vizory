@@ -128,7 +128,11 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   document.addEventListener('toggle', function (e) {
     var d = e.target;
     if (!d.classList || !d.classList.contains('qa') || !d.open) return;
-    if (d.getBoundingClientRect().top < 0) d.scrollIntoView({ block: 'start' });
+    // The topic heading above sticks to the top of the screen, so keep the question below it.
+    var h = d.previousElementSibling;
+    while (h && h.tagName !== 'H2') h = h.previousElementSibling;
+    var offset = h ? h.offsetHeight : 0;
+    if (d.getBoundingClientRect().top < offset) window.scrollBy(0, d.getBoundingClientRect().top - offset - 8);
   }, true);
 
   // Regulation menu: mark the link to the page being shown.

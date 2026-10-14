@@ -80,6 +80,8 @@ o.append('          </ol>')
 o.append('        </nav>')
 for t, qs in topics.items():
     tid = re.sub(r'[^a-z0-9]+', '-', t.lower()).strip('-')
+    # Each topic is its own section, so its sticky heading is pushed away when the next topic arrives.
+    o.append('        <section class="qa-topic">')
     o.append(f'        <h2 id="{tid}" lang="en">{esc(t)}</h2>')
     for q in qs:
         o.append(f'        <details class="qa" name="qa" id="{q["id"].lower().replace("_", "-")}" lang="en">')
@@ -115,6 +117,7 @@ for t, qs in topics.items():
         for p in q['disclaimer']: o.append(f'            <p class="qa-disclaimer">{para(p)}</p>')
         o.append('          </div>')
         o.append('        </details>')
+    o.append('        </section>')
 o.append('      </article>')
 
 page = frame

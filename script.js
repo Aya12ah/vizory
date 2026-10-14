@@ -135,6 +135,51 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     if (d.getBoundingClientRect().top < offset) window.scrollBy(0, d.getBoundingClientRect().top - offset - 8);
   }, true);
 
+  // ESMA Q&A: each topic heading opens a dropdown with all topics (built from the table of
+  // contents), so a reader deep in one topic can jump to another from the sticky heading.
+  var qaPage = document.querySelector('.qa-page');
+  var qaToc = qaPage && qaPage.querySelector('.toc ol');
+  if (qaToc) {
+    var menu = document.createElement('nav');
+    menu.className = 'qa-topic-menu'; menu.id = 'qa-topic-menu'; menu.hidden = true;
+    menu.setAttribute('aria-label', pageLang === 'da' ? 'Emner' : 'Topics');
+    menu.appendChild(qaToc.cloneNode(true));
+    document.body.appendChild(menu);
+    var openBtn = null;
+    var closeMenu = function (focus) {
+      if (!openBtn) return;
+      menu.hidden = true; openBtn.setAttribute('aria-expanded', 'false');
+      if (focus) openBtn.focus();
+      openBtn = null;
+    };
+    qaPage.querySelectorAll('.qa-topic h2').forEach(function (h) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'qa-topic-btn';
+      b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', 'qa-topic-menu');
+      while (h.firstChild) b.appendChild(h.firstChild);
+      b.insertAdjacentHTML('beforeend', '<svg class="qa-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+      h.appendChild(b);
+      b.addEventListener('click', function () {
+        if (openBtn === b) { closeMenu(false); return; }
+        closeMenu(false);
+        var r = h.getBoundingClientRect();
+        menu.style.top = Math.max(r.bottom, 0) + 6 + 'px';
+        menu.style.left = r.left + 'px'; menu.style.width = r.width + 'px';
+        menu.querySelectorAll('a').forEach(function (a) {
+          if (a.getAttribute('href') === '#' + h.id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+        });
+        menu.hidden = false; b.setAttribute('aria-expanded', 'true'); openBtn = b;
+      });
+    });
+    menu.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(false); });
+    document.addEventListener('click', function (e) {
+      if (openBtn && !menu.contains(e.target) && !openBtn.contains(e.target)) closeMenu(false);
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(true); });
+    window.addEventListener('scroll', function () { closeMenu(false); }, { passive: true });
+    window.addEventListener('resize', function () { closeMenu(false); });
+  }
+
   // Regulation menu: mark the link to the page being shown.
   document.querySelectorAll('.reg-nav a').forEach(function (a) {
     if (a.getAttribute('href').replace(/\/$/, '') === path.replace(/\/$/, '')) a.setAttribute('aria-current', 'page');

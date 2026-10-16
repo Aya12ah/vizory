@@ -45,4 +45,4 @@ npm run lint && npm run typecheck && npm run build
 
 ## Deploy
 
-Hosted on Vercel; `vercel.json` selects the Next.js framework. Every push to `main` deploys.
+Hosted on Vercel; `vercel.json` selects the Next.js framework. Changes go to the `preview` branch first (built at https://vizory-git-preview-vizory.vercel.app); once approved, `main` is fast-forwarded to `preview`, and every push to `main` deploys vizory.dk.

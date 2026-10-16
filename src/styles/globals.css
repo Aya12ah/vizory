@@ -1,0 +1,46 @@
+/* Tailwind, set up for the Vizory design system.
+   - No preflight (Tailwind's reset): the site's own base rules in vizory.css set the look.
+   - The theme holds only Vizory's tokens, so utilities like bg-bg, text-ink-soft and rounded-md
+     give the design system's values and follow the light/dark theme (data-theme on <html>).
+   - Spacing uses Tailwind's 4px scale, which matches the design system: space-1..7 are
+     1, 2, 4, 6, 10, 14 and 20 (4, 8, 16, 24, 40, 56 and 80px). */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./vizory.css" layer(components);
+
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-outline: var(--outline);
+  --color-signal: var(--signal);
+  --color-signal-text: var(--signal-text);
+  --color-on-signal: var(--on-signal);
+  --color-mint: var(--mint);
+  --color-signal-dim: var(--signal-dim);
+  --color-ref-text: var(--ref-text);
+  --color-ref-bg: var(--ref-bg);
+  --color-amber: var(--amber);
+  --color-dot: var(--dot);
+
+  --font-*: initial;
+  --font-sans: var(--sans);
+
+  /* Breakpoints of the design system: phone layout up to 720px, two columns from 900px. */
+  --breakpoint-*: initial;
+  --breakpoint-wide: 900px;
+}
+/* Radii are defined here only (not in vizory.css), and the CSS in vizory.css uses them too. */
+@theme {
+  --radius-*: initial;
+  --radius-sm: 2px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-full: 50%;
+}
+@custom-variant phone (@media (max-width: 720px));

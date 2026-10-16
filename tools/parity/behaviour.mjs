@@ -1,0 +1,160 @@
+// Behaviour check: the interactive parts of the site work as before.
+//   node tools/parity/behaviour.mjs <base-url>
+import { chromium } from 'playwright';
+
+const base = process.argv[2];
+if (!base) { console.log('usage: behaviour.mjs <base-url>'); process.exit(2); }
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+let failed = 0;
+function check(name, ok, detail = '') {
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : '  ' + detail}`);
+  if (!ok) failed++;
+}
+async function page(path, { lang = 'en', theme = 'light', locale = 'en-GB', timezoneId = 'UTC' } = {}) {
+  const ctx = await browser.newContext({ locale, timezoneId, reducedMotion: 'reduce' });
+  await ctx.addInitScript(([l, t]) => {
+    // Only on the first load in this context, so a choice made on the page survives navigation.
+    if (sessionStorage.getItem('init')) return;
+    sessionStorage.setItem('init', '1');
+    if (l) localStorage.setItem('vz-lang', l); else localStorage.removeItem('vz-lang');
+    if (t) localStorage.setItem('vz-theme', t);
+  }, [lang, theme]);
+  const p = await ctx.newPage();
+  await p.goto(base + path, { waitUntil: 'networkidle' });
+  return p;
+}
+const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
+
+// Theme toggle
+{
+  const p = await page('/people');
+  check('theme starts light', (await p.getAttribute('html', 'data-theme')) === 'light');
+  check('theme button not pressed', (await p.getAttribute('#themeBtn', 'aria-pressed')) === 'false');
+  await p.click('#themeBtn');
+  check('theme switches to dark', (await p.getAttribute('html', 'data-theme')) === 'dark');
+  check('theme button pressed', (await p.getAttribute('#themeBtn', 'aria-pressed')) === 'true');
+  check('theme button label', (await p.getAttribute('#themeBtn', 'aria-label')) === 'Switch to light mode');
+  check('theme remembered', (await p.evaluate(() => localStorage.getItem('vz-theme'))) === 'dark');
+  await p.reload({ waitUntil: 'networkidle' });
+  check('theme kept after reload', (await p.getAttribute('html', 'data-theme')) === 'dark');
+  await p.context().close();
+}
+// Theme from the clock when nothing is chosen
+{
+  const ctx = await browser.newContext({ timezoneId: 'UTC' });
+  await ctx.addInitScript(() => { localStorage.setItem('vz-lang', 'en'); });
+  const p = await ctx.newPage();
+  await p.clock.setFixedTime(new Date('2026-10-16T22:00:00Z'));
+  await p.goto(base + '/people', { waitUntil: 'networkidle' });
+  check('theme dark at night', (await p.getAttribute('html', 'data-theme')) === 'dark');
+  await ctx.close();
+}
+// Language button
+{
+  const p = await page('/people');
+  check('language button says DA', (await p.textContent('#langBtn')) === 'DA');
+  await Promise.all([p.waitForURL('**/da/people'), p.click('#langBtn')]);
+  check('language button goes to /da/people', clean(p.url()) === '/da/people', p.url());
+  check('language remembered', (await p.evaluate(() => localStorage.getItem('vz-lang'))) === 'da');
+  check('danish page lang', (await p.getAttribute('html', 'lang')) === 'da');
+  check('language button says EN', (await p.textContent('#langBtn')) === 'EN');
+  await Promise.all([p.waitForURL((u) => clean(u.href) === '/people'), p.click('#langBtn')]);
+  check('language button back to /people', clean(p.url()) === '/people', p.url());
+  await p.context().close();
+}
+// Remembered language wins over the address
+{
+  const p = await page('/regulation', { lang: 'da' });
+  await p.waitForURL('**/da/regulation');
+  check('chosen Danish sends /regulation to /da/regulation', clean(p.url()) === '/da/regulation', p.url());
+  await p.context().close();
+}
+// No choice: browser language decides when the location is unknown
+{
+  const p = await page('/mica', { lang: null, locale: 'da-DK' });
+  await p.waitForURL('**/da/mica');
+  check('Danish browser goes to /da/mica', clean(p.url()) === '/da/mica', p.url());
+  await p.context().close();
+  const q = await page('/mica', { lang: null, locale: 'en-US' });
+  await q.waitForTimeout(500);
+  check('English browser stays on /mica', clean(q.url()) === '/mica', q.url());
+  await q.context().close();
+}
+// Email
+{
+  const p = await page('/');
+  const href = await p.getAttribute('.foot a.mail', 'href');
+  const text = await p.textContent('.foot a.mail');
+  check('email link shown', href === 'mailto:' + ['hello', 'vizory.dk'].join('@') && text === ['hello', 'vizory.dk'].join('@'), `${href} ${text}`);
+  check('email visible', await p.isVisible('.foot a.mail'));
+  const html = await (await fetch(base + '/')).text();
+  check('email not in page source', !html.includes(['hello', 'vizory.dk'].join('@')));
+  await p.context().close();
+}
+// Front page: acts
+{
+  const p = await page('/');
+  await p.click('button[data-act="MiCAR"]');
+  check('act opens', await p.isVisible('.act-item.open[data-act="MiCAR"] .act-text'));
+  check('act expanded', (await p.getAttribute('button[data-act="MiCAR"]', 'aria-expanded')) === 'true');
+  check('act link to guide', (await p.getAttribute('.act-item.open .act-link', 'href')) === '/mica');
+  await p.click('button[data-act="PSR"]');
+  check('other act replaces it', (await p.locator('.act-item.open').count()) === 1 && (await p.getAttribute('.act-item.open', 'data-act')) === 'PSR');
+  await p.click('button[data-act="PSR"]');
+  check('act closes on second tap', (await p.locator('.act-item.open').count()) === 0);
+  await p.click('button[data-act="AMLR"]');
+  await p.keyboard.press('Escape');
+  check('act closes on Escape', (await p.locator('.act-item.open').count()) === 0);
+  await p.context().close();
+  const d = await page('/da', { lang: 'da' });
+  await d.click('button[data-act="MiCAR"]');
+  check('danish act link', (await d.getAttribute('.act-item.open .act-link', 'href')) === '/da/mica');
+  await d.context().close();
+}
+// Regulation menu marks the current page
+{
+  const p = await page('/mica-qa');
+  check('reg menu marks current', (await p.getAttribute('.reg-nav a[aria-current="page"]', 'href')) === '/mica-qa');
+  check('header marks regulation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page');
+  await p.context().close();
+}
+// ESMA Q&A
+{
+  const p = await page('/mica-qa', { theme: 'light' });
+  const qa = p.locator('details.qa');
+  check('Q&As listed', (await qa.count()) === 46, String(await qa.count()));
+  await qa.nth(0).locator('summary').click();
+  await qa.nth(1).locator('summary').click();
+  check('one Q&A open at a time', (await p.locator('details.qa[open]').count()) === 1);
+  const btn = p.locator('.qa-topic-btn').nth(1);
+  await btn.scrollIntoViewIfNeeded();
+  await btn.click();
+  check('topic menu opens', await p.isVisible('#qa-topic-menu'));
+  check('topic button expanded', (await btn.getAttribute('aria-expanded')) === 'true');
+  check('menu marks topic', (await p.locator('#qa-topic-menu a[aria-current]').count()) === 1);
+  await p.keyboard.press('Escape');
+  check('topic menu closes on Escape', !(await p.isVisible('#qa-topic-menu')));
+  check('focus back on topic button', await btn.evaluate((b) => document.activeElement === b));
+  await btn.click();
+  const target = await p.locator('#qa-topic-menu a').nth(2).getAttribute('href');
+  await p.locator('#qa-topic-menu a').nth(2).click();
+  await p.waitForTimeout(200);
+  check('menu link jumps to topic', new URL(p.url()).hash === target, p.url());
+  check('menu closes after jump', !(await p.isVisible('#qa-topic-menu')));
+  await btn.scrollIntoViewIfNeeded();
+  await btn.click();
+  await p.mouse.click(5, 400);
+  check('menu closes on outside click', !(await p.isVisible('#qa-topic-menu')));
+  await p.context().close();
+}
+// Location lookup
+{
+  const r = await fetch(base + '/api/geo');
+  const j = await r.json();
+  check('/api/geo answers', r.ok && 'country' in j);
+  check('/api/geo not cached', (r.headers.get('cache-control') || '').includes('no-store'));
+}
+
+await browser.close();
+console.log(failed ? `${failed} check(s) failed` : 'all checks passed');
+process.exitCode = failed ? 1 : 0;

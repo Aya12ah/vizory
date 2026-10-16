@@ -1,5 +1,4 @@
 import { Entry, EntryList } from '@/components/EntryList';
-import { Header } from '@/components/Header';
 import { signalLink } from '@/components/styles';
 import { JsonLd } from '@/components/JsonLd';
 import { dictionary } from '@/i18n/dictionary';
@@ -21,8 +20,6 @@ export function PeoplePage({ lang }: { lang: Lang }) {
   return (
     <>
       <JsonLd data={graph(danny, organisation)} />
-      <Header lang={lang} current="people" />
-      <main>
         <section className="pt-14 pb-20 phone:py-6">
           <h1 className="page-title">{dictionary[lang].people}</h1>
           <EntryList>
@@ -33,7 +30,6 @@ export function PeoplePage({ lang }: { lang: Lang }) {
             ))}
           </EntryList>
         </section>
-      </main>
     </>
   );
 }

@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 import { type Lang, localPath } from '@/i18n/lang';
 import { signalLink } from './styles';
@@ -66,7 +67,7 @@ export function ActScope({ lang }: { lang: Lang }) {
           <div key={key} className={'[grid-area:1/1] grid gap-2 content-start ' + (open === key ? 'visible' : 'invisible')} data-act={key}>
             <p className="text-[14px] font-medium text-ink">{`${key} · ${act.title}`}</p>
             <p className="text-[14px] leading-[1.55] text-ink-soft">{act[lang]}</p>
-            {act.page && <a className={`justify-self-start ${signalLink}`} href={localPath(act.page.href, lang)}>{act.page[lang]}</a>}
+            {act.page && <Link className={`justify-self-start ${signalLink}`} href={localPath(act.page.href, lang)}>{act.page[lang]}</Link>}
           </div>
         ))}
       </aside>

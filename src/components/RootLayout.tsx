@@ -1,9 +1,10 @@
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk } from 'next/font/google';
-import type { ReactNode } from 'react';
+import { type ReactNode, ViewTransition } from 'react';
 import type { Lang } from '@/i18n/lang';
 import { Footer } from './Footer';
+import { Header } from './Header';
 import { SiteEffects } from './SiteEffects';
 import '@/styles/globals.css';
 
@@ -53,7 +54,11 @@ export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode
       </head>
       <body>
         <div className="max-w-[1120px] mx-auto px-(--gutter) min-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] flex flex-col">
-          {children}
+          <Header lang={lang} />
+          {/* Moving between pages crossfades the content; header and footer stay put. */}
+          <ViewTransition default="page">
+            <main>{children}</main>
+          </ViewTransition>
           <Footer lang={lang} />
         </div>
         <SiteEffects />

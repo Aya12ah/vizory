@@ -149,6 +149,23 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('menu closes on outside click', !(await p.isVisible('#qa-topic-menu')));
   await p.context().close();
 }
+// Links between pages of the same language navigate without a full page load, and the header
+// marks the new section.
+{
+  const p = await page('/');
+  await p.evaluate(() => { window.__sameDocument = true; });
+  await Promise.all([p.waitForURL('**/people'), p.click('#peopleBtn')]);
+  check('people link loads without full reload', await p.evaluate(() => window.__sameDocument === true));
+  check('header marks people', (await p.getAttribute('#peopleBtn', 'aria-current')) === 'page');
+  await Promise.all([p.waitForURL('**/regulation'), p.click('#regBtn')]);
+  await Promise.all([p.waitForURL('**/mica'), p.click('main nav a[href="/mica"]')]);
+  check('reg menu link loads without full reload', await p.evaluate(() => window.__sameDocument === true));
+  check('title follows the page', (await p.title()).startsWith('MiCA and CASP authorisation'));
+  check('header marks regulation after navigation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page' && !(await p.getAttribute('#peopleBtn', 'aria-current')));
+  await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('header a[aria-label="vizory, front page"]')]);
+  check('wordmark leaves the header on the front page', (await p.locator('header a[aria-label="vizory, front page"]').count()) === 0);
+  await p.context().close();
+}
 // Location lookup
 {
   const r = await fetch(base + '/api/geo');

@@ -1,7 +1,7 @@
-import { Header } from '@/components/Header';
 import { Entry, EntryList } from '@/components/EntryList';
 import { RegNav, RegSection } from '@/components/RegNav';
 import { dictionary } from '@/i18n/dictionary';
+import Link from 'next/link';
 import { type Lang, localPath } from '@/i18n/lang';
 
 const GUIDES = [
@@ -26,8 +26,6 @@ const GUIDES = [
 export function RegulationPage({ lang }: { lang: Lang }) {
   return (
     <>
-      <Header lang={lang} current="regulation" />
-      <main>
         <RegSection>
           <RegNav lang={lang} current="/regulation" />
           <div>
@@ -35,12 +33,11 @@ export function RegulationPage({ lang }: { lang: Lang }) {
             <EntryList>
               {GUIDES.map((g) => (
                 <Entry key={g.href} text={g.summary[lang]}
-                  title={<a className="text-inherit no-underline hover:text-signal-text hover:underline hover:underline-offset-3" href={localPath(g.href, lang)}>{g.title[lang]}</a>} />
+                  title={<Link className="text-inherit no-underline hover:text-signal-text hover:underline hover:underline-offset-3" href={localPath(g.href, lang)}>{g.title[lang]}</Link>} />
               ))}
             </EntryList>
           </div>
         </RegSection>
-      </main>
     </>
   );
 }

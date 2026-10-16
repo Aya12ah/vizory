@@ -1,4 +1,3 @@
-import { Header } from '@/components/Header';
 import { QaTopics, TopicButton } from '@/components/QaTopics';
 import { QaText } from '@/components/QaText';
 import { RegNav, RegSection } from '@/components/RegNav';
@@ -109,8 +108,6 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
   );
   return (
     <>
-      <Header lang={lang} current="regulation" />
-      <main>
         <RegSection>
           <RegNav lang={lang} current="/mica-qa" />
           <div>
@@ -135,7 +132,6 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
             </article>
           </div>
         </RegSection>
-      </main>
     </>
   );
 }

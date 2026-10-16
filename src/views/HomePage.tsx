@@ -1,5 +1,4 @@
 import { ActScope } from '@/components/ActScope';
-import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/JsonLd';
 import { Wordmark, wordmarkClass } from '@/components/Wordmark';
 import type { Lang } from '@/i18n/lang';
@@ -14,8 +13,6 @@ export function HomePage({ lang }: { lang: Lang }) {
   return (
     <>
       <JsonLd data={graph(organisation, danny)} />
-      <Header lang={lang} wordmark={false} />
-      <main>
         <section>
           <div className="pt-14 pb-20 phone:py-0">
             <h1 className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></h1>
@@ -23,7 +20,6 @@ export function HomePage({ lang }: { lang: Lang }) {
             <ActScope lang={lang} />
           </div>
         </section>
-      </main>
     </>
   );
 }

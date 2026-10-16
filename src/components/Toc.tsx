@@ -1,4 +1,4 @@
-import { GuideNav } from './GuideNav';
+import { ContentsBar, type Section } from './ContentsBar';
 
 /** Table of contents of a guide: [id, label] per heading, with an optional list of subheadings. */
 export type TocItem = [id: string, label: string, children?: TocItem[]];
@@ -13,7 +13,10 @@ function List({ items }: { items: TocItem[] }) {
   );
 }
 
-/** The table of contents, followed by the bar that keeps it at hand further down (GuideNav). */
+const sections = (items: TocItem[], depth = 0): Section[] =>
+  items.flatMap(([id, label, children]) => [{ id, label, depth }, ...(children ? sections(children, depth + 1) : [])]);
+
+/** The table of contents, followed by the bar that keeps it at hand further down (ContentsBar). */
 export function Toc({ title, items }: { title: string; items: TocItem[] }) {
   return (
     <>
@@ -21,7 +24,7 @@ export function Toc({ title, items }: { title: string; items: TocItem[] }) {
         <p className="toc-title">{title}</p>
         <List items={items} />
       </nav>
-      <GuideNav title={title} items={items} />
+      <ContentsBar title={title} sections={sections(items)} />
     </>
   );
 }

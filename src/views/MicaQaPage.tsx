@@ -1,5 +1,6 @@
 import { JsonLd } from '@/components/JsonLd';
-import { QaTopics, TopicButton } from '@/components/QaTopics';
+import { ContentsBar } from '@/components/ContentsBar';
+import { QaList } from '@/components/QaList';
 import { QaText } from '@/components/QaText';
 import { RegNav, RegSection } from '@/components/RegNav';
 import { dictionary } from '@/i18n/dictionary';
@@ -123,16 +124,15 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
                 <p className="toc-title">{dictionary[lang].topics}</p>
                 {toc}
               </nav>
-              <QaTopics topics={all.map((tp) => ({ id: tp.id, title: tp.title, count: tp.items.length }))} label={dictionary[lang].topics}>
+              <ContentsBar title={dictionary[lang].topics} sections={all.map((tp) => ({ id: tp.id, label: tp.title, count: tp.items.length, lang: 'en' }))} />
+              <QaList>
                 {all.map((topic) => (
-                  // Each topic is its own section, so its sticky heading is pushed away when the next topic arrives.
                   <section key={topic.id}>
-                    {/* The topic heading stays at the top while its Q&As scroll past. */}
-                    <h2 id={topic.id} lang="en" className="sticky top-0 z-1 -mx-2 px-2 py-[10px] bg-bg shadow-[0_1px_0_var(--line)] scroll-mt-0"><TopicButton id={topic.id}>{topic.title}</TopicButton></h2>
+                    <h2 id={topic.id} lang="en">{topic.title}</h2>
                     {topic.items.map((q, i) => <QaItem key={q.id} q={q} lang={lang} first={i === 0} />)}
                   </section>
                 ))}
-              </QaTopics>
+              </QaList>
             </article>
           </div>
         </RegSection>

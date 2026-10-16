@@ -20,7 +20,8 @@ const THEMES = ['light', 'dark'];
 const STATES = [
   { name: 'act-open', path: '/', run: (p) => p.click('button[data-act="MiCAR"]') },
   { name: 'qa-open', path: '/mica-qa', run: (p) => p.click('details[name="qa"] summary') },
-  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, run: async (p) => { await p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1).scrollIntoViewIfNeeded(); await p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1).click(); } },
+  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, run: async (p) => { await p.evaluate(() => document.querySelectorAll('section > h2')[1].scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
+  { name: 'contents-menu', path: '/mica', viewportOnly: true, run: async (p) => { await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
 ];
 
 function serve(dir) {

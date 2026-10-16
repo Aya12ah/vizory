@@ -128,32 +128,39 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   await qa.nth(0).locator('summary').click();
   await qa.nth(1).locator('summary').click();
   check('one Q&A open at a time', (await p.locator('details[name="qa"][open]').count()) === 1);
-  const btn = p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1);
-  await btn.scrollIntoViewIfNeeded();
-  await btn.click();
-  check('topic menu opens', await p.isVisible('#qa-topic-menu'));
-  check('topic button expanded', (await btn.getAttribute('aria-expanded')) === 'true');
-  check('menu marks topic', (await p.locator('#qa-topic-menu a[aria-current]').count()) === 1);
+  // The topics are in the shared contents bar (ContentsBar), as on the guides.
+  const bar = p.locator('[data-contents-bar] button');
+  await p.evaluate(() => window.scrollTo(0, 0));
+  await p.waitForTimeout(200);
+  check('topic bar hidden at the top', !(await bar.isVisible()));
+  const second = await p.locator('section > h2').nth(1).getAttribute('id');
+  await p.evaluate((id) => document.getElementById(id).scrollIntoView(), second);
+  await p.waitForTimeout(200);
+  check('topic bar sticks further down', await bar.isVisible());
+  await bar.click();
+  check('topic menu opens', await p.isVisible('#contents-menu'));
+  check('topic bar expanded', (await bar.getAttribute('aria-expanded')) === 'true');
+  check('menu marks topic', (await p.locator('#contents-menu a[aria-current]').getAttribute('href')) === `#${second}`);
+  check('menu shows counts', (await p.locator('#contents-menu li span').count()) === (await p.locator('section > h2').count()));
   await p.keyboard.press('Escape');
-  check('topic menu closes on Escape', !(await p.isVisible('#qa-topic-menu')));
-  check('focus back on topic button', await btn.evaluate((b) => document.activeElement === b));
-  await btn.click();
-  const target = await p.locator('#qa-topic-menu a').nth(2).getAttribute('href');
-  await p.locator('#qa-topic-menu a').nth(2).click();
+  check('topic menu closes on Escape', !(await p.isVisible('#contents-menu')));
+  check('focus back on topic bar', await bar.evaluate((b) => document.activeElement === b));
+  await bar.click();
+  const target = await p.locator('#contents-menu a').nth(2).getAttribute('href');
+  await p.locator('#contents-menu a').nth(2).click();
   await p.waitForTimeout(200);
   check('menu link jumps to topic', new URL(p.url()).hash === target, p.url());
-  check('menu closes after jump', !(await p.isVisible('#qa-topic-menu')));
-  await btn.scrollIntoViewIfNeeded();
-  await btn.click();
+  check('menu closes after jump', !(await p.isVisible('#contents-menu')));
+  await bar.click();
   await p.mouse.click(5, 400);
-  check('menu closes on outside click', !(await p.isVisible('#qa-topic-menu')));
+  check('menu closes on outside click', !(await p.isVisible('#contents-menu')));
   await p.context().close();
 }
 // The guides' contents bar: hidden at the top, sticks once the contents are passed, names the
 // section being read, and its menu jumps to a section with the heading clear of the bar.
 {
   const p = await page('/mica', { theme: 'light' });
-  const bar = p.locator('[data-guide-nav] button');
+  const bar = p.locator('[data-contents-bar] button');
   check('contents bar hidden at the top', !(await bar.isVisible()));
   await p.locator('#prudential-requirements').scrollIntoViewIfNeeded();
   await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
@@ -161,15 +168,15 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('contents bar sticks further down', await bar.isVisible());
   check('contents bar names the section', (await bar.innerText()).includes('Prudential requirements'), await bar.innerText());
   await bar.click();
-  check('contents menu opens', await p.isVisible('#guide-menu'));
+  check('contents menu opens', await p.isVisible('#contents-menu'));
   await p.keyboard.press('Escape');
-  check('contents menu closes on Escape', !(await p.isVisible('#guide-menu')));
+  check('contents menu closes on Escape', !(await p.isVisible('#contents-menu')));
   await bar.click();
-  await p.locator('#guide-menu a[href="#how-we-help"]').click();
+  await p.locator('#contents-menu a[href="#how-we-help"]').click();
   await p.waitForTimeout(300);
   const top = await p.evaluate(() => document.getElementById('how-we-help').getBoundingClientRect().top);
   check('contents link jumps below the bar', top >= 48 && top <= 80, String(top));
-  check('contents menu closes after jump', !(await p.isVisible('#guide-menu')));
+  check('contents menu closes after jump', !(await p.isVisible('#contents-menu')));
   await p.context().close();
 }
 // Links between pages of the same language navigate without a full page load, and the header

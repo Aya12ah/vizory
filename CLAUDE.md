@@ -3,7 +3,7 @@
 - Every change goes to the `preview` branch first, never straight to `main`. Every push to `main` deploys to production (vizory.dk) on Vercel.
   1. Start from `preview`, up to date with `main`: `git fetch origin && git checkout preview && git pull origin preview && git merge origin/main`.
   2. Make the change, check it (`npm run lint && npm run typecheck && npm run build` must pass; for a change that should not alter the look, also run the parity check below), commit and `git push origin preview`.
-  3. Vercel builds it at https://vizory-git-preview-vizory.vercel.app. Give Danny that address and say what to look at.
+  3. Vercel builds it at https://preview.vizory.dk. Give Danny that address and say what to look at.
   4. Only when Danny has said the change is good, move it live: `git checkout main && git merge --ff-only preview && git push origin main`. If preview holds other changes Danny has not approved, ask first.
 - No pull requests, not for `main` either, unless Danny asks for one.
 - Danny is not technical in GitHub: explain results in plain Danish, without Git jargon.

@@ -4,6 +4,10 @@
 import type { Metadata } from 'next';
 import { type Lang, LANGS, SITE_URL, localPath } from '@/i18n/lang';
 
+/** True on Vercel's preview builds (preview.vizory.dk and other branches), never on vizory.dk or locally.
+ *  Previews are kept out of search engines so they never compete with the real pages. */
+export const IS_PREVIEW = process.env.VERCEL_ENV === 'preview';
+
 type Text = Record<Lang, string>;
 export type PageInfo = { path: string; title: Text; description: Text; lastModified: string };
 
@@ -87,6 +91,7 @@ export function pageMetadata(key: PageKey, lang: Lang): Metadata {
       alternateLocale: lang === 'da' ? 'en_GB' : 'da_DK',
     },
     twitter: { card: 'summary_large_image' },
+    ...(IS_PREVIEW ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

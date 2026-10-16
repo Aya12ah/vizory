@@ -19,7 +19,7 @@ export function RegNav({ lang, current }: { lang: Lang; current: string }) {
   const t = dictionary[lang];
   const href = (path: string) => ({ href: localPath(path, lang), 'aria-current': current === path ? ('page' as const) : undefined });
   return (
-    <nav className="text-[14px] grid gap-2 content-start wide:sticky wide:top-6 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation}>
+    <nav className="text-[14px] grid gap-2 content-start wide:self-start wide:sticky wide:top-3 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation}>
       <p><Link className="text-ink font-medium no-underline hover:text-signal-text aria-[current=page]:text-signal-text" {...href('/regulation')}>{t.regulation}</Link></p>
       <p className="mt-2 text-ink font-medium">{t.regNav.topic}</p>
       <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">

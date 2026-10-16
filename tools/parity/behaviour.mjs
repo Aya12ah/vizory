@@ -83,10 +83,10 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
 // Email
 {
   const p = await page('/');
-  const href = await p.getAttribute('.foot a.mail', 'href');
-  const text = await p.textContent('.foot a.mail');
+  const href = await p.getAttribute('footer a', 'href');
+  const text = await p.textContent('footer a');
   check('email link shown', href === 'mailto:' + ['hello', 'vizory.dk'].join('@') && text === ['hello', 'vizory.dk'].join('@'), `${href} ${text}`);
-  check('email visible', await p.isVisible('.foot a.mail'));
+  check('email visible', await p.isVisible('footer a'));
   const html = await (await fetch(base + '/')).text();
   check('email not in page source', !html.includes(['hello', 'vizory.dk'].join('@')));
   await p.context().close();
@@ -95,38 +95,40 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
 {
   const p = await page('/');
   await p.click('button[data-act="MiCAR"]');
-  check('act opens', await p.isVisible('.act-item.open[data-act="MiCAR"] .act-text'));
+  // The open act's description is the only visible block in #actInfo.
+  const openAct = p.locator('#actInfo > [data-act]:visible');
+  check('act opens', (await openAct.count()) === 1 && (await openAct.getAttribute('data-act')) === 'MiCAR');
   check('act expanded', (await p.getAttribute('button[data-act="MiCAR"]', 'aria-expanded')) === 'true');
-  check('act link to guide', (await p.getAttribute('.act-item.open .act-link', 'href')) === '/mica');
+  check('act link to guide', (await openAct.locator('a').getAttribute('href')) === '/mica');
   await p.click('button[data-act="PSR"]');
-  check('other act replaces it', (await p.locator('.act-item.open').count()) === 1 && (await p.getAttribute('.act-item.open', 'data-act')) === 'PSR');
+  check('other act replaces it', (await openAct.count()) === 1 && (await openAct.getAttribute('data-act')) === 'PSR');
   await p.click('button[data-act="PSR"]');
-  check('act closes on second tap', (await p.locator('.act-item.open').count()) === 0);
+  check('act closes on second tap', (await openAct.count()) === 0);
   await p.click('button[data-act="AMLR"]');
   await p.keyboard.press('Escape');
-  check('act closes on Escape', (await p.locator('.act-item.open').count()) === 0);
+  check('act closes on Escape', (await openAct.count()) === 0);
   await p.context().close();
   const d = await page('/da', { lang: 'da' });
   await d.click('button[data-act="MiCAR"]');
-  check('danish act link', (await d.getAttribute('.act-item.open .act-link', 'href')) === '/da/mica');
+  check('danish act link', (await d.locator('#actInfo > [data-act]:visible a').getAttribute('href')) === '/da/mica');
   await d.context().close();
 }
 // Regulation menu marks the current page
 {
   const p = await page('/mica-qa');
-  check('reg menu marks current', (await p.getAttribute('.reg-nav a[aria-current="page"]', 'href')) === '/mica-qa');
+  check('reg menu marks current', (await p.getAttribute('main nav a[aria-current="page"]', 'href')) === '/mica-qa');
   check('header marks regulation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page');
   await p.context().close();
 }
 // ESMA Q&A
 {
   const p = await page('/mica-qa', { theme: 'light' });
-  const qa = p.locator('details.qa');
+  const qa = p.locator('details[name="qa"]');
   check('Q&As listed', (await qa.count()) === 46, String(await qa.count()));
   await qa.nth(0).locator('summary').click();
   await qa.nth(1).locator('summary').click();
-  check('one Q&A open at a time', (await p.locator('details.qa[open]').count()) === 1);
-  const btn = p.locator('.qa-topic-btn').nth(1);
+  check('one Q&A open at a time', (await p.locator('details[name="qa"][open]').count()) === 1);
+  const btn = p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1);
   await btn.scrollIntoViewIfNeeded();
   await btn.click();
   check('topic menu opens', await p.isVisible('#qa-topic-menu'));

@@ -17,6 +17,3 @@ export function otherLangPath(pathname: string): string {
   return '/da' + (path === '/' ? '' : path.replace(/\/$/, ''));
 }
 
-export function langOfPath(pathname: string): Lang {
-  return /^\/da(\/|$)/.test(pathname) ? 'da' : 'en';
-}

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, otherLangPath } from '@/i18n/lang';
 import { pop } from './pop';
+import { iconButton } from './styles';
 
 // The visitor's own choice of language wins and is remembered. Otherwise visitors in Denmark,
 // Greenland and the Faroe Islands who land on an English page are sent to the Danish one (country
@@ -43,5 +44,5 @@ export function LangButton({ lang }: { lang: Lang }) {
     location.href = otherLangPath(location.pathname) + location.hash;
   }
 
-  return <button ref={ref} className="ib" id="langBtn" type="button" aria-label={t.label} onClick={onClick}>{t.text}</button>;
+  return <button ref={ref} className={iconButton} id="langBtn" type="button" aria-label={t.label} onClick={onClick}>{t.text}</button>;
 }

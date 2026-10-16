@@ -1,7 +1,7 @@
 import { ActScope } from '@/components/ActScope';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/JsonLd';
-import { Wordmark } from '@/components/Wordmark';
+import { Wordmark, wordmarkClass } from '@/components/Wordmark';
 import type { Lang } from '@/i18n/lang';
 import { danny, graph, organisation } from '@/lib/schema';
 
@@ -17,8 +17,8 @@ export function HomePage({ lang }: { lang: Lang }) {
       <Header lang={lang} wordmark={false} />
       <main>
         <section>
-          <div className="hero">
-            <h1 className="wm wm-lg"><Wordmark /></h1>
+          <div className="pt-14 pb-20 phone:py-0">
+            <h1 className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></h1>
             <p className="lede">{LEDE[lang]}</p>
             <ActScope lang={lang} />
           </div>

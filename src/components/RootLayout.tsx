@@ -37,7 +37,7 @@ const THEME_SCRIPT = `(function () { var t; try { t = localStorage.getItem('vz-t
 export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode }) {
   return (
     // The theme script sets data-theme before React loads, so the attribute differs from the server HTML.
-    <html lang={lang} data-lang={lang} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,7 +46,7 @@ export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <div className="wrap">
+        <div className="max-w-[1120px] mx-auto px-(--gutter) min-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] flex flex-col">
           {children}
           <Footer lang={lang} />
         </div>

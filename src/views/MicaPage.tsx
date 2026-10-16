@@ -1,6 +1,6 @@
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/JsonLd';
-import { RegNav } from '@/components/RegNav';
+import { RegNav, RegSection } from '@/components/RegNav';
 import MicaDa from '@/content/mica.da.mdx';
 import MicaEn from '@/content/mica.en.mdx';
 import { SITE_URL, type Lang, localPath } from '@/i18n/lang';
@@ -21,14 +21,14 @@ export function MicaPage({ lang }: { lang: Lang }) {
       )} />
       <Header lang={lang} current="regulation" />
       <main>
-        <section className="reg">
+        <RegSection>
           <RegNav lang={lang} current="/mica" />
-          <div className="reg-main">
+          <div>
             <article className="doc">
               <Content />
             </article>
           </div>
-        </section>
+        </RegSection>
       </main>
     </>
   );

@@ -8,7 +8,6 @@ const en = {
   copenhagen: 'Copenhagen',
   frontPage: 'vizory, front page',
   langButton: { label: 'Skift til dansk', text: 'DA' },
-  theme: { toDark: 'Switch to dark mode', toLight: 'Switch to light mode' },
   regNav: {
     topic: 'MiCA and CASP',
     mica: 'Authorisation and compliance',
@@ -23,7 +22,6 @@ const da: typeof en = {
   copenhagen: 'København',
   frontPage: 'vizory, forside',
   langButton: { label: 'Switch to English', text: 'EN' },
-  theme: { toDark: 'Switch to dark mode', toLight: 'Switch to light mode' },
   regNav: {
     topic: 'MiCA og CASP',
     mica: 'Tilladelse og compliance',
@@ -33,4 +31,3 @@ const da: typeof en = {
 };
 
 export const dictionary = { en, da } satisfies Record<Lang, typeof en>;
-export type Dictionary = typeof en;

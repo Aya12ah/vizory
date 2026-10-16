@@ -1,4 +1,6 @@
+import { Entry, EntryList } from '@/components/EntryList';
 import { Header } from '@/components/Header';
+import { signalLink } from '@/components/styles';
 import { JsonLd } from '@/components/JsonLd';
 import { dictionary } from '@/i18n/dictionary';
 import type { Lang } from '@/i18n/lang';
@@ -21,17 +23,15 @@ export function PeoplePage({ lang }: { lang: Lang }) {
       <JsonLd data={graph(danny, organisation)} />
       <Header lang={lang} current="people" />
       <main>
-        <section className="people">
+        <section className="pt-14 pb-20 phone:py-6">
           <h1 className="page-title">{dictionary[lang].people}</h1>
-          <ul className="people-list">
+          <EntryList>
             {PEOPLE.map((p) => (
-              <li className="person" key={p.name}>
-                <h2 className="person-name">{p.name}</h2>
-                <p className="person-bio">{p.bio[lang]}</p>
-                <p><a className="person-link" href={p.linkedin} rel="noopener">LinkedIn</a></p>
-              </li>
+              <Entry key={p.name} title={p.name} text={p.bio[lang]}>
+                <p><a className={signalLink} href={p.linkedin} rel="noopener">LinkedIn</a></p>
+              </Entry>
             ))}
-          </ul>
+          </EntryList>
         </section>
       </main>
     </>

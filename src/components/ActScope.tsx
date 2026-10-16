@@ -1,6 +1,7 @@
 'use client';
 import { Fragment, useEffect, useState } from 'react';
 import { type Lang, localPath } from '@/i18n/lang';
+import { signalLink } from './styles';
 
 // The front page's scope list: the areas Vizory covers and their EU acts. Tap an act to read
 // what it covers; tap it again, or press Escape, to close.
@@ -36,19 +37,19 @@ export function ActScope({ lang }: { lang: Lang }) {
   }, [open]);
 
   return (
-    <div className="scope-wrap">
-      <dl className="scope">
+    <div className="mt-14 grid gap-6 items-start wide:grid-cols-2 wide:gap-10 phone:mt-10">
+      <dl className="m-0 flex flex-col gap-[3px] text-[14px] leading-[1.6]">
         {AREAS.map((area) => (
           <div key={area.en}>
-            <dt>{area[lang]}</dt>
-            <dd>
+            <dt className="inline m-0 text-ink-soft">{area[lang]}</dt>
+            <dd className="inline m-0 text-signal-text before:content-['·'] before:text-dot before:mx-[.45em]">
               {area.acts.map((key, i) => (
                 <Fragment key={key}>
                   {i > 0 && ' '}
-                  <span className="nw">
-                    <button className="act" type="button" data-act={key} aria-controls="actInfo" aria-expanded={open === key}
+                  <span className="whitespace-nowrap">
+                    <button className="[background:none] border-none p-0 [font:inherit] text-inherit cursor-pointer rounded-sm transition-[color] duration-180 ease-[ease] hover:text-ink aria-expanded:text-ink" type="button" data-act={key} aria-controls="actInfo" aria-expanded={open === key}
                       onClick={() => setOpen(open === key ? null : key)}>
-                      <abbr title={ACTS[key].title}>{key}</abbr>
+                      <abbr className="no-underline cursor-pointer" title={ACTS[key].title}>{key}</abbr>
                     </button>
                     {i < area.acts.length - 1 && ','}
                   </span>
@@ -60,12 +61,12 @@ export function ActScope({ lang }: { lang: Lang }) {
       </dl>
       {/* Every description sits in the same grid cell, so the space is reserved for the longest
           one and opening one never moves the page. Only the open one is visible. */}
-      <aside className="act-info" id="actInfo" aria-live="polite">
+      <aside className="grid" id="actInfo" aria-live="polite">
         {Object.entries(ACTS).map(([key, act]) => (
-          <div key={key} className={'act-item' + (open === key ? ' open' : '')} data-act={key}>
-            <p className="act-name">{`${key} · ${act.title}`}</p>
-            <p className="act-text">{act[lang]}</p>
-            {act.page && <a className="act-link" href={localPath(act.page.href, lang)}>{act.page[lang]}</a>}
+          <div key={key} className={'[grid-area:1/1] grid gap-2 content-start ' + (open === key ? 'visible' : 'invisible')} data-act={key}>
+            <p className="text-[14px] font-medium text-ink">{`${key} · ${act.title}`}</p>
+            <p className="text-[14px] leading-[1.55] text-ink-soft">{act[lang]}</p>
+            {act.page && <a className={`justify-self-start ${signalLink}`} href={localPath(act.page.href, lang)}>{act.page[lang]}</a>}
           </div>
         ))}
       </aside>

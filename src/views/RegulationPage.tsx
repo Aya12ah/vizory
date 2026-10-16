@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header';
-import { RegNav } from '@/components/RegNav';
+import { Entry, EntryList } from '@/components/EntryList';
+import { RegNav, RegSection } from '@/components/RegNav';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 
@@ -27,20 +28,18 @@ export function RegulationPage({ lang }: { lang: Lang }) {
     <>
       <Header lang={lang} current="regulation" />
       <main>
-        <section className="reg">
+        <RegSection>
           <RegNav lang={lang} current="/regulation" />
-          <div className="reg-main">
+          <div>
             <h1 className="page-title">{dictionary[lang].regulation}</h1>
-            <ul className="people-list">
+            <EntryList>
               {GUIDES.map((g) => (
-                <li className="person" key={g.href}>
-                  <h2 className="person-name"><a className="guide-link" href={localPath(g.href, lang)}>{g.title[lang]}</a></h2>
-                  <p className="person-bio">{g.summary[lang]}</p>
-                </li>
+                <Entry key={g.href} text={g.summary[lang]}
+                  title={<a className="text-inherit no-underline hover:text-signal-text hover:underline hover:underline-offset-3" href={localPath(g.href, lang)}>{g.title[lang]}</a>} />
               ))}
-            </ul>
+            </EntryList>
           </div>
-        </section>
+        </RegSection>
       </main>
     </>
   );

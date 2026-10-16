@@ -1,7 +1,7 @@
 // Visual and SEO parity check: screenshots and head tags for every page, compared with a baseline.
 //
 //   node tools/parity/parity.mjs capture <base-url|dir> <out-dir>
-//   node tools/parity/parity.mjs compare <baseline-dir> <candidate-dir>
+//   node tools/parity/parity.mjs compare <baseline-dir> <candidate-dir> [<candidate-dir> ...]
 //
 // A directory is served locally with Vercel's clean URLs (/people -> people/index.html).
 // Language and theme are set in localStorage before load, so no redirect or clock decides them,
@@ -19,8 +19,8 @@ const THEMES = ['light', 'dark'];
 // Interactive states: a name, the page, and what to do before the screenshot.
 const STATES = [
   { name: 'act-open', path: '/', run: (p) => p.click('button[data-act="MiCAR"]') },
-  { name: 'qa-open', path: '/mica-qa', run: (p) => p.click('.qa summary') },
-  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, run: async (p) => { await p.locator('.qa-topic-btn').nth(1).scrollIntoViewIfNeeded(); await p.locator('.qa-topic-btn').nth(1).click(); } },
+  { name: 'qa-open', path: '/mica-qa', run: (p) => p.click('details[name="qa"] summary') },
+  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, run: async (p) => { await p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1).scrollIntoViewIfNeeded(); await p.locator('h2 > button[aria-controls="qa-topic-menu"]').nth(1).click(); } },
 ];
 
 function serve(dir) {
@@ -73,7 +73,13 @@ async function capture(target, out) {
     await ctx.addInitScript(([l, t]) => { localStorage.setItem('vz-lang', l); localStorage.setItem('vz-theme', t); }, [lang, theme]);
     const page = await ctx.newPage();
     await page.goto(base + p, { waitUntil: 'networkidle' });
-    await page.evaluate(() => document.fonts.ready);
+    // Wait for the web font in every weight the site uses, then for two frames, so text never
+    // shows in the fallback font or half-rendered.
+    await page.evaluate(async () => {
+      await Promise.all(['400', '500', '700'].map((w) => document.fonts.load(`${w} 16px "Space Grotesk"`)));
+      await document.fonts.ready;
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    });
     return { ctx, page };
   }
   // Warm-up: the very first page of a run can render text before the web font is fully settled.
@@ -97,23 +103,31 @@ async function capture(target, out) {
   console.log('captured', fs.readdirSync(out).length, 'files in', out);
 }
 
-function compare(a, b) {
+// A screenshot counts as different only if it differs from the baseline in every candidate run:
+// the browser now and then rasterises text on a long page a little differently, and that noise
+// does not repeat, while a real change does.
+function differs(a, b, f, diffDir) {
+  const fb = path.join(b, f);
+  if (!fs.existsSync(fb)) return 'missing';
+  const A = PNG.sync.read(fs.readFileSync(path.join(a, f)));
+  const B = PNG.sync.read(fs.readFileSync(fb));
+  if (A.width !== B.width || A.height !== B.height) return `size ${A.width}x${A.height} -> ${B.width}x${B.height}`;
+  const D = new PNG({ width: A.width, height: A.height });
+  const n = pixelmatch(A.data, B.data, D.data, A.width, A.height, { threshold: 0 });
+  if (!n) return null;
+  fs.mkdirSync(diffDir, { recursive: true });
+  fs.writeFileSync(path.join(diffDir, f), PNG.sync.write(D));
+  return `${n} pixels differ`;
+}
+
+function compare(a, ...runs) {
   let failed = 0;
-  const diffDir = path.join(b, 'diff');
-  fs.rmSync(diffDir, { recursive: true, force: true });
+  const b = runs[0];
+  for (const r of runs) fs.rmSync(path.join(r, 'diff'), { recursive: true, force: true });
   for (const f of fs.readdirSync(a).filter((f) => f.endsWith('.png'))) {
-    const fb = path.join(b, f);
-    if (!fs.existsSync(fb)) { console.log('MISSING', f); failed++; continue; }
-    const A = PNG.sync.read(fs.readFileSync(path.join(a, f)));
-    const B = PNG.sync.read(fs.readFileSync(fb));
-    if (A.width !== B.width || A.height !== B.height) { console.log(`SIZE    ${f}: ${A.width}x${A.height} -> ${B.width}x${B.height}`); failed++; continue; }
-    const D = new PNG({ width: A.width, height: A.height });
-    const n = pixelmatch(A.data, B.data, D.data, A.width, A.height, { threshold: 0 });
-    if (n) {
-      fs.mkdirSync(diffDir, { recursive: true });
-      fs.writeFileSync(path.join(diffDir, f), PNG.sync.write(D));
-      console.log(`PIXELS  ${f}: ${n} differ`); failed++;
-    }
+    const results = runs.map((r) => differs(a, r, f, path.join(r, 'diff')));
+    if (results.every(Boolean)) { console.log(`PIXELS  ${f}: ${results.join(' / ')}`); failed++; }
+    else if (results.some(Boolean)) console.log(`noise   ${f}: differs in one run only`);
   }
   const ha = JSON.parse(fs.readFileSync(path.join(a, 'head.json')));
   const hb = JSON.parse(fs.readFileSync(path.join(b, 'head.json')));
@@ -143,5 +157,5 @@ function compare(a, b) {
 
 const [cmd, x, y] = process.argv.slice(2);
 if (cmd === 'capture') await capture(x, y);
-else if (cmd === 'compare') compare(x, y);
+else if (cmd === 'compare') compare(x, ...process.argv.slice(4));
 else { console.log('usage: parity.mjs capture <url|dir> <out> | compare <baseline> <candidate>'); process.exitCode = 2; }

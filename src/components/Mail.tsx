@@ -12,7 +12,7 @@ export function Mail() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- must run in the browser only, never on the server
   useEffect(() => setAddr(rev(USER) + '@' + rev(DOMAIN)), []);
   return (
-    <a className="mail" href={addr ? 'mailto:' + addr : undefined} hidden={!addr}>
+    <a className="text-inherit no-underline transition-[color] duration-180 ease-[ease] hover:text-signal-text hover:underline hover:underline-offset-3" href={addr ? 'mailto:' + addr : undefined} hidden={!addr}>
       {addr}
     </a>
   );

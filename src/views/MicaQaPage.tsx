@@ -1,7 +1,7 @@
 import { Header } from '@/components/Header';
 import { QaTopics, TopicButton } from '@/components/QaTopics';
 import { QaText } from '@/components/QaText';
-import { RegNav } from '@/components/RegNav';
+import { RegNav, RegSection } from '@/components/RegNav';
 import { dictionary } from '@/i18n/dictionary';
 import type { Lang } from '@/i18n/lang';
 import { type QA, downloaded, qaCount, splitDate, topics } from '@/lib/esma-qa';
@@ -28,7 +28,11 @@ const T = {
     date: (d: number, m: string, y: string) => `${d}. ${m} ${y}`,
   },
 };
-const STATUS_KIND: Record<string, string> = { 'Published Answer Updated': 'updated', 'Question Published': 'pending' };
+const STATUS_COLOUR: Record<string, string> = { 'Published Answer Updated': 'text-signal-text', 'Question Published': 'text-amber' };
+// Text styles of a Q&A block. Rows of small grey text: the date and status row, the legal reference row.
+const row = 'flex flex-wrap items-center gap-x-[10px] gap-y-1 text-[12px] leading-[1.4] text-ink-soft tabular-nums';
+const label = 'text-[13px] leading-[1.45] font-medium text-ink';
+const small = 'text-[13px] leading-[1.55]';
 
 function QaDate({ d, lang }: { d: string; lang: Lang }) {
   const parts = splitDate(d);
@@ -54,29 +58,40 @@ function Answer({ paras }: { paras: string[] }) {
 // One closed block per Q&A. Top row: the date, the status if any (mint: answer updated, amber: not
 // answered yet), and the ID as a link to ESMA's own version. Unanswered Q&As show the submission
 // date. Then the subject, and the legal reference, cut short until the Q&A is opened.
-function QaItem({ q, lang }: { q: QA; lang: Lang }) {
+function QaItem({ q, lang, first }: { q: QA; lang: Lang; first: boolean }) {
   const t = T[lang];
   const status = t.status[q.status];
   return (
-    <details className="qa" name="qa" id={q.id.toLowerCase().replace(/_/g, '-')} lang="en">
-      <summary>
-        <span className="qa-top">
-          <span className="qa-date"><QaDate d={q.answered || q.submitted} lang={lang} /></span>
-          {status && <span className={`qa-status qa-status-${STATUS_KIND[q.status]}`}>(<span lang={lang}>{status}</span>)</span>}
-          <a className="qa-id" href={q.url} target="_blank" rel="noopener">{q.id}<span aria-hidden="true"> ↗</span></a>
+    <details className={`group/qa border-b border-line scroll-mt-[72px] ${first ? 'mt-2' : ''}`} name="qa" id={q.id.toLowerCase().replace(/_/g, '-')} lang="en">
+      <summary className="group/sum cursor-pointer py-4 grid grid-cols-[minmax(0,1fr)] gap-2 list-none [&::-webkit-details-marker]:hidden">
+        <span className={row}>
+          <span><QaDate d={q.answered || q.submitted} lang={lang} /></span>
+          {status && (
+            <span className={`text-[11px] whitespace-nowrap before:content-[''] before:inline-block before:align-middle before:size-[5px] before:mr-[10px] before:rounded-full before:bg-current ${STATUS_COLOUR[q.status]}`}>
+              (<span lang={lang}>{status}</span>)
+            </span>
+          )}
+          <a className="shrink-0 ml-auto -mr-[7px] text-[11px] font-medium text-ink-soft shadow-[inset_0_0_0_1px_var(--outline)] px-[7px] py-[2px] rounded-[5px] whitespace-nowrap"
+            href={q.url} target="_blank" rel="noopener">{q.id}<span aria-hidden="true"> ↗</span></a>
         </span>
-        <span className="qa-subject">{q.subject}</span>
-        {q.legal_reference && <span className="qa-meta"><span className="qa-ref" title={q.legal_reference}>{q.legal_reference}</span></span>}
+        <span className="mt-[3px] mb-1 text-ink font-medium leading-[1.4] group-open/qa:text-signal-text pointer-fine:group-hover/sum:text-signal-text">{q.subject}</span>
+        {q.legal_reference && (
+          <span className={`${row} leading-[1.45]`}>
+            {/* Cut short with an ellipsis until the Q&A is opened. */}
+            <span className="-ml-[7px] min-w-0 max-w-[60%] overflow-hidden text-ellipsis whitespace-nowrap text-[11px] font-medium text-ref-text bg-ref-bg px-[7px] py-[2px] rounded-[5px] group-open/qa:max-w-none group-open/qa:whitespace-normal"
+              title={q.legal_reference}>{q.legal_reference}</span>
+          </span>
+        )}
       </summary>
-      <div className="qa-body">
-        <p className="qa-label" lang={lang}>{t.question}</p>
+      <div className="pb-6">
+        <p className={`${label} mt-0`} lang={lang}>{t.question}</p>
         {q.question.map((p, i) => <p key={i}><QaText text={p} /></p>)}
         {q.answer.length > 0 && <>
-          <p className="qa-label" lang={lang}>{t.answer}</p>
+          <p className={`${label} mt-4`} lang={lang}>{t.answer}</p>
           <Answer paras={q.answer} />
         </>}
-        {q.footnotes.length > 0 && <ol className="qa-notes">{q.footnotes.map((n, i) => <li key={i}><QaText text={n} /></li>)}</ol>}
-        {q.disclaimer.map((p, i) => <p className="qa-disclaimer" key={i}><QaText text={p} /></p>)}
+        {q.footnotes.length > 0 && <ol className={`${small} text-ink-soft pl-[1.4em] mt-4`}>{q.footnotes.map((n, i) => <li key={i}><QaText text={n} /></li>)}</ol>}
+        {q.disclaimer.map((p, i) => <p className={`${small} italic`} key={i}><QaText text={p} /></p>)}
       </div>
     </details>
   );
@@ -88,7 +103,7 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
   const toc = (
     <ol>
       {all.map((topic) => (
-        <li key={topic.id}><a href={`#${topic.id}`} lang="en">{topic.title}</a> <span className="qa-count">{topic.items.length}</span></li>
+        <li key={topic.id}><a href={`#${topic.id}`} lang="en">{topic.title}</a> <span className="text-[12px] text-ink-soft">{topic.items.length}</span></li>
       ))}
     </ol>
   );
@@ -96,29 +111,30 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
     <>
       <Header lang={lang} current="regulation" />
       <main>
-        <section className="reg">
+        <RegSection>
           <RegNav lang={lang} current="/mica-qa" />
-          <div className="reg-main">
-            <article className="doc qa-page">
+          <div>
+            <article className="doc">
               <h1 className="page-title">{t.title}</h1>
               <p className="lede">{t.lede}</p>
-              <p className="qa-source">{t.source(qaCount, downloaded(lang))}</p>
+              <p className="mt-6 text-[13px] leading-[1.55]">{t.source(qaCount, downloaded(lang))}</p>
               <nav className="toc" aria-label={dictionary[lang].topics}>
                 <p className="toc-title">{dictionary[lang].topics}</p>
                 {toc}
               </nav>
-              <QaTopics menu={toc} label={dictionary[lang].topics}>
+              <QaTopics topics={all.map((tp) => ({ id: tp.id, title: tp.title, count: tp.items.length }))} label={dictionary[lang].topics}>
                 {all.map((topic) => (
                   // Each topic is its own section, so its sticky heading is pushed away when the next topic arrives.
-                  <section className="qa-topic" key={topic.id}>
-                    <h2 id={topic.id} lang="en"><TopicButton id={topic.id}>{topic.title}</TopicButton></h2>
-                    {topic.items.map((q) => <QaItem key={q.id} q={q} lang={lang} />)}
+                  <section key={topic.id}>
+                    {/* The topic heading stays at the top while its Q&As scroll past. */}
+                    <h2 id={topic.id} lang="en" className="sticky top-0 z-1 -mx-2 px-2 py-[10px] bg-bg shadow-[0_1px_0_var(--line)] scroll-mt-0"><TopicButton id={topic.id}>{topic.title}</TopicButton></h2>
+                    {topic.items.map((q, i) => <QaItem key={q.id} q={q} lang={lang} first={i === 0} />)}
                   </section>
                 ))}
               </QaTopics>
             </article>
           </div>
-        </section>
+        </RegSection>
       </main>
     </>
   );

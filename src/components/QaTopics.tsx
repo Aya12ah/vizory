@@ -10,7 +10,9 @@ import { createPortal } from 'react-dom';
 type Open = { id: string; button: HTMLButtonElement } | null;
 const Ctx = createContext<{ open: Open; toggle: (id: string, button: HTMLButtonElement) => void }>({ open: null, toggle: () => {} });
 
-export function QaTopics({ menu, label, children }: { menu: ReactNode; label: string; children: ReactNode }) {
+type TopicInfo = { id: string; title: string; count: number };
+
+export function QaTopics({ topics, label, children }: { topics: TopicInfo[]; label: string; children: ReactNode }) {
   const [open, setOpen] = useState<Open>(null);
   const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
   const [mounted, setMounted] = useState(false);
@@ -64,21 +66,23 @@ export function QaTopics({ menu, label, children }: { menu: ReactNode; label: st
     };
   }, [open, close]);
 
-  // Mark the topic whose heading opened the menu.
-  useEffect(() => {
-    menuRef.current?.querySelectorAll('a').forEach((a) => {
-      if (open && a.getAttribute('href') === '#' + open.id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
-    });
-  }, [open]);
-
   return (
     <Ctx.Provider value={{ open, toggle }}>
       {children}
       {mounted && createPortal(
-        <nav ref={menuRef} className="qa-topic-menu" id="qa-topic-menu" hidden={!open} aria-label={label}
-          style={{ top: pos.top + 'px', left: pos.left + 'px', width: pos.width + 'px' }}
-          onClick={(e) => { if ((e.target as HTMLElement).closest('a')) close(false); }}>
-          {menu}
+        <nav ref={menuRef} id="qa-topic-menu" hidden={!open} aria-label={label}
+          className="fixed z-2 max-h-[calc(100vh-120px)] overflow-y-auto py-[6px] px-0 bg-panel border border-line rounded-t-none rounded-b-md shadow-[0_8px_24px_rgba(0,0,0,.18)] text-[14px] leading-[1.4]"
+          style={{ top: pos.top + 'px', left: pos.left + 'px', width: pos.width + 'px' }}>
+          <ol className="list-none m-0 p-0">
+            {topics.map((t) => (
+              <li key={t.id} className="flex items-baseline justify-between gap-4">
+                {/* The topic whose heading opened the menu is marked. */}
+                <a href={`#${t.id}`} lang="en" aria-current={open?.id === t.id ? 'true' : undefined} onClick={() => close(false)}
+                  className="flex-1 py-[10px] px-3 text-ink no-underline aria-[current]:text-signal-text pointer-fine:hover:text-signal-text">{t.title}</a>
+                {' '}<span className="text-[12px] text-ink-soft pr-3">{t.count}</span>
+              </li>
+            ))}
+          </ol>
         </nav>,
         document.body,
       )}
@@ -90,10 +94,11 @@ export function TopicButton({ id, children }: { id: string; children: ReactNode 
   const { open, toggle } = useContext(Ctx);
   const ref = useRef<HTMLButtonElement>(null);
   return (
-    <button ref={ref} type="button" className="qa-topic-btn" aria-expanded={open?.id === id} aria-controls="qa-topic-menu"
+    <button ref={ref} type="button" aria-expanded={open?.id === id} aria-controls="qa-topic-menu"
+      className="group flex items-center justify-between gap-2 w-full p-0 border-0 [background:none] [font:inherit] [letter-spacing:inherit] text-inherit text-left cursor-pointer"
       onClick={() => ref.current && toggle(id, ref.current)}>
       {children}
-      <svg className="qa-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      <svg className="shrink-0 size-[14px] text-ink-soft transition-[transform] duration-180 ease-[ease] group-aria-expanded:[transform:rotate(180deg)]" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
     </button>
   );
 }

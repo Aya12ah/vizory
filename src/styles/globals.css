@@ -51,8 +51,8 @@
 }
 @custom-variant phone (@media (max-width: 720px));
 
-/* Page transition (see RootLayout): the old content fades out, then the new content fades in while
-   rising 2px, about 0.35 s in all, so the two never overlap. Header and footer stay put. Browsers
+/* Page transition (see RootLayout): the old content fades out, then the new content fades in,
+   about 0.35 s in all, so the two never overlap. Header and footer stay put. Browsers
    without View Transitions simply show the new page. */
 ::view-transition-old(.page) { animation: 120ms ease-out both vz-fade-out; }
 ::view-transition-new(.page) { animation: 230ms cubic-bezier(.2, 0, 0, 1) 110ms both vz-fade-in; }
@@ -60,7 +60,7 @@
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: 340ms; }
 @keyframes vz-fade-out { to { opacity: 0; } }
-@keyframes vz-fade-in { from { opacity: 0; transform: translateY(2px); } }
+@keyframes vz-fade-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),

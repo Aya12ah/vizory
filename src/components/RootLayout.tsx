@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk } from 'next/font/google';
 import { type ReactNode, ViewTransition } from 'react';
@@ -63,6 +64,7 @@ export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode
         </div>
         <SiteEffects />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

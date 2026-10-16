@@ -20,7 +20,7 @@ export const PAGES = {
       da: 'Compliance-rådgivning om MiCA, betalinger og hvidvask · Vizory',
     },
     description: {
-      en: 'Compliance advisory in Copenhagen for financial firms: MiCA licences, payments, AML and DLT. Applications, mock-inspections and dialogue with the Danish FSA.',
+      en: 'Compliance advisory in Copenhagen for financial firms: MiCA licences, payments, AML and DLT. Applications, mock-inspections and Danish FSA dialogue.',
       da: 'Compliance-rådgivning i København: MiCA-tilladelse, betalinger, hvidvask og DLT. Ansøgninger, mock-inspektioner og dialog med Finanstilsynet.',
     },
     lastModified: '2026-10-16',
@@ -43,8 +43,8 @@ export const PAGES = {
       da: 'CASP-tilladelse efter MiCA: ansøgning og krav · Vizory',
     },
     description: {
-      en: 'What an application for a MiCA licence (CASP authorisation) must contain, how the Danish FSA assesses it, and the compliance requirements that apply afterwards.',
-      da: 'Hvad en ansøgning om CASP-tilladelse efter MiCA skal indeholde, hvordan Finanstilsynet behandler den, og hvilke krav til compliance og governance der gælder bagefter.',
+      en: 'What an application for a MiCA licence (CASP authorisation) must contain, how the Danish FSA assesses it, and the compliance rules that follow.',
+      da: 'Hvad en ansøgning om CASP-tilladelse efter MiCA skal indeholde, hvordan Finanstilsynet behandler den, og hvilke compliance-krav der gælder bagefter.',
     },
     lastModified: '2026-10-16',
   },
@@ -53,7 +53,7 @@ export const PAGES = {
     og: 'regulation',
     title: { en: 'Guides to EU financial regulation · Vizory', da: 'Vejledninger om finansiel regulering · Vizory' },
     description: {
-      en: 'Guides to EU financial regulation from Vizory, starting with MiCA and CASP authorisation.',
+      en: 'Practical guides to EU financial regulation from Vizory, starting with MiCA and CASP authorisation.',
       da: "Vejledninger om EU's finansielle regulering fra Vizory, begyndende med MiCA og CASP-tilladelse.",
     },
     lastModified: '2026-10-16',
@@ -81,6 +81,9 @@ export function pageMetadata(key: PageKey, lang: Lang): Metadata {
   return {
     title: p.title[lang],
     description: p.description[lang],
+    // Author and date of the page, read by LinkedIn's link preview.
+    authors: [{ name: 'Danny Dehghani', url: `${SITE_URL}/people` }],
+    other: { date: p.lastModified },
     alternates: {
       canonical: url,
       languages: { en: absUrl(p.path, 'en'), da: absUrl(p.path, 'da'), 'x-default': absUrl(p.path, 'en') },

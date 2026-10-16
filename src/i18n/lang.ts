@@ -2,7 +2,12 @@
 export const LANGS = ['en', 'da'] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const SITE_URL = 'https://vizory.dk';
+/** True on Vercel's preview builds (preview.vizory.dk and other branches), never on vizory.dk or locally. */
+export const IS_PREVIEW = process.env.VERCEL_ENV === 'preview';
+
+/** The site's address. Preview builds point their links, sharing images and canonical tags at
+ *  preview.vizory.dk, so the sharing preview can be tested there before a change goes live. */
+export const SITE_URL = IS_PREVIEW ? 'https://preview.vizory.dk' : 'https://vizory.dk';
 
 /** Path of a page in a language: localPath('/people', 'da') === '/da/people'. */
 export function localPath(path: string, lang: Lang): string {

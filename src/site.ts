@@ -2,11 +2,10 @@
 // (title, canonical, hreflang, Open Graph) and the sitemap are built from this list, so a new page
 // is added here once and gets all of them.
 import type { Metadata } from 'next';
-import { type Lang, LANGS, SITE_URL, localPath } from '@/i18n/lang';
+import { IS_PREVIEW, type Lang, LANGS, SITE_URL, localPath } from '@/i18n/lang';
 
-/** True on Vercel's preview builds (preview.vizory.dk and other branches), never on vizory.dk or locally.
- *  Previews are kept out of search engines so they never compete with the real pages. */
-export const IS_PREVIEW = process.env.VERCEL_ENV === 'preview';
+// Previews are kept out of search engines so they never compete with the real pages.
+export { IS_PREVIEW };
 
 type Text = Record<Lang, string>;
 /** `og` is the file name stem of the page's sharing image in public/og/ (one per language: <og>-en.png, <og>-da.png). */

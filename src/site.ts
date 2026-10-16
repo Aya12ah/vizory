@@ -9,11 +9,13 @@ import { type Lang, LANGS, SITE_URL, localPath } from '@/i18n/lang';
 export const IS_PREVIEW = process.env.VERCEL_ENV === 'preview';
 
 type Text = Record<Lang, string>;
-export type PageInfo = { path: string; title: Text; description: Text; lastModified: string };
+/** `og` is the file name stem of the page's sharing image in public/og/ (one per language: <og>-en.png, <og>-da.png). */
+export type PageInfo = { path: string; og: string; title: Text; description: Text; lastModified: string };
 
 export const PAGES = {
   home: {
     path: '/',
+    og: 'home',
     title: {
       en: 'MiCA, payments and AML compliance advisory · Vizory',
       da: 'Compliance-rådgivning om MiCA, betalinger og hvidvask · Vizory',
@@ -26,6 +28,7 @@ export const PAGES = {
   },
   people: {
     path: '/people',
+    og: 'people',
     title: { en: 'Danny Dehghani, former Danish FSA · Vizory', da: 'Danny Dehghani, tidligere Finanstilsynet · Vizory' },
     description: {
       en: "Danny Dehghani spent nine years at the Danish FSA working on fintech, crypto-assets, payments and DLT, and negotiated MiCA on Denmark's behalf.",
@@ -35,6 +38,7 @@ export const PAGES = {
   },
   mica: {
     path: '/mica',
+    og: 'mica',
     title: {
       en: 'MiCA licence (CASP authorisation): how to apply · Vizory',
       da: 'CASP-tilladelse efter MiCA: ansøgning og krav · Vizory',
@@ -47,6 +51,7 @@ export const PAGES = {
   },
   regulation: {
     path: '/regulation',
+    og: 'regulation',
     title: { en: 'Guides to EU financial regulation · Vizory', da: 'Vejledninger om finansiel regulering · Vizory' },
     description: {
       en: 'Guides to EU financial regulation from Vizory, starting with MiCA and CASP authorisation.',
@@ -56,6 +61,7 @@ export const PAGES = {
   },
   micaQa: {
     path: '/mica-qa',
+    og: 'mica-qa',
     title: { en: 'ESMA MiCA Q&A: every answer by topic · Vizory', da: "ESMA's Q&A om MiCA: alle svar efter emne · Vizory" },
     description: {
       en: "All questions and answers on MiCA published by ESMA, grouped by topic, with links to ESMA's own versions.",
@@ -86,7 +92,7 @@ export function pageMetadata(key: PageKey, lang: Lang): Metadata {
       url,
       title: p.title[lang],
       description: p.description[lang],
-      images: [{ url: `${SITE_URL}/${lang === 'da' ? 'og-da' : 'og'}.png`, width: 1200, height: 630 }],
+      images: [{ url: `${SITE_URL}/og/${p.og}-${lang}.png`, width: 1200, height: 630, alt: p.title[lang] }],
       locale: lang === 'da' ? 'da_DK' : 'en_GB',
       alternateLocale: lang === 'da' ? 'en_GB' : 'da_DK',
     },

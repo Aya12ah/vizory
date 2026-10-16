@@ -16,7 +16,7 @@ export const organisation = (lang: Lang) => ({
   name: 'Vizory',
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/favicon.svg`,
-  image: `${SITE_URL}/og.png`,
+  image: `${SITE_URL}/og/home-en.png`,
   description: ORG_DESCRIPTION[lang],
   address: { '@type': 'PostalAddress', addressLocality: 'Copenhagen', addressCountry: 'DK' },
   areaServed: ['DK', 'EU'],

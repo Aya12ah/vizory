@@ -73,10 +73,10 @@ async function capture(target, out) {
     await ctx.addInitScript(([l, t]) => { localStorage.setItem('vz-lang', l); localStorage.setItem('vz-theme', t); }, [lang, theme]);
     const page = await ctx.newPage();
     await page.goto(base + p, { waitUntil: 'networkidle' });
-    // Wait for the web font in every weight the site uses, then for two frames, so text never
-    // shows in the fallback font or half-rendered.
+    // Wait for every web font the page declares (whatever its family name), then for two frames,
+    // so text never shows in the fallback font or half-rendered.
     await page.evaluate(async () => {
-      await Promise.all(['400', '500', '700'].map((w) => document.fonts.load(`${w} 16px "Space Grotesk"`)));
+      await Promise.all([...document.fonts].map((f) => f.load().catch(() => {})));
       await document.fonts.ready;
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     });

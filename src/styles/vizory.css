@@ -6,7 +6,7 @@
   --signal-dim: rgba(11, 156, 134, 0.12);
   --ref-text: #4B3FB0; --ref-bg: rgba(91, 79, 196, 0.10); --outline: #C3D3CC; --amber: #8A5A00;
   --dot: #000000;
-  --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sans: var(--font-space-grotesk), system-ui, -apple-system, "Segoe UI", sans-serif;
   --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px; --space-5: 40px; --space-6: 56px; --space-7: 80px;
   --gutter: clamp(24px, 4vw, 40px);
   color-scheme: light;

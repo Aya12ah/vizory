@@ -11,6 +11,7 @@ Five pages, each in English and Danish: the front page (`/`, `/da`), People, Reg
 - English and Danish live at separate addresses (`/` and `/da`), so search engines index both. Each page carries only its own language; the texts for both sit side by side in the code.
 - Visitors in Denmark, Greenland and the Faroe Islands who land on an English page are sent to the Danish one (`/api/geo` reads the country from Vercel). The visitor's own choice in the header wins and is remembered.
 - SEO: titles, descriptions, canonical and hreflang links, social preview images (`public/og.png`, `public/og-da.png`), structured data, and a generated `sitemap.xml` and `robots.txt`, all from the list of pages in `src/site.ts`.
+- The font, Space Grotesk, is downloaded from Google Fonts at build time by `next/font` and served from vizory.dk, so visitors' browsers never contact Google.
 - The footer email address is assembled in the browser, so it is not in the page source as plain text.
 
 The planned sitemap is in [docs/sitemap.md](docs/sitemap.md).

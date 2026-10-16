@@ -1,10 +1,20 @@
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
+import { Space_Grotesk } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Lang } from '@/i18n/lang';
 import { Footer } from './Footer';
 import { SiteEffects } from './SiteEffects';
 import '@/styles/globals.css';
+
+// Space Grotesk is downloaded from Google Fonts when the site is built and served from vizory.dk,
+// so visitors' browsers never contact Google.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '700'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+});
 
 export const rootMetadata: Metadata = {
   icons: {
@@ -37,13 +47,9 @@ const THEME_SCRIPT = `(function () { var t; try { t = localStorage.getItem('vz-t
 export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode }) {
   return (
     // The theme script sets data-theme before React loads, so the attribute differs from the server HTML.
-    <html lang={lang} suppressHydrationWarning>
+    <html lang={lang} className={spaceGrotesk.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- kept as before; next/font is a planned follow-up */}
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body>
         <div className="max-w-[1120px] mx-auto px-(--gutter) min-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] flex flex-col">

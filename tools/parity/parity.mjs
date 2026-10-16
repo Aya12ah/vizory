@@ -13,7 +13,7 @@ import { chromium } from 'playwright';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-const PATHS = ['/', '/people', '/regulation', '/mica', '/mica-qa', '/da', '/da/people', '/da/regulation', '/da/mica', '/da/mica-qa'];
+const PATHS = ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/da', '/da/people', '/da/regulation', '/da/mica', '/da/mica-qa', '/da/payments'];
 const VIEWPORTS = { desktop: { width: 1280, height: 800 }, mobile: { width: 390, height: 844 } };
 const THEMES = ['light', 'dark'];
 // Interactive states: a name, the page, and what to do before the screenshot.

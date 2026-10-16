@@ -48,6 +48,19 @@ export const PAGES = {
     },
     lastModified: '2026-10-16',
   },
+  payments: {
+    path: '/payments',
+    og: 'home', // until the payments sharing images exist
+    title: {
+      en: 'Payment institution licence in Denmark: PSD2 to PSD3 · Vizory',
+      da: 'Tilladelse som betalingsinstitut og e-pengeinstitut · Vizory',
+    },
+    description: {
+      en: 'Payment and e-money institution licences from the Danish FSA: which authorisation you need, what the application must contain, and what PSD3 changes.',
+      da: 'Tilladelse som betalingsinstitut eller e-pengeinstitut fra Finanstilsynet: hvilken tilladelse I skal have, hvad ansøgningen kræver, og hvad PSD3 ændrer.',
+    },
+    lastModified: '2026-10-16',
+  },
   regulation: {
     path: '/regulation',
     og: 'regulation',

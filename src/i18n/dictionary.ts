@@ -10,8 +10,9 @@ const en = {
   langButton: { label: 'Skift til dansk', text: 'DA' },
   regNav: {
     topic: 'MiCA and CASP',
-    mica: 'Authorisation and compliance',
+    authorisation: 'Authorisation and compliance',
     qa: 'ESMA Q&As',
+    payments: 'Payments',
   },
   topics: 'Topics',
 };
@@ -24,8 +25,9 @@ const da: typeof en = {
   langButton: { label: 'Switch to English', text: 'EN' },
   regNav: {
     topic: 'MiCA og CASP',
-    mica: 'Tilladelse og compliance',
+    authorisation: 'Tilladelse og compliance',
     qa: 'ESMA\'s spørgsmål og svar',
+    payments: 'Betalinger',
   },
   topics: 'Emner',
 };

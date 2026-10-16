@@ -21,6 +21,14 @@ const GUIDES = [
       da: "Alle de spørgsmål og svar om MiCA, som ESMA har offentliggjort, sorteret efter emne og med links til ESMA's egne versioner.",
     },
   },
+  {
+    href: '/payments',
+    title: { en: 'Payment and e-money institution authorisation', da: 'Tilladelse som betalingsinstitut og e-pengeinstitut' },
+    summary: {
+      en: 'Which authorisation a payment or e-money firm needs, what the application must contain, and what PSD3 and the PSR change.',
+      da: 'Hvilken tilladelse en betalings- eller e-pengevirksomhed skal have, hvad ansøgningen skal indeholde, og hvad PSD3 og PSR ændrer.',
+    },
+  },
 ];
 
 export function RegulationPage({ lang }: { lang: Lang }) {

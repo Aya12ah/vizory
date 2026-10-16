@@ -2,7 +2,7 @@ import { ActScope } from '@/components/ActScope';
 import { JsonLd } from '@/components/JsonLd';
 import { Wordmark, wordmarkClass } from '@/components/Wordmark';
 import type { Lang } from '@/i18n/lang';
-import { danny, graph, organisation } from '@/lib/schema';
+import { danny, graph, organisation, website } from '@/lib/schema';
 
 const LEDE = {
   en: 'We help financial firms with everything from applications, compliance frameworks, compliance operations, mock-inspections and dialogue with national competent authorities.',
@@ -12,11 +12,12 @@ const LEDE = {
 export function HomePage({ lang }: { lang: Lang }) {
   return (
     <>
-      <JsonLd data={graph(organisation, danny)} />
+      <JsonLd data={graph(website, organisation(lang), danny)} />
         <section>
           <div className="pt-14 pb-20 phone:py-0">
-            <h1 className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></h1>
-            <p className="lede">{LEDE[lang]}</p>
+            {/* The wordmark is the logo; the lede is the page's heading for search engines, styled as a lede. */}
+            <p className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></p>
+            <h1 className="lede font-normal text-wrap">{LEDE[lang]}</h1>
             <ActScope lang={lang} />
           </div>
         </section>

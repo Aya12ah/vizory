@@ -1,9 +1,11 @@
+import { JsonLd } from '@/components/JsonLd';
 import { QaTopics, TopicButton } from '@/components/QaTopics';
 import { QaText } from '@/components/QaText';
 import { RegNav, RegSection } from '@/components/RegNav';
 import { dictionary } from '@/i18n/dictionary';
 import type { Lang } from '@/i18n/lang';
 import { type QA, downloaded, qaCount, splitDate, topics } from '@/lib/esma-qa';
+import { graph, regBreadcrumb, webPage } from '@/lib/schema';
 
 const T = {
   en: {
@@ -106,8 +108,10 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
       ))}
     </ol>
   );
+  const page = webPage('/mica-qa', lang, t.title, { about: ['MiCA', 'ESMA Q&A'] });
   return (
     <>
+      <JsonLd data={graph({ ...page, breadcrumb: { '@id': `${page.url}#breadcrumb` } }, regBreadcrumb('/mica-qa', lang, t.title))} />
         <RegSection>
           <RegNav lang={lang} current="/mica-qa" />
           <div>

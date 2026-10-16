@@ -15,53 +15,53 @@ export const PAGES = {
   home: {
     path: '/',
     title: {
-      en: 'Vizory · Financial compliance advisory in Copenhagen',
-      da: 'Vizory · Compliance-rådgivning til finansielle virksomheder i København',
+      en: 'MiCA, payments and AML compliance advisory · Vizory',
+      da: 'Compliance-rådgivning om MiCA, betalinger og hvidvask · Vizory',
     },
     description: {
-      en: 'Compliance advisory for financial firms in payments, crypto-assets (MiCAR), DLT-based capital markets and AML: applications, frameworks, mock-inspections and dialogue with national competent authorities.',
-      da: 'Rådgivning til finansielle virksomheder inden for betalinger, kryptoaktiver (MiCAR), DLT-baserede kapitalmarkeder og hvidvask: ansøgninger, compliance frameworks, mock-inspektioner og dialog med nationale kompetente myndigheder.',
+      en: 'Compliance advisory in Copenhagen for financial firms: MiCA licences, payments, AML and DLT. Applications, mock-inspections and dialogue with the Danish FSA.',
+      da: 'Compliance-rådgivning i København: MiCA-tilladelse, betalinger, hvidvask og DLT. Ansøgninger, mock-inspektioner og dialog med Finanstilsynet.',
     },
-    lastModified: '2026-10-12',
+    lastModified: '2026-10-16',
   },
   people: {
     path: '/people',
-    title: { en: 'People · Vizory', da: 'Mennesker · Vizory' },
+    title: { en: 'Danny Dehghani, former Danish FSA · Vizory', da: 'Danny Dehghani, tidligere Finanstilsynet · Vizory' },
     description: {
       en: "Danny Dehghani spent nine years at the Danish FSA working on fintech, crypto-assets, payments and DLT, and negotiated MiCA on Denmark's behalf.",
       da: 'Danny Dehghani har ni års erfaring fra Finanstilsynet med fintech, kryptoaktiver, betalinger og DLT og har forhandlet MiCA på Danmarks vegne.',
     },
-    lastModified: '2026-10-12',
+    lastModified: '2026-10-16',
   },
   mica: {
     path: '/mica',
     title: {
-      en: 'MiCA and CASP authorisation: application, compliance and governance · Vizory',
-      da: 'MiCA og CASP-tilladelse: ansøgning, compliance og governance · Vizory',
+      en: 'MiCA licence (CASP authorisation): how to apply · Vizory',
+      da: 'CASP-tilladelse efter MiCA: ansøgning og krav · Vizory',
     },
     description: {
-      en: 'What an application for CASP authorisation under MiCA must contain, how the Danish FSA assesses it, and the compliance and governance requirements that apply afterwards.',
+      en: 'What an application for a MiCA licence (CASP authorisation) must contain, how the Danish FSA assesses it, and the compliance requirements that apply afterwards.',
       da: 'Hvad en ansøgning om CASP-tilladelse efter MiCA skal indeholde, hvordan Finanstilsynet behandler den, og hvilke krav til compliance og governance der gælder bagefter.',
     },
-    lastModified: '2026-10-12',
+    lastModified: '2026-10-16',
   },
   regulation: {
     path: '/regulation',
-    title: { en: 'Regulation · Vizory', da: 'Regulering · Vizory' },
+    title: { en: 'Guides to EU financial regulation · Vizory', da: 'Vejledninger om finansiel regulering · Vizory' },
     description: {
       en: 'Guides to EU financial regulation from Vizory, starting with MiCA and CASP authorisation.',
       da: "Vejledninger om EU's finansielle regulering fra Vizory, begyndende med MiCA og CASP-tilladelse.",
     },
-    lastModified: '2026-10-12',
+    lastModified: '2026-10-16',
   },
   micaQa: {
     path: '/mica-qa',
-    title: { en: 'ESMA Q&As on MiCA · Vizory', da: "ESMA's spørgsmål og svar om MiCA · Vizory" },
+    title: { en: 'ESMA MiCA Q&A: every answer by topic · Vizory', da: "ESMA's Q&A om MiCA: alle svar efter emne · Vizory" },
     description: {
       en: "All questions and answers on MiCA published by ESMA, grouped by topic, with links to ESMA's own versions.",
       da: "Alle spørgsmål og svar om MiCA, som ESMA har offentliggjort, sorteret efter emne og med links til ESMA's egne versioner.",
     },
-    lastModified: '2026-10-12',
+    lastModified: '2026-10-16',
   },
 } satisfies Record<string, PageInfo>;
 

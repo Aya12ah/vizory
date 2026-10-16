@@ -160,7 +160,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   await Promise.all([p.waitForURL('**/regulation'), p.click('#regBtn')]);
   await Promise.all([p.waitForURL('**/mica'), p.click('main nav a[href="/mica"]')]);
   check('reg menu link loads without full reload', await p.evaluate(() => window.__sameDocument === true));
-  check('title follows the page', (await p.title()).startsWith('MiCA and CASP authorisation'));
+  check('title follows the page', (await p.title()).startsWith('MiCA licence (CASP authorisation)'));
   check('header marks regulation after navigation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page' && !(await p.getAttribute('#peopleBtn', 'aria-current')));
   await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('header a[aria-label="vizory, front page"]')]);
   check('wordmark leaves the header on the front page', (await p.locator('header a[aria-label="vizory, front page"]').count()) === 0);

@@ -19,7 +19,7 @@ const PEOPLE = [
 export function PeoplePage({ lang }: { lang: Lang }) {
   return (
     <>
-      <JsonLd data={graph(danny, organisation)} />
+      <JsonLd data={graph(danny, organisation(lang))} />
         <section className="pt-14 pb-20 phone:py-6">
           <h1 className="page-title">{dictionary[lang].people}</h1>
           <EntryList>

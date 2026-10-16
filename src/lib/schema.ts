@@ -27,6 +27,7 @@ export const danny = {
   '@type': 'Person',
   '@id': DANNY_ID,
   name: 'Danny Dehghani',
+  jobTitle: 'Founder',
   url: `${SITE_URL}/people`,
   sameAs: ['https://www.linkedin.com/in/danny-dehghani-84559436'],
   worksFor: { '@id': ORG_ID },

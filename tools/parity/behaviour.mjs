@@ -149,6 +149,29 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('menu closes on outside click', !(await p.isVisible('#qa-topic-menu')));
   await p.context().close();
 }
+// The guides' contents bar: hidden at the top, sticks once the contents are passed, names the
+// section being read, and its menu jumps to a section with the heading clear of the bar.
+{
+  const p = await page('/mica', { theme: 'light' });
+  const bar = p.locator('[data-guide-nav] button');
+  check('contents bar hidden at the top', !(await bar.isVisible()));
+  await p.locator('#prudential-requirements').scrollIntoViewIfNeeded();
+  await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
+  await p.waitForTimeout(200);
+  check('contents bar sticks further down', await bar.isVisible());
+  check('contents bar names the section', (await bar.innerText()).includes('Prudential requirements'), await bar.innerText());
+  await bar.click();
+  check('contents menu opens', await p.isVisible('#guide-menu'));
+  await p.keyboard.press('Escape');
+  check('contents menu closes on Escape', !(await p.isVisible('#guide-menu')));
+  await bar.click();
+  await p.locator('#guide-menu a[href="#how-we-help"]').click();
+  await p.waitForTimeout(300);
+  const top = await p.evaluate(() => document.getElementById('how-we-help').getBoundingClientRect().top);
+  check('contents link jumps below the bar', top >= 48 && top <= 80, String(top));
+  check('contents menu closes after jump', !(await p.isVisible('#guide-menu')));
+  await p.context().close();
+}
 // Links between pages of the same language navigate without a full page load, and the header
 // marks the new section.
 {

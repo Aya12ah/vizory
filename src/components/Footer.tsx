@@ -20,8 +20,8 @@ export function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav])_&]:hidden">
       <div>
-        {/* -ml-3 lines the button labels up with the address below. */}
-        <div className="flex gap-1 -ml-3 mb-3"><LangButton lang={lang} /><ThemeToggle /></div>
+        {/* -ml-3 lines the theme icon up with the address below. */}
+        <div className="flex gap-1 -ml-3 mb-3"><ThemeToggle /><LangButton lang={lang} /></div>
         <Address lang={lang} />
       </div>
     </footer>

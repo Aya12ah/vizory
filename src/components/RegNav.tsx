@@ -56,8 +56,8 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
         </ul>
       </nav>
       <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address>
-        {/* -ml-3 lines the button labels up with the address below. */}
-        <div className="flex gap-1 -ml-3 mb-3"><LangButton lang={lang} copy /><ThemeToggle copy /></div>
+        {/* -ml-3 lines the theme icon up with the address below. */}
+        <div className="flex gap-1 -ml-3 mb-3"><ThemeToggle copy /><LangButton lang={lang} copy /></div>
         <Address lang={lang} />
       </div>
     </div>

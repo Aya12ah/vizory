@@ -19,7 +19,8 @@ const key = (flow: Flow) => `vz-lead-${flow.id}`;
 function load(flow: Flow): Saved | null { try { return JSON.parse(sessionStorage.getItem(key(flow)) || 'null'); } catch { return null; } }
 function save(flow: Flow, s: Saved | null) { try { if (s) sessionStorage.setItem(key(flow), JSON.stringify(s)); else sessionStorage.removeItem(key(flow)); } catch {} }
 
-export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
+/** `lede` is shown above the form; a step's own `why` takes its place while that step is shown. */
+export function LeadForm({ flow, lang, lede }: { flow: Flow; lang: Lang; lede: string }) {
   const t = dictionary[lang].lead;
   const [answers, setAnswers] = useState<Answers>({});
   const [stepId, setStepId] = useState<string | null>(null);
@@ -82,8 +83,13 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
   const copy = async () => { try { await navigator.clipboard.writeText(mailText()); setCopied(true); } catch {} };
   const restart = () => { save(flow, null); moved.current = true; setAnswers({}); setStepId(null); setDone(false); setCopied(false); };
 
+  // Clearing the answers asks first, so a stray click does not lose them.
+  const startAgain = () => { if (window.confirm(t.restartConfirm)) restart(); };
+
   if (done) {
     return (
+      <>
+      <p className="lede">{lede}</p>
       <div className="mt-10 grid gap-5 max-w-[56ch]" data-lead-done>
         <h2 ref={heading} tabIndex={-1} className="text-[21px] leading-[1.3] outline-none">{t.doneTitle}</h2>
         <p className="text-ink-soft">{t.doneText}</p>
@@ -101,16 +107,24 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
           </div>
         )}
       </div>
+      </>
     );
   }
 
   const only = step.questions.length === 1;
+  const answered = Object.values(answers).some(isAnswered);
   return (
+    <>
+    <p className="lede" data-lead-why>{step.why?.[lang] ?? lede}</p>
     <form className="mt-10 grid gap-6 max-w-[56ch]" noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
       <div className="grid gap-2">
-        <p className="text-[12px] text-ink-soft tabular-nums">{t.step(index + 1, steps.length)}</p>
-        <div className="h-[3px] rounded-pill bg-line overflow-hidden" aria-hidden="true">
-          <div className="h-full bg-signal transition-[width] duration-300 ease-[ease]" style={{ width: `${((index + 1) / steps.length) * 100}%` }} />
+        <p className="flex justify-between items-baseline gap-4 text-[12px] text-ink-soft tabular-nums">
+          {t.step(index + 1, steps.length)}
+          {answered && <button type="button" className="p-0 border-0 [background:none] [font:inherit] text-ink-soft cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button>}
+        </p>
+        {/* One segment per step: the steps done and the current one filled. */}
+        <div className="flex gap-[3px]" aria-hidden="true" data-lead-progress>
+          {steps.map((s, i) => <div key={s.id} className={`h-[4px] flex-1 rounded-pill transition-[background-color] duration-300 ease-[ease] ${i <= index ? 'bg-signal' : 'bg-line'}`} />)}
         </div>
       </div>
       <div className="grid gap-2">
@@ -136,6 +150,7 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
         {last && <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>}
       </div>
     </form>
+    </>
   );
 }
 

@@ -21,8 +21,7 @@ export function LeadPage({ lang }: { lang: Lang }) {
   return (
     <section className="pt-14 pb-20 phone:py-6">
       <h1 className="page-title">{t.title}</h1>
-      <p className="lede">{t.lede}</p>
-      <LeadForm flow={vizoryFlow} lang={lang} />
+      <LeadForm flow={vizoryFlow} lang={lang} lede={t.lede} />
       <p className="mt-14 max-w-[56ch] text-[13px] leading-[1.55] text-ink-soft">{t.privacy} <Mail />.</p>
     </section>
   );

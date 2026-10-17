@@ -50,8 +50,9 @@ export type Question =
    *  from the answer to `countryFrom`, a country question, else from the visitor's country. */
   | (Base & { type: 'phone'; countryFrom?: string });
 
-/** A step is one screen. `summary` shows the answers so far above its questions (e.g. before sending). */
-export type Step = { id: string; title: Text; intro?: Text; showIf?: Condition; summary?: boolean; questions: Question[] };
+/** A step is one screen. `why` says why the step's questions matter (shown above the step);
+ *  `intro` is a short hint under its title; `summary` shows the answers so far above its questions. */
+export type Step = { id: string; title: Text; why?: Text; intro?: Text; showIf?: Condition; summary?: boolean; questions: Question[] };
 
 /** A tag the rules can give: a flag (shown in brackets first in the subject, e.g. urgent) or a track. */
 export type Tag = { id: string; kind: 'flag' | 'track'; label: Text };

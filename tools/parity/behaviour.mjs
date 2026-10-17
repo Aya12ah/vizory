@@ -266,9 +266,14 @@ for (const viewport of [PHONE, undefined]) {
   const pick = (name) => p.getByLabel(name, { exact: true }).check();
   const next = () => p.getByRole('button', { name: 'Næste' }).click();
   check(`lead: starts at the area step (${where})`, (await step()) === 'area');
+  const why = () => p.textContent('[data-lead-why]');
+  check(`lead: the text above says why the step matters (${where})`, (await why()).includes('fem områder'));
+  check(`lead: one progress segment per step (${where})`, (await p.locator('[data-lead-progress] > div').count()) === Number((await p.textContent('form p')).match(/af (\d+)/)[1]));
   await next();
   check(`lead: an unanswered step shows an error (${where})`, (await step()) === 'area' && await p.isVisible('[role=alert]'));
   await pick('Kryptoaktiver (MiCA)'); await pick('Betalinger og e-penge'); await next();
+  check(`lead: the why changes with the step (${where})`, (await why()).includes('hvilken vej sagen skal gå'));
+  check(`lead: segments filled up to the current step (${where})`, (await p.locator('[data-lead-progress] > .bg-signal').count()) === 2);
   await pick('Ny virksomhed uden tilladelse'); await next();
   check(`lead: crypto follow-up for crypto (${where})`, (await step()) === 'crypto');
   await p.locator('input[name=lead-cryptoLicence][value=no]').check(); await next();
@@ -325,6 +330,22 @@ for (const viewport of [PHONE, undefined]) {
   await p.selectOption('#lead-country', 'NO'); await next();
   check('lead: a country the visitor chose wins', (await p.inputValue('select[aria-label=Landekode]')) === 'NO');
   await ctx.close();
+}
+
+// Start again: asks first; cancelling keeps the answers, accepting clears them.
+{
+  const p = await page('/da/get-started', { lang: 'da' });
+  const next = () => p.getByRole('button', { name: 'Næste' }).click();
+  check('lead: no "start again" before anything is answered', !(await p.getByRole('button', { name: 'Start forfra' }).isVisible()));
+  await p.getByLabel('Hvidvask', { exact: true }).check(); await next();
+  p.once('dialog', (d) => d.dismiss());
+  await p.getByRole('button', { name: 'Start forfra' }).click();
+  check('lead: cancelling "start again" keeps the answers', (await p.getAttribute('form[data-lead-step]', 'data-lead-step')) === 'status');
+  p.once('dialog', (d) => d.accept());
+  await p.getByRole('button', { name: 'Start forfra' }).click();
+  await p.waitForTimeout(100);
+  check('lead: "start again" clears the answers', (await p.getAttribute('form[data-lead-step]', 'data-lead-step')) === 'area' && !(await p.isChecked('input[name=lead-area][value=aml]')));
+  await p.context().close();
 }
 
 await browser.close();

@@ -44,6 +44,7 @@ const en = {
     noMail: 'Did your email program not open? Copy the text and send it to',
     readMore: 'Read more while you wait',
     restart: 'Start again',
+    restartConfirm: 'Start again? Your answers so far will be cleared.',
   },
 };
 
@@ -89,6 +90,7 @@ const da: typeof en = {
     noMail: 'Åbnede dit mailprogram ikke? Kopiér teksten, og send den til',
     readMore: 'Læs videre, mens du venter',
     restart: 'Start forfra',
+    restartConfirm: 'Start forfra? Jeres svar indtil nu bliver slettet.',
   },
 };
 

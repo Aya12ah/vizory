@@ -177,6 +177,7 @@ export const vizoryFlow: Flow = {
       questions: [
         { id: 'company', type: 'text', required: true, section: 'company', maxLength: 120, autocomplete: 'organization', label: t('Company name', 'Virksomhedens navn') },
         { id: 'country', type: 'country', required: true, section: 'company', autocomplete: 'country', fromGeo: true, label: t('Country', 'Land') },
+        { id: 'cvr', type: 'text', section: 'company', maxLength: 11, pattern: '\\d{8}', inputMode: 'numeric', showIf: { country: { equals: 'DK' } }, label: t('CVR number (optional)', 'CVR-nummer (valgfri)'), help: t('The Danish company number: 8 digits.', '8 cifre.') },
         {
           id: 'size', type: 'single', section: 'company', label: t('Employees', 'Antal ansatte'),
           options: [o('1-10', '1–10', '1–10'), o('11-50', '11–50', '11–50'), o('51-250', '51–250', '51–250'), o('250+', 'Over 250', 'Over 250')],

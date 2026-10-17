@@ -280,7 +280,7 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
       </fieldset>
     );
   }
-  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: q.maxLength, autoComplete: q.autocomplete ?? (q.type === 'email' ? 'email' : undefined), onChange: (e: { target: { value: string } }) => onChange(e.target.value), ...invalid };
+  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: q.maxLength, inputMode: 'inputMode' in q ? q.inputMode : undefined, autoComplete: q.autocomplete ?? (q.type === 'email' ? 'email' : undefined), onChange: (e: { target: { value: string } }) => onChange(e.target.value), ...invalid };
   return (
     <div className="grid gap-2">
       <label htmlFor={id} className={hideLabel ? 'sr-only' : 'text-[15px] font-medium'}>{label}</label>

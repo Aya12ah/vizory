@@ -284,7 +284,11 @@ for (const viewport of [PHONE, undefined]) {
   await pick('Inden for 3 måneder'); await next();
   check(`lead: autofill hints on the company fields (${where})`, (await p.getAttribute('#lead-company', 'autocomplete')) === 'organization' && (await p.getAttribute('#lead-country', 'autocomplete')) === 'country');
   check(`lead: countries with flags, by Danish name (${where})`, (await p.locator('#lead-country option[value=DK]').textContent()) === '\u{1F1E9}\u{1F1F0} Danmark');
-  await p.fill('#lead-company', 'Firma ApS'); await p.selectOption('#lead-country', 'DK'); await next();
+  await p.fill('#lead-company', 'Firma ApS'); await p.selectOption('#lead-country', 'DK');
+  check(`lead: a CVR number field for a Danish company (${where})`, (await p.getAttribute('#lead-cvr', 'inputmode')) === 'numeric');
+  await p.fill('#lead-cvr', '1234'); await next();
+  check(`lead: a CVR number must have 8 digits (${where})`, (await step()) === 'company' && (await p.textContent('[role=alert]')).includes('skrevet rigtigt'));
+  await p.fill('#lead-cvr', '12345678'); await next();
   await p.reload({ waitUntil: 'networkidle' });
   check(`lead: a reload keeps the step and answers (${where})`, (await step()) === 'contact');
   check(`lead: phone code preset from the company's country (${where})`, (await p.inputValue('select[aria-label=Landekode]')) === 'DK');
@@ -297,7 +301,7 @@ for (const viewport of [PHONE, undefined]) {
   await p.fill('#lead-email', 'ann@firma.dk'); await next();
   const summary = await p.textContent('[data-lead-summary]');
   check(`lead: summary holds the chosen areas only (${where})`, summary.includes('Kryptoaktiver (MiCA)') && summary.includes('Betalinger og e-penge') && !summary.includes('Hvidvask'), summary);
-  check(`lead: summary shows the country and the phone with its code (${where})`, summary.includes('Land: Danmark') && summary.includes('+46 701234567'), summary);
+  check(`lead: summary shows the country and the phone with its code (${where})`, summary.includes('Land: Danmark') && summary.includes('12345678') && summary.includes('+46 701234567'), summary);
   check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).isDisabled());
   await p.getByLabel(/Jeg accepterer/).check();
   await p.getByRole('button', { name: 'Kopiér teksten' }).click();
@@ -321,6 +325,7 @@ for (const viewport of [PHONE, undefined]) {
   await pick('Hvidvask'); await next(); await pick('Ny virksomhed uden tilladelse'); await next();
   await pick('Risikovurdering'); await next(); await pick('Ansøgning eller meddelelse'); await next(); await pick('Inden for 6 måneder'); await next();
   check('lead: country starts at the visitor\'s country from /api/geo', (await p.inputValue('#lead-country')) === 'SE');
+  check('lead: no CVR number field for a company outside Denmark', (await p.locator('#lead-cvr').count()) === 0);
   await p.fill('#lead-company', 'Firma AB'); await next();
   check('lead: phone code follows that country', (await p.inputValue('select[aria-label=Landekode]')) === 'SE');
   await p.getByRole('button', { name: 'Tilbage' }).click();

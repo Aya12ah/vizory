@@ -41,7 +41,10 @@ type Base = {
 export type Question =
   | (Base & { type: 'single'; options: Option[] })
   | (Base & { type: 'multi'; options: Option[] })
-  | (Base & { type: 'text' | 'textarea' | 'email' | 'date'; maxLength?: number; placeholder?: Text })
+  | (Base & { type: 'text' | 'textarea' | 'email' | 'date'; maxLength?: number; placeholder?: Text;
+      /** A text answer must match this regular expression (whole answer, spaces ignored), e.g. a
+       *  CVR number: '\\d{8}'. `inputMode` picks the phone's keyboard, e.g. 'numeric'. */
+      pattern?: string; inputMode?: 'numeric' | 'text' })
   | (Base & { type: 'consent' })
   /** A country from the list, answered as its ISO 3166 code (DK). With `fromGeo` it starts at the
    *  visitor's country as the site's /api/geo sees it, until the visitor chooses one. */
@@ -130,7 +133,7 @@ export function clean(flow: Flow, answers: Answers, now = Date.now()): Answers {
   return out;
 }
 
-export type ErrorCode = 'required' | 'email' | 'date' | 'option' | 'length' | 'phone';
+export type ErrorCode = 'required' | 'email' | 'date' | 'option' | 'length' | 'phone' | 'format';
 
 /** What is wrong with the answers to these questions (by default all shown questions). */
 export function validate(flow: Flow, answers: Answers, questions?: Question[], now = Date.now()): Record<string, ErrorCode> {
@@ -146,6 +149,7 @@ export function validate(flow: Flow, answers: Answers, questions?: Question[], n
     else if (q.type === 'phone' && !(typeof a === 'string' && PHONE.test(a.trim()))) errors[q.id] = 'phone';
     else if (q.type === 'date' && !(typeof a === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(a) && !Number.isNaN(Date.parse(a)))) errors[q.id] = 'date';
     else if ((q.type === 'text' || q.type === 'textarea' || q.type === 'email') && typeof a === 'string' && a.length > (q.maxLength ?? 500)) errors[q.id] = 'length';
+    else if ((q.type === 'text' || q.type === 'textarea') && q.pattern && typeof a === 'string' && !new RegExp(`^(?:${q.pattern})$`).test(a.replace(/\s/g, ''))) errors[q.id] = 'format';
   }
   return errors;
 }
@@ -229,7 +233,9 @@ export function checkFlow(flow: Flow): string[] {
       if (!byId.has(key)) { problems.push(`${where}: unknown question ${key}`); continue; }
       const check = v as Check, opts = optionIds(key);
       const used = 'equals' in check ? [check.equals] : 'in' in check ? check.in : 'includes' in check ? [check.includes] : 'includesAny' in check ? check.includesAny : [];
-      for (const o of used) if (!opts?.includes(o)) problems.push(`${where}: ${key} has no option ${o}`);
+      // A country question has no options: a condition on it names country codes.
+      const known = (o: string) => (byId.get(key)?.type === 'country' ? COUNTRY.test(o) : !!opts?.includes(o));
+      for (const o of used) if (!known(o)) problems.push(`${where}: ${key} has no option ${o}`);
     }
   };
   for (const s of flow.steps) { walk(s.showIf, `step ${s.id}`); for (const q of s.questions) walk(q.showIf, `question ${q.id}`); }
@@ -238,6 +244,7 @@ export function checkFlow(flow: Flow): string[] {
   const sectionIds = new Set(flow.sections.map((x) => x.id));
   for (const q of qs) if (q.section && !sectionIds.has(q.section)) problems.push(`question ${q.id}: unknown section ${q.section}`);
   if (!byId.has(flow.subjectQuestion)) problems.push(`unknown subject question ${flow.subjectQuestion}`);
+  for (const q of qs) if ('pattern' in q && q.pattern) { try { new RegExp(q.pattern); } catch { problems.push(`question ${q.id}: pattern ${q.pattern} is not a regular expression`); } }
   for (const q of qs) if (q.type === 'phone' && q.countryFrom && byId.get(q.countryFrom)?.type !== 'country') problems.push(`question ${q.id}: countryFrom ${q.countryFrom} is not a country question`);
   return problems;
 }

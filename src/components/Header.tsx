@@ -17,15 +17,17 @@ function sectionOf(pathname: string) {
 }
 
 /** Top bar: the small wordmark (except on the front page, which has the large one) and the icon
- *  buttons. It lives in the layout, so it stays in place while the page below it changes. */
+ *  buttons. It lives in the layout, so it stays in place while the page below it changes. From
+ *  900px the regulation pages carry the wordmark in their left menu, which reaches up beside the
+ *  header, so the header lets clicks through except on its own links. */
 export function Header({ lang }: { lang: Lang }) {
   const t = dictionary[lang];
   const section = sectionOf(usePathname());
   const current = (s: string) => (section === s ? ('page' as const) : undefined);
   return (
-    <header className="flex items-center justify-between gap-4 py-6 phone:py-2">
+    <header className="relative z-2 flex items-center justify-between gap-4 py-6 phone:py-2 pointer-events-none [&>*]:pointer-events-auto">
       {section !== 'home' ? (
-        <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
+        <Link className={`${wordmarkClass} text-[20px] no-underline ${section === 'regulation' ? 'wide:invisible' : ''}`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
       ) : (
         <span></span>
       )}

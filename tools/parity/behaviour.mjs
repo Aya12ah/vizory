@@ -181,19 +181,21 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('contents menu closes after jump', !(await p.isVisible('#contents-menu')));
   await p.context().close();
 }
-// From 900px the sections are in the left menu instead of the bar: the menu stays in view, marks
-// the section being read and shows the subsections of the top-level section being read.
+// From 900px the top-level sections are in the left menu instead of the bar, with the wordmark
+// on top: the menu stays in view and marks the section being read (inside a subsection, the
+// section it belongs to).
 {
   const p = await page('/mica', { theme: 'light' });
   const side = p.locator('[data-side-sections]');
   check('no contents bar on a wide screen', !(await p.locator('[data-contents-bar] button').isVisible()));
   check('sections in the left menu', await side.isVisible());
-  check('subsections folded at the top', !(await side.locator('a[href="#prudential-requirements"]').isVisible()));
+  check('no subsections in the left menu', (await side.locator('a[href="#prudential-requirements"]').count()) === 0);
+  check('wordmark in the left menu, not the header', await p.locator('main nav a[aria-label="vizory, front page"]').isVisible() && !(await p.locator('header a[aria-label="vizory, front page"]').isVisible()));
   await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
   await p.waitForTimeout(300);
   check('left menu stays in view', await p.evaluate(() => { const t = document.querySelector('[data-side-sections]').closest('nav').getBoundingClientRect().top; return t >= 0 && t < 40; }));
-  check('left menu marks the section', (await side.locator('a[aria-current]').getAttribute('href')) === '#prudential-requirements');
-  check('subsections unfold for the section', await side.locator('a[href="#general-information"]').isVisible());
+  check('left menu marks the section of a subsection', (await side.locator('a[aria-current]').getAttribute('href')) === '#what-an-application-for-casp-authorisation-must-contain');
+  check('header buttons still work beside the menu', await p.evaluate(() => { const b = document.getElementById('peopleBtn').getBoundingClientRect(); return document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2)?.closest('#peopleBtn') !== null; }) || (await p.evaluate(() => document.getElementById('peopleBtn').getBoundingClientRect().bottom)) < 0);
   await side.locator('a[href="#how-we-help"]').click();
   await p.waitForTimeout(300);
   const top = await p.evaluate(() => document.getElementById('how-we-help').getBoundingClientRect().top);
@@ -216,7 +218,8 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('reg menu link loads without full reload', await p.evaluate(() => window.__sameDocument === true));
   check('title follows the page', (await p.title()).startsWith('MiCA licence (CASP authorisation)'));
   check('header marks regulation after navigation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page' && !(await p.getAttribute('#peopleBtn', 'aria-current')));
-  await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('header a[aria-label="vizory, front page"]')]);
+  // From 900px the regulation pages carry the wordmark in the left menu.
+  await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('main nav a[aria-label="vizory, front page"]')]);
   check('wordmark leaves the header on the front page', (await p.locator('header a[aria-label="vizory, front page"]').count()) === 0);
   await p.context().close();
 }

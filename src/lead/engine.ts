@@ -35,12 +35,19 @@ type Base = {
   showIf?: Condition;
   /** The brief section the answer goes under; questions without one are left out of the brief. */
   section?: string;
+  /** The browser's autofill hint (the HTML autocomplete token), e.g. 'organization' or 'email'. */
+  autocomplete?: string;
 };
 export type Question =
   | (Base & { type: 'single'; options: Option[] })
   | (Base & { type: 'multi'; options: Option[] })
   | (Base & { type: 'text' | 'textarea' | 'email' | 'date'; maxLength?: number; placeholder?: Text })
-  | (Base & { type: 'consent' });
+  | (Base & { type: 'consent' })
+  /** A country from the list, answered as its ISO 3166 code (DK). */
+  | (Base & { type: 'country' })
+  /** A phone number with its country code, answered as '+45 12345678'; the code is preselected
+   *  from the answer to `countryFrom`, a country question, when there is one. */
+  | (Base & { type: 'phone'; countryFrom?: string });
 
 /** A step is one screen. `summary` shows the answers so far above its questions (e.g. before sending). */
 export type Step = { id: string; title: Text; intro?: Text; showIf?: Condition; summary?: boolean; questions: Question[] };
@@ -62,6 +69,9 @@ export type Flow = {
 };
 
 const DAY = 864e5;
+const COUNTRY = /^[A-Z]{2}$/;
+/** '+45 12345678': a country code, a space, then 4 to 15 digits (spaces allowed between them). */
+const PHONE = /^\+\d{1,4} (?:\d ?){4,15}$/;
 
 function holds(check: Check, a: Answer | undefined, now: number): boolean {
   if ('equals' in check) return a === check.equals;
@@ -111,12 +121,14 @@ export function clean(flow: Flow, answers: Answers, now = Date.now()): Answers {
     if (q.type === 'single') { if (typeof a === 'string' && q.options.some((o) => o.id === a)) out[q.id] = a; }
     else if (q.type === 'multi') { if (Array.isArray(a)) { const ok = a.filter((x) => q.options.some((o) => o.id === x)); if (ok.length) out[q.id] = ok; } }
     else if (q.type === 'consent') { if (a === true) out[q.id] = true; }
+    else if (q.type === 'country') { if (typeof a === 'string' && COUNTRY.test(a)) out[q.id] = a; }
+    else if (q.type === 'phone') { if (typeof a === 'string' && PHONE.test(a.trim())) out[q.id] = a.trim(); }
     else if (typeof a === 'string' && a.trim()) out[q.id] = a.trim().slice(0, ('maxLength' in q && q.maxLength) || 500);
   }
   return out;
 }
 
-export type ErrorCode = 'required' | 'email' | 'date' | 'option' | 'length';
+export type ErrorCode = 'required' | 'email' | 'date' | 'option' | 'length' | 'phone';
 
 /** What is wrong with the answers to these questions (by default all shown questions). */
 export function validate(flow: Flow, answers: Answers, questions?: Question[], now = Date.now()): Record<string, ErrorCode> {
@@ -128,6 +140,8 @@ export function validate(flow: Flow, answers: Answers, questions?: Question[], n
     if (q.type === 'single' && !q.options.some((o) => o.id === a)) errors[q.id] = 'option';
     else if (q.type === 'multi' && !(Array.isArray(a) && a.every((x) => q.options.some((o) => o.id === x)))) errors[q.id] = 'option';
     else if (q.type === 'email' && !(typeof a === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.trim()))) errors[q.id] = 'email';
+    else if (q.type === 'country' && !(typeof a === 'string' && COUNTRY.test(a))) errors[q.id] = 'option';
+    else if (q.type === 'phone' && !(typeof a === 'string' && PHONE.test(a.trim()))) errors[q.id] = 'phone';
     else if (q.type === 'date' && !(typeof a === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(a) && !Number.isNaN(Date.parse(a)))) errors[q.id] = 'date';
     else if ((q.type === 'text' || q.type === 'textarea' || q.type === 'email') && typeof a === 'string' && a.length > (q.maxLength ?? 500)) errors[q.id] = 'length';
   }
@@ -148,6 +162,7 @@ export function answerText(flow: Flow, q: Question, a: Answer | undefined, lang:
     return ids.map((id) => q.options.find((o) => o.id === id)?.label[lang] ?? id).join(', ');
   }
   if (q.type === 'consent') return a ? flow.words.yes[lang] : flow.words.no[lang];
+  if (q.type === 'country') { try { return new Intl.DisplayNames([lang], { type: 'region' }).of(a as string) ?? String(a); } catch { return String(a); } }
   return String(a);
 }
 
@@ -221,5 +236,6 @@ export function checkFlow(flow: Flow): string[] {
   const sectionIds = new Set(flow.sections.map((x) => x.id));
   for (const q of qs) if (q.section && !sectionIds.has(q.section)) problems.push(`question ${q.id}: unknown section ${q.section}`);
   if (!byId.has(flow.subjectQuestion)) problems.push(`unknown subject question ${flow.subjectQuestion}`);
+  for (const q of qs) if (q.type === 'phone' && q.countryFrom && byId.get(q.countryFrom)?.type !== 'country') problems.push(`question ${q.id}: countryFrom ${q.countryFrom} is not a country question`);
   return problems;
 }

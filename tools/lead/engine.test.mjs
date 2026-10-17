@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { buildBrief, checkFlow, clean, matches, tagsFor, validate, visibleSteps } from '../../src/lead/engine.ts';
 import { vizoryFlow } from '../../src/lead/flows/vizory.ts';
+import { countries, countryOfNumber, dialCodes, flag } from '../../src/lead/countries.ts';
 
 const t = (s) => ({ en: s, da: s });
 const NOW = Date.parse('2026-10-17');
@@ -62,6 +63,36 @@ test('checkFlow finds mistakes in a description', () => {
   assert.deepEqual(checkFlow(mini), []);
   const bad = { ...mini, rules: [{ when: { kidn: { equals: 'a' } }, tag: 'hot' }, { when: { kind: { includes: 'c' } }, tag: 'nope' }] };
   assert.deepEqual(checkFlow(bad), ['rule 1: unknown question kidn', 'rule 2: kind has no option c', 'rule 2: unknown tag nope']);
+});
+
+test('country and phone answers', () => {
+  const f = { ...mini, steps: [{ id: 's', title: t('S'), questions: [
+    { id: 'land', type: 'country', required: true, section: 's', label: t('Land') },
+    { id: 'tel', type: 'phone', section: 's', label: t('Tel'), countryFrom: 'land' },
+  ] }], rules: [], subjectQuestion: 'land' };
+  assert.deepEqual(validate(f, { land: 'DK', tel: '+45 12 34 56 78' }, undefined, NOW), {});
+  assert.deepEqual(validate(f, { land: 'Denmark', tel: '12345678' }, undefined, NOW), { land: 'option', tel: 'phone' });
+  assert.deepEqual(validate(f, { land: 'DK', tel: '+45 12' }, undefined, NOW), { tel: 'phone' });
+  assert.deepEqual(clean(f, { land: 'dk', tel: ' +45 12345678 ' }, NOW), { tel: '+45 12345678' });
+  const b = buildBrief(f, { land: 'DK', tel: '+45 12345678' }, 'da', NOW);
+  assert.match(b.text, /- Land: Danmark\n- Tel: \+45 12345678/);
+  assert.deepEqual(checkFlow(f), []);
+  const bad = { ...f, steps: [{ ...f.steps[0], questions: [f.steps[0].questions[0], { ...f.steps[0].questions[1], countryFrom: 'tel' }] }] };
+  assert.deepEqual(checkFlow(bad), ['question tel: countryFrom tel is not a country question']);
+});
+
+test('countries: dialling codes, flags and names', () => {
+  assert.equal(countryOfNumber('+4512345678'), 'DK');
+  assert.equal(countryOfNumber('004412345678'.replace(/^00/, '+')), 'GB');
+  assert.equal(countryOfNumber('+35812345'), 'FI');
+  assert.equal(countryOfNumber('+15551234', 'CA'), 'CA');
+  assert.equal(countryOfNumber('+15551234'), 'US');
+  assert.equal(countryOfNumber('+79001234567'), 'RU');
+  assert.equal(flag('DK'), '\u{1F1E9}\u{1F1F0}');
+  assert.equal(dialCodes.DK, '45');
+  const da = countries('da');
+  assert.ok(da.length > 230 && da.some((c) => c.code === 'DK' && c.name === 'Danmark'));
+  assert.ok(da.findIndex((c) => c.code === 'DK') < da.findIndex((c) => c.code === 'SE'));
 });
 
 // Vizory's flow

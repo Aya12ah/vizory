@@ -17,7 +17,8 @@ const button = 'inline-flex items-center justify-center gap-2 rounded-pill px-5 
 export const buttonPrimary = `${button} border-none bg-signal text-on-signal hover:bg-mint`;
 /** A secondary action: an outlined pill. */
 export const buttonSecondary = `${button} border-none bg-transparent text-ink shadow-[inset_0_0_0_1px_var(--outline)] hover:text-signal-text hover:shadow-[inset_0_0_0_1px_var(--signal)]`;
-/** A text, email or date field, or a text area. */
-export const field = 'block w-full box-border font-sans text-[15px] leading-[1.4] text-ink bg-panel border border-solid border-outline rounded-md px-3 py-[10px] focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-0 aria-[invalid=true]:border-amber';
+/** A text, email or date field, a list or a text area, without its width (fieldBase) and full width (field). */
+export const fieldBase = 'block box-border font-sans text-[15px] leading-[1.4] text-ink bg-panel border border-solid border-outline rounded-md px-3 py-[10px] focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-0 aria-[invalid=true]:border-amber';
+export const field = `${fieldBase} w-full`;
 /** One choice (radio or checkbox) as a card; marked when chosen. */
 export const choice = 'flex items-start gap-3 rounded-md border border-solid border-line bg-panel px-4 py-3 text-[15px] leading-[1.4] text-ink cursor-pointer transition-[border-color,background-color] duration-180 ease-[ease] hover:border-outline has-[:checked]:border-signal has-[:checked]:bg-signal-dim has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-signal has-[:focus-visible]:outline-offset-2 [&>input]:mt-[3px] [&>input]:accent-[var(--signal)]';

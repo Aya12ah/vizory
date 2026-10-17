@@ -1,5 +1,5 @@
 // Vizory's "get started" flow, as data for the engine (src/lead/engine.ts): the questions a first
-// meeting with Danny would ask, the conditions that show the follow-up questions per area, the rules
+// meeting with Vizory would ask, the conditions that show the follow-up questions per area, the rules
 // that tag a brief as urgent or put it on a track, and the sections of the brief. To change the
 // flow, change this file; the engine and the form stay as they are.
 import type { Flow, Option, Text } from '../engine';
@@ -165,23 +165,23 @@ export const vizoryFlow: Flow = {
     {
       id: 'company', title: t('About the company', 'Om virksomheden'),
       questions: [
-        { id: 'company', type: 'text', required: true, section: 'company', maxLength: 120, label: t('Company name', 'Virksomhedens navn') },
-        { id: 'country', type: 'text', required: true, section: 'company', maxLength: 80, label: t('Country', 'Land') },
+        { id: 'company', type: 'text', required: true, section: 'company', maxLength: 120, autocomplete: 'organization', label: t('Company name', 'Virksomhedens navn') },
+        { id: 'country', type: 'country', required: true, section: 'company', autocomplete: 'country', label: t('Country', 'Land') },
         {
           id: 'size', type: 'single', section: 'company', label: t('Employees', 'Antal ansatte'),
           options: [o('1-10', '1–10', '1–10'), o('11-50', '11–50', '11–50'), o('51-250', '51–250', '51–250'), o('250+', 'Over 250', 'Over 250')],
         },
-        { id: 'website', type: 'text', section: 'company', maxLength: 200, label: t('Website (optional)', 'Hjemmeside (valgfri)') },
+        { id: 'website', type: 'text', section: 'company', maxLength: 200, autocomplete: 'url', label: t('Website (optional)', 'Hjemmeside (valgfri)') },
       ],
     },
     {
       id: 'contact', title: t('Contact', 'Kontakt'),
       questions: [
-        { id: 'name', type: 'text', required: true, section: 'contact', maxLength: 120, label: t('Name', 'Navn') },
-        { id: 'role', type: 'text', section: 'contact', maxLength: 120, label: t('Role (optional)', 'Rolle (valgfri)') },
-        { id: 'email', type: 'email', required: true, section: 'contact', maxLength: 200, label: t('Email', 'E-mail') },
-        { id: 'phone', type: 'text', section: 'contact', maxLength: 40, label: t('Phone (optional)', 'Telefon (valgfri)') },
-        { id: 'message', type: 'textarea', section: 'contact', maxLength: 2000, label: t('Anything else Danny should know? (optional)', 'Andet, Danny bør vide? (valgfri)') },
+        { id: 'name', type: 'text', required: true, section: 'contact', maxLength: 120, autocomplete: 'name', label: t('Name', 'Navn') },
+        { id: 'role', type: 'text', section: 'contact', maxLength: 120, autocomplete: 'organization-title', label: t('Role (optional)', 'Rolle (valgfri)') },
+        { id: 'email', type: 'email', required: true, section: 'contact', maxLength: 200, autocomplete: 'email', label: t('Email', 'E-mail') },
+        { id: 'phone', type: 'phone', section: 'contact', countryFrom: 'country', autocomplete: 'tel', label: t('Phone (optional)', 'Telefon (valgfri)') },
+        { id: 'message', type: 'textarea', section: 'contact', maxLength: 2000, label: t('Anything else we should know? (optional)', 'Andet, vi bør vide? (valgfri)') },
       ],
     },
     {

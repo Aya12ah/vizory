@@ -1,11 +1,12 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import { type Answer, type Answers, type ErrorCode, type Flow, type Question, buildBrief, labelled, validate, visibleSteps } from '@/lead/engine';
+import { countries, countryOfNumber, dialCodes, flag } from '@/lead/countries';
 import { mailAddress } from './Mail';
-import { buttonPrimary, buttonSecondary, choice, field, signalLink } from './styles';
+import { buttonPrimary, buttonSecondary, choice, field, fieldBase, signalLink } from './styles';
 
 // Shows any question flow (src/lead/flows) one step at a time, from its description alone: the
 // engine decides which steps and questions are shown, checks the answers and builds the brief. The
@@ -109,7 +110,7 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
         </dl>
       )}
       {step.questions.map((q) => (
-        <Field key={q.id} q={q} lang={lang} value={answers[q.id]} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
+        <Field key={q.id} q={q} lang={lang} answers={answers} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
       ))}
       <div className="flex flex-wrap gap-2">
         {index > 0 && <button type="button" className={buttonSecondary} onClick={() => go(index - 1)}>{t.back}</button>}
@@ -122,9 +123,10 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
 
 /** One question of any type, with its error. On a step with a single question its label is only
  *  for screen readers: the step's title says it. */
-function Field({ q, lang, value, error, hideLabel, onChange }: {
-  q: Question; lang: Lang; value: Answer | undefined; error?: string; hideLabel: boolean; onChange: (v: Answer) => void;
+function Field({ q, lang, answers, error, hideLabel, onChange }: {
+  q: Question; lang: Lang; answers: Answers; error?: string; hideLabel: boolean; onChange: (v: Answer) => void;
 }) {
+  const value = answers[q.id];
   const id = `lead-${q.id}`, errId = `${id}-error`;
   const label = q.label[lang];
   const invalid = error ? { 'aria-invalid': true as const, 'aria-describedby': errId } : {};
@@ -160,15 +162,88 @@ function Field({ q, lang, value, error, hideLabel, onChange }: {
       </div>
     );
   }
-  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: q.maxLength, onChange: (e: { target: { value: string } }) => onChange(e.target.value), ...invalid };
+  if (q.type === 'country') {
+    return (
+      <div className="grid gap-2">
+        <label htmlFor={id} className={hideLabel ? 'sr-only' : 'text-[15px] font-medium'}>{label}</label>
+        {help}
+        <CountrySelect id={id} lang={lang} value={typeof value === 'string' ? value : ''} autoComplete={q.autocomplete ?? 'country'} onChange={onChange} invalid={invalid} />
+        {err}
+      </div>
+    );
+  }
+  if (q.type === 'phone') {
+    const from = q.countryFrom ? answers[q.countryFrom] : undefined;
+    return (
+      <fieldset className="m-0 p-0 border-0 min-w-0 grid gap-2" {...invalid}>
+        <legend className={hideLabel ? 'sr-only' : 'p-0 mb-2 text-[15px] font-medium'}>{label}</legend>
+        {help}
+        <Phone id={id} lang={lang} value={typeof value === 'string' ? value : ''} fallback={typeof from === 'string' ? from : lang === 'da' ? 'DK' : ''} autoComplete={q.autocomplete ?? 'tel'} onChange={onChange} />
+        {err}
+      </fieldset>
+    );
+  }
+  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: q.maxLength, autoComplete: q.autocomplete ?? (q.type === 'email' ? 'email' : undefined), onChange: (e: { target: { value: string } }) => onChange(e.target.value), ...invalid };
   return (
     <div className="grid gap-2">
       <label htmlFor={id} className={hideLabel ? 'sr-only' : 'text-[15px] font-medium'}>{label}</label>
       {help}
       {q.type === 'textarea'
         ? <textarea rows={5} {...common} />
-        : <input type={q.type === 'email' ? 'email' : q.type === 'date' ? 'date' : 'text'} autoComplete={q.type === 'email' ? 'email' : undefined} {...common} />}
+        : <input type={q.type === 'email' ? 'email' : q.type === 'date' ? 'date' : 'text'} {...common} />}
       {err}
+    </div>
+  );
+}
+
+/** Every country with its flag, sorted by name in the language; the browser can autofill it. */
+function CountrySelect({ id, lang, value, autoComplete, onChange, invalid }: {
+  id: string; lang: Lang; value: string; autoComplete: string; onChange: (v: string) => void; invalid: object;
+}) {
+  const list = useMemo(() => countries(lang), [lang]);
+  return (
+    <select id={id} className={field} value={value} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} {...invalid}>
+      <option value="" disabled>{dictionary[lang].lead.chooseCountry}</option>
+      {list.map((c) => <option key={c.code} value={c.code}>{`${flag(c.code)} ${c.name}`}</option>)}
+    </select>
+  );
+}
+
+/** A phone number with its country code in front: the code from the number already given, else
+ *  `fallback` (e.g. the company's country). Answered as '+45 12345678', or '' while the number is
+ *  empty. A full number pasted or autofilled (+4512345678, 004512345678) sets the code itself. */
+function Phone({ id, lang, value, fallback, autoComplete, onChange }: {
+  id: string; lang: Lang; value: string; fallback: string; autoComplete: string; onChange: (v: string) => void;
+}) {
+  const t = dictionary[lang].lead;
+  const list = useMemo(() => countries(lang), [lang]);
+  const given = value.match(/^\+(\d{1,4}) (.*)$/);
+  const [country, setCountry] = useState(() => (given && countryOfNumber(given[1], fallback)) || (dialCodes[fallback] ? fallback : ''));
+  const [number, setNumber] = useState(given ? given[2] : '');
+  // Without a country code a typed number is passed on as it is, so the check asks for the code.
+  const emit = (c: string, n: string) => { setNumber(n); onChange(!n.trim() ? '' : c ? `+${dialCodes[c]} ${n.trim()}` : n.trim()); };
+  const typed = (raw: string) => {
+    const intl = raw.trim().replace(/^00/, '+');
+    if (intl.startsWith('+')) {
+      const c = countryOfNumber(intl, country);
+      if (c) { setCountry(c); emit(c, intl.replace(/[^\d]/g, '').slice(dialCodes[c].length)); return; }
+    }
+    emit(country, raw);
+  };
+  return (
+    <div className="flex gap-2">
+      {/* Closed, the list shows only the flag and the code (laid over it); open, the full names. */}
+      <div className="relative shrink-0 w-[7.5rem]">
+        <select className={`${fieldBase} w-full text-transparent [&>option]:text-ink`} aria-label={t.countryCode} value={country} onChange={(e) => { setCountry(e.target.value); emit(e.target.value, number); }}>
+          <option value="" disabled>{t.countryCode}</option>
+          {list.map((c) => <option key={c.code} value={c.code}>{`${flag(c.code)} +${c.dial} ${c.name}`}</option>)}
+        </select>
+        <span className="absolute inset-y-0 left-3 flex items-center text-[15px] text-ink pointer-events-none tabular-nums" aria-hidden="true">
+          {country ? `${flag(country)} +${dialCodes[country]}` : '+'}
+        </span>
+        <svg className="absolute right-3 top-1/2 -translate-y-1/2 size-[12px] text-ink-soft pointer-events-none" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </div>
+      <input id={id} className={`${fieldBase} flex-1 min-w-0`} type="tel" inputMode="tel" aria-label={t.number} autoComplete={autoComplete} value={number} maxLength={24} onChange={(e) => typed(e.target.value)} />
     </div>
   );
 }

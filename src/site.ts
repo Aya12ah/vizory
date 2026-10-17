@@ -108,8 +108,8 @@ export const PAGES = {
       da: 'Kom i gang: beskriv jeres behov for compliance-rådgivning · Vizory',
     },
     description: {
-      en: 'Describe your needs in a few minutes: area, status, timing and the help you need. Danny Dehghani, formerly of the Danish FSA, gets back to you.',
-      da: 'Beskriv jeres behov på få minutter: område, status, tidshorisont og den hjælp, I har brug for. Danny Dehghani, tidligere Finanstilsynet, vender tilbage.',
+      en: 'Describe your needs in a few minutes: area, status, timing and the help you need. Vizory gets back to you within 2 working days.',
+      da: 'Beskriv jeres behov på få minutter: område, status, tidshorisont og den hjælp, I har brug for. Vizory vender tilbage inden for 2 hverdage.',
     },
     lastModified: '2026-10-17',
   },

@@ -288,7 +288,12 @@ for (const viewport of [PHONE, undefined]) {
   check(`lead: a CVR number field for a Danish company (${where})`, (await p.getAttribute('#lead-cvr', 'inputmode')) === 'numeric');
   await p.fill('#lead-cvr', '1234'); await next();
   check(`lead: a CVR number must have 8 digits (${where})`, (await step()) === 'company' && (await p.textContent('[role=alert]')).includes('skrevet rigtigt'));
-  await p.fill('#lead-cvr', '12345678'); await next();
+  await p.route('**/api/cvr?q=12345678', (r) => r.fulfill({ json: { name: 'Firma Registreret ApS', place: 'Vej 1, 2100 København Ø', ended: false } }));
+  await p.fill('#lead-cvr', '12345678');
+  await p.waitForSelector('[data-lead-lookup=found]');
+  check(`lead: the CVR lookup shows the registered company (${where})`, (await p.textContent('[data-lead-lookup]')).includes('Firma Registreret ApS · Vej 1, 2100 København Ø'));
+  check(`lead: the lookup leaves a name already written (${where})`, (await p.inputValue('#lead-company')) === 'Firma ApS');
+  await next();
   await p.reload({ waitUntil: 'networkidle' });
   check(`lead: a reload keeps the step and answers (${where})`, (await step()) === 'contact');
   check(`lead: phone code preset from the company's country (${where})`, (await p.inputValue('select[aria-label=Landekode]')) === 'DK');
@@ -332,6 +337,32 @@ for (const viewport of [PHONE, undefined]) {
   await p.selectOption('#lead-country', 'NO'); await next();
   check('lead: a country the visitor chose wins', (await p.inputValue('select[aria-label=Landekode]')) === 'NO');
   await ctx.close();
+}
+
+// CVR lookup: a found company fills in an empty name; a number not found and a register out of
+// reach say so. The route itself refuses anything but 8 digits.
+{
+  const p = await page('/da/get-started', { lang: 'da' });
+  await p.route('**/api/geo', (r) => r.fulfill({ json: { country: 'DK' } }));
+  await p.route('**/api/cvr?q=*', (r) => { const q = new URL(r.request().url()).searchParams.get('q'); return q === '11111111' ? r.fulfill({ json: { name: 'Eksempel A/S', place: '8000 Aarhus C', ended: false } }) : q === '22222222' ? r.fulfill({ status: 404, json: { error: 'not-found' } }) : r.fulfill({ status: 503, json: { error: 'unavailable' } }); });
+  await p.reload({ waitUntil: 'networkidle' });
+  const next = () => p.getByRole('button', { name: 'Næste' }).click();
+  const pick = (name) => p.getByLabel(name, { exact: true }).check();
+  await pick('Hvidvask'); await next(); await pick('Ny virksomhed uden tilladelse'); await next();
+  await pick('Risikovurdering'); await next(); await pick('Ansøgning eller meddelelse'); await next(); await pick('Inden for 6 måneder'); await next();
+  await p.selectOption('#lead-country', 'DK');
+  await p.fill('#lead-cvr', '1111 1111');
+  await p.waitForSelector('[data-lead-lookup=found]');
+  check('lead: a CVR number found fills in the company name', (await p.inputValue('#lead-company')) === 'Eksempel A/S');
+  await p.fill('#lead-cvr', '22222222');
+  await p.waitForSelector('[data-lead-lookup=not-found]');
+  check('lead: a CVR number not found says so', (await p.textContent('[data-lead-lookup]')).includes('ingen virksomhed'));
+  await p.fill('#lead-cvr', '33333333');
+  await p.waitForSelector('[data-lead-lookup=unavailable]');
+  check('lead: a register out of reach asks for the name', (await p.textContent('[data-lead-lookup]')).includes('Skriv selv navnet'));
+  await p.context().close();
+  const bad = await fetch(base + '/api/cvr?q=123');
+  check('/api/cvr refuses anything but 8 digits', bad.status === 400);
 }
 
 // Start again: asks first; cancelling keeps the answers, accepting clears them.

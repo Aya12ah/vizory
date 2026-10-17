@@ -168,7 +168,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             </dl>
           )}
           {step.questions.map((q) => (
-            <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
+            <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} setAnswer={set} />
           ))}
           {last && <p><button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button></p>}
         </div>
@@ -216,8 +216,8 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
 
 /** One question of any type, with its error. On a step with a single question its label is only
  *  for screen readers: the step's title says it. */
-function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
-  q: Question; lang: Lang; answers: Answers; geo: string; error?: string; hideLabel: boolean; onChange: (v: Answer) => void;
+function Field({ q, lang, answers, geo, error, hideLabel, onChange, setAnswer }: {
+  q: Question; lang: Lang; answers: Answers; geo: string; error?: string; hideLabel: boolean; onChange: (v: Answer) => void; setAnswer: (id: string, v: Answer) => void;
 }) {
   const value = answers[q.id];
   const id = `lead-${q.id}`, errId = `${id}-error`;
@@ -289,7 +289,46 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
         ? <textarea rows={5} {...common} />
         : <input type={q.type === 'email' ? 'email' : q.type === 'date' ? 'date' : 'text'} {...common} />}
       {err}
+      {'lookup' in q && q.lookup && q.pattern && <Lookup lang={lang} value={typeof value === 'string' ? value : ''} pattern={q.pattern} path={q.lookup.path}
+        onFound={(name) => { const f = q.lookup?.fill; if (f && !isAnswered(answers[f])) setAnswer(f, name); }} />}
     </div>
+  );
+}
+
+type Found = { state: 'idle' | 'busy' | 'not-found' | 'unavailable' } | { state: 'found'; name: string; place: string; ended: boolean };
+
+/** Looks an answer up once it is complete (a CVR number at /api/cvr) and says what it found under
+ *  the field; `onFound` gets the name, e.g. to fill in the company name. */
+function Lookup({ lang, value, pattern, path, onFound }: { lang: Lang; value: string; pattern: string; path: string; onFound: (name: string) => void }) {
+  const t = dictionary[lang].lead.lookup;
+  const [found, setFound] = useState<Found>({ state: 'idle' });
+  const q = value.replace(/\s/g, '');
+  const complete = new RegExp(`^(?:${pattern})$`).test(q);
+  const report = useRef(onFound);
+  useEffect(() => { report.current = onFound; });
+  useEffect(() => {
+    if (!complete) return;
+    let live = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the lookup starts when the answer is complete
+    setFound({ state: 'busy' });
+    fetch(`${path}?q=${encodeURIComponent(q)}`)
+      .then(async (r) => ({ ok: r.ok, status: r.status, d: await r.json().catch(() => null) }))
+      .then(({ ok, status, d }) => {
+        if (!live) return;
+        if (ok && d?.name) { setFound({ state: 'found', name: d.name, place: d.place ?? '', ended: !!d.ended }); report.current(d.name); }
+        else setFound({ state: status === 404 ? 'not-found' : 'unavailable' });
+      })
+      .catch(() => { if (live) setFound({ state: 'unavailable' }); });
+    return () => { live = false; };
+  }, [complete, q, path]);
+  if (!complete || found.state === 'idle') return null;
+  return (
+    <p className="text-[13px] text-ink-soft" aria-live="polite" data-lead-lookup={found.state}>
+      {found.state === 'busy' && t.busy}
+      {found.state === 'not-found' && t.notFound}
+      {found.state === 'unavailable' && t.unavailable}
+      {found.state === 'found' && <><span className="text-ink">{found.name}</span>{found.place && ` · ${found.place}`}{found.ended && ` · ${t.ended}`}</>}
+    </p>
   );
 }
 

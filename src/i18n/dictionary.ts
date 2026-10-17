@@ -46,6 +46,12 @@ const en = {
     readMore: 'Read more while you wait',
     restart: 'Start again',
     restartConfirm: 'Start again? Your answers so far will be cleared.',
+    lookup: {
+      busy: 'Looking it up in the CVR register …',
+      notFound: 'No company with that CVR number in the CVR register.',
+      unavailable: 'The CVR register cannot be reached just now. Please write the name yourself.',
+      ended: 'no longer active',
+    },
   },
 };
 
@@ -93,6 +99,12 @@ const da: typeof en = {
     readMore: 'Læs videre, mens du venter',
     restart: 'Start forfra',
     restartConfirm: 'Start forfra? Jeres svar indtil nu bliver slettet.',
+    lookup: {
+      busy: 'Slår op i CVR-registret …',
+      notFound: 'Der er ingen virksomhed med det CVR-nummer i CVR-registret.',
+      unavailable: 'CVR-registret kan ikke nås lige nu. Skriv selv navnet.',
+      ended: 'ophørt',
+    },
   },
 };
 

@@ -44,7 +44,11 @@ export type Question =
   | (Base & { type: 'text' | 'textarea' | 'email' | 'date'; maxLength?: number; placeholder?: Text;
       /** A text answer must match this regular expression (whole answer, spaces ignored), e.g. a
        *  CVR number: '\\d{8}'. `inputMode` picks the phone's keyboard, e.g. 'numeric'. */
-      pattern?: string; inputMode?: 'numeric' | 'text' })
+      pattern?: string; inputMode?: 'numeric' | 'text';
+      /** Once the answer matches `pattern`, the browser looks it up at `path` (?q=answer), which
+       *  answers { name, place } or an error; it shows what it found under the field and fills
+       *  `fill`, another question, with the name while that is still empty. */
+      lookup?: { path: string; fill?: string } })
   | (Base & { type: 'consent' })
   /** A country from the list, answered as its ISO 3166 code (DK). With `fromGeo` it starts at the
    *  visitor's country as the site's /api/geo sees it, until the visitor chooses one. */
@@ -245,6 +249,7 @@ export function checkFlow(flow: Flow): string[] {
   for (const q of qs) if (q.section && !sectionIds.has(q.section)) problems.push(`question ${q.id}: unknown section ${q.section}`);
   if (!byId.has(flow.subjectQuestion)) problems.push(`unknown subject question ${flow.subjectQuestion}`);
   for (const q of qs) if ('pattern' in q && q.pattern) { try { new RegExp(q.pattern); } catch { problems.push(`question ${q.id}: pattern ${q.pattern} is not a regular expression`); } }
+  for (const q of qs) if ('lookup' in q && q.lookup?.fill && !byId.has(q.lookup.fill)) problems.push(`question ${q.id}: lookup fills unknown question ${q.lookup.fill}`);
   for (const q of qs) if (q.type === 'phone' && q.countryFrom && byId.get(q.countryFrom)?.type !== 'country') problems.push(`question ${q.id}: countryFrom ${q.countryFrom} is not a country question`);
   return problems;
 }

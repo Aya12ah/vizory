@@ -14,9 +14,9 @@ export const signalLink = 'text-[14px] text-signal-text no-underline hover:under
 // Forms (the get-started flow). There is no preflight reset, so inputs set their font and box.
 const button = 'inline-flex items-center justify-center gap-[10px] h-12 box-border rounded-pill px-6 font-sans text-[16px] font-medium leading-none no-underline whitespace-nowrap cursor-pointer transition-[color,background-color,box-shadow,opacity] duration-180 ease-[ease] disabled:opacity-35 disabled:cursor-default';
 /** The main action: a filled pill in the signal colour. */
-export const buttonPrimary = `${button} border-none bg-signal text-on-signal enabled:hover:bg-mint`;
+export const buttonPrimary = `${button} border-none bg-signal text-on-signal not-disabled:hover:bg-mint`;
 /** A secondary action: an outlined pill. */
-export const buttonSecondary = `${button} border-none bg-transparent text-ink shadow-[inset_0_0_0_1px_var(--outline)] enabled:hover:text-signal-text enabled:hover:shadow-[inset_0_0_0_1px_var(--signal)]`;
+export const buttonSecondary = `${button} border-none bg-transparent text-ink shadow-[inset_0_0_0_1px_var(--outline)] not-disabled:hover:text-signal-text not-disabled:hover:shadow-[inset_0_0_0_1px_var(--signal)]`;
 /** A text, email or date field, a list or a text area, without its width (fieldBase) and full width
  *  (field). Focused, it keeps clear of the bar at the bottom of the get-started page. */
 export const fieldBase = 'block box-border font-sans text-[15px] leading-[1.4] text-ink bg-panel border border-solid border-outline rounded-md px-3 py-[10px] scroll-mb-28 focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-0 aria-[invalid=true]:border-amber';

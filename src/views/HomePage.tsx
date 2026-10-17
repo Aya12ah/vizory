@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ActScope } from '@/components/ActScope';
 import { JsonLd } from '@/components/JsonLd';
+import { buttonSecondary } from '@/components/styles';
 import { Wordmark, wordmarkClass } from '@/components/Wordmark';
 import { type Lang, localPath } from '@/i18n/lang';
 import { danny, graph, organisation, website } from '@/lib/schema';
@@ -22,9 +23,9 @@ function Campaign({ lang }: { lang: Lang }) {
     <aside className="flex flex-col gap-[3px] items-start text-[14px] leading-[1.6]" data-campaign>
       <h2 className="text-[14px] leading-[1.6] font-medium text-ink">{t.title}</h2>
       <p className="text-ink-soft max-w-[52ch]">{t.text}</p>
-      <Link className="mt-2 inline-flex items-center gap-[6px] text-signal-text no-underline hover:underline hover:underline-offset-3" href={localPath('/get-started', lang)}>
+      <Link className={`${buttonSecondary} mt-4`} href={localPath('/get-started', lang)}>
         {t.cta}
-        <svg className="size-[14px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
+        <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
       </Link>
     </aside>
   );

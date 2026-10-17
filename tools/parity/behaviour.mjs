@@ -97,7 +97,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   const p = await page('/');
   check('act links to its guide', (await p.getAttribute('a[data-act="MiCAR"]', 'href')) === '/mica' && (await p.getAttribute('a[data-act="AMLR"]', 'href')) === '/aml');
   check('act shows its full name', (await p.getAttribute('a[data-act="PSR"]', 'title')) === 'Payment Services Regulation');
-  check('campaign below the act list, in line and in its type size', await p.evaluate(() => { const l = document.querySelector('main dl'), c = document.querySelector('[data-campaign] h2'); return c.getBoundingClientRect().top > l.getBoundingClientRect().bottom && Math.abs(l.getBoundingClientRect().left - c.getBoundingClientRect().left) < 1 && getComputedStyle(l).fontSize === getComputedStyle(c).fontSize; }));
+  check('campaign below the act list, in line, its title in the lede\'s size', await p.evaluate(() => { const l = document.querySelector('main dl'), c = document.querySelector('[data-campaign] h2'); return c.getBoundingClientRect().top > l.getBoundingClientRect().bottom && Math.abs(l.getBoundingClientRect().left - c.getBoundingClientRect().left) < 1 && getComputedStyle(document.querySelector('h1.lede')).fontSize === getComputedStyle(c).fontSize; }));
   check('campaign links to get started', (await p.getAttribute('[data-campaign] a', 'href')) === '/get-started');
   await p.click('a[data-act="MiCAR"]');
   await p.waitForURL('**/mica');

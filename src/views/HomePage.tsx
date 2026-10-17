@@ -21,9 +21,10 @@ function Campaign({ lang }: { lang: Lang }) {
   const t = CAMPAIGN[lang];
   return (
     <aside className="flex flex-col gap-[3px] items-start text-[14px] leading-[1.6]" data-campaign>
-      <h2 className="text-[14px] leading-[1.6] font-medium text-ink">{t.title}</h2>
+      {/* The title in the lede's size (17px, 16px on a phone). */}
+      <h2 className="mb-2 text-[17px] leading-[1.5] font-normal text-ink phone:text-[16px]">{t.title}</h2>
       <p className="text-ink-soft max-w-[52ch]">{t.text}</p>
-      <Link className={`${buttonSecondary} mt-4`} href={localPath('/get-started', lang)}>
+      <Link className={`${buttonSecondary} mt-6`} href={localPath('/get-started', lang)}>
         {t.cta}
         <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
       </Link>

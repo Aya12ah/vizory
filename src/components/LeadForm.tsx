@@ -185,18 +185,25 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           when its toolbar shrinks, and the page should not show through there. */}
       <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
-        {/* From 721px: Back, the progress, Next. On a phone the progress above the two buttons. */}
+        {/* From 721px: Back, the progress with "Step x of y" centred above it, Next. On a phone the
+            progress runs across the top, with "Step x of y" between the buttons below it (left out on
+            the last step, whose longer button needs the room). */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
-        <div className="flex items-center gap-5 flex-1 min-w-0 phone:basis-full phone:order-1 phone:flex-col phone:items-stretch phone:gap-2">
-          <p className="flex-none text-[15px] text-ink-soft tabular-nums whitespace-nowrap" data-lead-count>{t.step(index + 1, steps.length)}</p>
-          {/* One segment per step: the steps done and the current one filled. */}
-          <div className="flex flex-1 gap-[6px]" aria-hidden="true" data-lead-progress>
-            {steps.map((s, i) => <div key={s.id} className={`h-[4px] flex-1 rounded-sm transition-[background-color] duration-300 ease-[ease] ${i <= index ? 'bg-signal' : 'bg-line'}`} />)}
+        <div className="flex flex-col items-stretch gap-2 flex-1 min-w-0 phone:contents">
+          <p className={`text-center text-[15px] text-ink-soft tabular-nums whitespace-nowrap phone:order-3 phone:flex-1 phone:text-[14px] ${last ? 'phone:hidden' : ''}`} data-lead-count>{t.step(index + 1, steps.length)}</p>
+          {/* One segment per step: the steps done and the current one filled. A segment fills from
+              the left when its step is reached and empties back to the left on going back. */}
+          <div className="flex gap-[6px] phone:basis-full phone:order-1" aria-hidden="true" data-lead-progress>
+            {steps.map((s, i) => (
+              <div key={s.id} className="relative h-[4px] flex-1 rounded-sm bg-line overflow-hidden" data-on={i <= index || undefined}>
+                <div className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} />
+              </div>
+            ))}
           </div>
         </div>
         {/* Disabled until every required question of the step is answered; other mistakes (an
             email without a domain) show when it is pressed. */}
-        <button type="submit" className={`${buttonPrimary} phone:order-3 phone:ml-auto`} disabled={incomplete}>
+        <button type="submit" className={`${buttonPrimary} phone:order-4 phone:ml-auto`} disabled={incomplete}>
           {last ? t.send : t.next}
           {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
         </button>

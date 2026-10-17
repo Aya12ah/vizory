@@ -351,7 +351,10 @@ for (const viewport of [PHONE, undefined]) {
   await pick('Hvidvask'); await next(); await pick('Ny virksomhed uden tilladelse'); await next();
   await pick('Risikovurdering'); await next(); await pick('Ansøgning eller meddelelse'); await next(); await pick('Inden for 6 måneder'); await next();
   await p.selectOption('#lead-country', 'DK');
+  await p.locator('#lead-cvr').pressSequentially('12ab34-56 78 90');
+  check('lead: the CVR field takes digits only, at most 8', (await p.inputValue('#lead-cvr')) === '12345678');
   await p.fill('#lead-cvr', '1111 1111');
+  check('lead: a pasted CVR number with a space keeps all 8 digits', (await p.inputValue('#lead-cvr')) === '11111111');
   await p.waitForSelector('[data-lead-lookup=found]');
   check('lead: a CVR number found fills in the company name', (await p.inputValue('#lead-company')) === 'Eksempel A/S');
   await p.fill('#lead-cvr', '22222222');

@@ -45,6 +45,9 @@ export type Question =
       /** A text answer must match this regular expression (whole answer, spaces ignored), e.g. a
        *  CVR number: '\\d{8}'. `inputMode` picks the phone's keyboard, e.g. 'numeric'. */
       pattern?: string; inputMode?: 'numeric' | 'text';
+      /** The characters the field takes, as a regular expression character set ('0-9'); anything
+       *  else typed or pasted is dropped, and the rest cut at `maxLength`. */
+      allow?: string;
       /** Once the answer matches `pattern`, the browser looks it up at `path` (?q=answer), which
        *  answers { name, place } or an error; it shows what it found under the field and fills
        *  `fill`, another question, with the name while that is still empty. */

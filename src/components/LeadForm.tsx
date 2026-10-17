@@ -280,7 +280,11 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange, setAnswer }:
       </fieldset>
     );
   }
-  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: q.maxLength, inputMode: 'inputMode' in q ? q.inputMode : undefined, autoComplete: q.autocomplete ?? (q.type === 'email' ? 'email' : undefined), onChange: (e: { target: { value: string } }) => onChange(e.target.value), ...invalid };
+  // A field that takes only some characters drops the rest and cuts at maxLength itself, so a pasted
+  // '1234 5678' keeps all eight digits (the browser's own maxLength would cut it before the space goes).
+  const allow = 'allow' in q && q.allow ? new RegExp(`[^${q.allow}]`, 'g') : null;
+  const typed = (v: string) => (allow ? v.replace(allow, '').slice(0, 'maxLength' in q ? q.maxLength : undefined) : v);
+  const common = { id, className: field, value: typeof value === 'string' ? value : '', maxLength: allow ? undefined : q.maxLength, inputMode: 'inputMode' in q ? q.inputMode : undefined, autoComplete: q.autocomplete ?? (q.type === 'email' ? 'email' : undefined), onChange: (e: { target: { value: string } }) => onChange(typed(e.target.value)), ...invalid };
   return (
     <div className="grid gap-2">
       <label htmlFor={id} className={hideLabel ? 'sr-only' : 'text-[15px] font-medium'}>{label}</label>

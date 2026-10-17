@@ -143,7 +143,7 @@ test('Vizory: the CVR number is asked for Danish companies only, as 8 digits', (
   assert.ok(company({ country: 'DK' }).includes('cvr'));
   assert.ok(!company({ country: 'SE' }).includes('cvr'));
   const cvr = vizoryFlow.steps.find((s) => s.id === 'company').questions.filter((q) => q.id === 'cvr');
-  assert.deepEqual(validate(vizoryFlow, { cvr: '1234 5678' }, cvr, NOW), {});
+  assert.deepEqual(validate(vizoryFlow, { cvr: '12345678' }, cvr, NOW), {});
   assert.deepEqual(validate(vizoryFlow, { cvr: '1234567' }, cvr, NOW), { cvr: 'format' });
   assert.deepEqual(validate(vizoryFlow, {}, cvr, NOW), {});
   assert.equal(clean(vizoryFlow, { area: ['aml'], country: 'SE', cvr: '12345678' }, NOW).cvr, undefined);

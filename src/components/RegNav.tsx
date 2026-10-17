@@ -54,6 +54,10 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
         <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
           {item('/payments', t.regNav.authorisation)}
         </ul>
+        <p className="mt-2 text-ink font-medium">{t.regNav.aml}</p>
+        <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
+          {item('/aml', t.regNav.amlr)}
+        </ul>
       </nav>
       <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address>
         {/* -ml-3 lines the theme icon up with the address below. */}

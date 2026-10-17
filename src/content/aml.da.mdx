@@ -1,0 +1,140 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["hvem-er-omfattet", "Hvem er omfattet?"],
+  ["de-nye-eu-regler", "De nye EU-regler, og hvornår de gælder"],
+  ["hvad-amlr-aendrer", "Hvad AMLR ændrer", [
+    ["risikovurdering-og-kontroller", "Risikovurdering, politikker og kontroller"],
+    ["ansvar-og-compliance", "Ansvar i ledelsen og compliancefunktion"],
+    ["kundekendskab", "Kundekendskab"],
+    ["reelle-ejere", "Reelle ejere"],
+    ["underretning-og-opbevaring", "Underretning og opbevaring"],
+  ]],
+  ["udbydere-af-kryptoaktivtjenester", "Udbydere af kryptoaktivtjenester"],
+  ["hvidvask-i-ansoegningen", "Hvidvask i en ansøgning om tilladelse"],
+  ["forberedelse-til-2027", "Forberedelse til juli 2027"],
+  ["saadan-hjaelper-vi", "Sådan hjælper vi"],
+  ["spoergsmaal-og-svar", "Spørgsmål og svar"],
+];
+
+# Hvidvask: AMLR og de nye EU-regler
+
+<p className="lede">Finansielle virksomheder i Danmark skal forebygge hvidvask og finansiering af terrorisme efter hvidvaskloven, som gennemfører EU's hvidvaskdirektiver. Fra 10. juli 2027 flytter de fleste forpligtelser over i en EU-forordning, AMLR, som gælder direkte i alle medlemslande.</p>
+
+<p className="lede">Ændringen berører banker, betalingsinstitutter og e-pengeinstitutter, udbydere af kryptoaktivtjenester og alle andre virksomheder, der er omfattet af reglerne. Nedenfor gennemgår vi, hvem der er omfattet, hvad de nye regler ændrer, hvad Finanstilsynet forventer af hvidvaskdelen i en ansøgning om tilladelse, og hvordan virksomheden forbereder sig på 2027.</p>
+
+<Toc title="Indhold" items={toc} />
+
+<h2 id="hvem-er-omfattet">Hvem er omfattet?</h2>
+
+Reglerne gælder for de såkaldt forpligtede enheder. I den finansielle sektor er det blandt andet:
+
+- pengeinstitutter
+- betalingsinstitutter og e-pengeinstitutter
+- udbydere af kryptoaktivtjenester
+- investeringsselskaber, forvaltere af investeringsfonde og forsikringsselskaber med livsforsikring
+- långivere, vekselkontorer og udbydere af crowdfundingtjenester
+
+Uden for den finansielle sektor er også advokater, revisorer, bogholdere, ejendomsmæglere, spiludbydere og forhandlere af værdifulde varer omfattet. I Danmark fører Finanstilsynet tilsyn med de finansielle virksomheder, og mistanke om hvidvask underrettes til Hvidvasksekretariatet hos National enhed for Særlig Kriminalitet (NSK).
+
+<h2 id="de-nye-eu-regler">De nye EU-regler, og hvornår de gælder</h2>
+
+EU vedtog i 2024 en samlet pakke af hvidvaskregler:
+
+- **Hvidvaskforordningen (AMLR):** ét regelsæt for de forpligtede enheder om interne kontroller, kundekendskab, reelle ejere og underretning. Den gælder fra 10. juli 2027.
+- **Det 6. hvidvaskdirektiv (AMLD6):** den nationale del: tilsynsmyndigheder, Hvidvasksekretariatet og registre over reelle ejere og bankkonti. Det skal gennemføres i dansk ret, hovedsageligt inden juli 2027.
+- **AMLA-forordningen:** opretter EU's hvidvaskmyndighed (AMLA) i Frankfurt. AMLA koordinerer de nationale tilsyn, udarbejder tekniske standarder og vil fra 2028 føre direkte tilsyn med et begrænset antal store, grænseoverskridende finansielle koncerner.
+
+Forordningen om overførsel af midler, som kræver, at oplysninger om afsender og modtager følger med overførsler af kryptoaktiver, har gældt siden 30. december 2024.
+
+Fordi AMLR er en forordning, bliver forpligtelserne de samme i hele EU, og der bliver mindre plads til nationale regler. Hvidvaskloven bliver tilpasset, og virksomhederne skal arbejde ud fra selve teksten i AMLR og AMLA's tekniske standarder.
+
+<h2 id="hvad-amlr-aendrer">Hvad AMLR ændrer</h2>
+
+Mange af forpligtelserne kendes fra hvidvaskloven, men AMLR beskriver dem mere detaljeret og overlader mindre til virksomhedens eget skøn. De vigtigste områder er disse.
+
+<h3 id="risikovurdering-og-kontroller">Risikovurdering, politikker og kontroller</h3>
+
+Virksomheden skal have en dokumenteret risikovurdering af hele forretningen, der dækker kunder, produkter, leveringskanaler og geografi. Den skal holdes opdateret og godkendes af ledelsen. Politikker, procedurer og kontroller skal følge af risikovurderingen og stå i forhold til virksomhedens størrelse og karakter. Koncerner skal have koncernpolitikker.
+
+<h3 id="ansvar-og-compliance">Ansvar i ledelsen og compliancefunktion</h3>
+
+Et medlem af ledelsen har ansvaret for, at virksomheden overholder reglerne, og en complianceansvarlig står for det daglige arbejde og rapporterer til ledelsen. Hvor virksomhedens størrelse tilsiger det, skal der også være en uafhængig revisionsfunktion, der tester politikker og procedurer.
+
+<h3 id="kundekendskab">Kundekendskab</h3>
+
+AMLR fastlægger i detaljer, hvilke oplysninger virksomheden skal indhente om kunderne, og hvordan de skal kontrolleres, hvornår der gælder lempede og skærpede procedurer, og hvor ofte kundeoplysningerne skal opdateres. Der er særlige regler om politisk eksponerede personer, højrisikotredjelande og korrespondentforbindelser. Anonyme konti er forbudt, og det samme er konti til kryptoaktiver, der lader indehaveren forblive anonym.
+
+<h3 id="reelle-ejere">Reelle ejere</h3>
+
+Reelle ejere identificeres både gennem ejerskab, fra 25 procent af kapitalen eller stemmerettighederne, og gennem kontrol på anden måde. Virksomheden skal forstå kundens ejer- og kontrolstruktur og indberette uoverensstemmelser med registret over reelle ejere.
+
+<h3 id="underretning-og-opbevaring">Underretning og opbevaring</h3>
+
+Mistænkelige transaktioner og aktiviteter skal underrettes til Hvidvasksekretariatet, og virksomheden skal hurtigt besvare dets henvendelser. Kundeoplysninger og transaktionsdata skal opbevares i fem år efter, at kundeforholdet er ophørt. For kontantbetalinger for varer og tjenester gælder en generel grænse på 10.000 euro.
+
+<h2 id="udbydere-af-kryptoaktivtjenester">Udbydere af kryptoaktivtjenester</h2>
+
+Efter AMLR er udbydere af kryptoaktivtjenester finansielle institutter på lige fod med banker og betalingsinstitutter. Nogle regler gælder særligt for dem:
+
+- kundekendskab gælder for enkeltstående transaktioner fra 1.000 euro
+- overførsler af kryptoaktiver skal ledsages af oplysninger om afsender og modtager uden nedre grænse (rejsereglen i forordningen om overførsel af midler)
+- ved overførsler over 1.000 euro til eller fra en selvhostet adresse skal virksomheden kontrollere, at adressen ejes eller kontrolleres af dens egen kunde
+- forbindelser med udbydere af kryptoaktivtjenester uden for EU kræver skærpede foranstaltninger
+- virksomheden må ikke oprette eller føre konti til kryptoaktiver, der skjuler, hvem der ejer dem
+
+En CASP med tilladelse efter MiCA skal overholde hvidvaskreglerne fra første driftsdag, og Finanstilsynet vurderer hvidvasksetuppet som en del af tilladelsen.
+
+<h2 id="hvidvask-i-ansoegningen">Hvidvask i en ansøgning om tilladelse</h2>
+
+En ansøgning om tilladelse som udbyder af kryptoaktivtjenester, betalingsinstitut eller e-pengeinstitut skal beskrive, hvordan virksomheden vil forebygge hvidvask og terrorfinansiering. Vores erfaring er, at Finanstilsynet ser efter:
+
+- en risikovurdering, der beskriver virksomhedens egen forretningsmodel og ikke en generel skabelon
+- politikker og procedurer for kundekendskab, overvågning, screening mod sanktionslister og PEP-lister og underretning
+- en beskrivelse af systemerne til onboarding og transaktionsovervågning, herunder eventuel outsourcing
+- hvem i ledelsen der har ansvaret, hvem den complianceansvarlige er, og hvilke ressourcer de har
+- en plan for uddannelse af medarbejderne
+- at procedurerne er klar til brug fra første dag og ikke kun er skrevet ned
+
+Mangler i hvidvaskdelen er blandt de hyppigste grunde til spørgsmål fra Finanstilsynet og til, at ansøgninger trækker ud.
+
+<h2 id="forberedelse-til-2027">Forberedelse til juli 2027</h2>
+
+Virksomheder, der i dag er omfattet af hvidvaskloven, bør gennemgå deres setup i god tid, før AMLR gælder:
+
+- en gap-analyse af risikovurdering, politikker og procedurer mod AMLR
+- en opdatering af de oplysninger, der indhentes om kunder og reelle ejere, og af de systemer, der rummer dem
+- en gennemgang af ansvarsfordelingen i ledelsen og af compliancefunktionen
+- en vurdering af outsourcing og koncernpolitikker
+- uddannelse af ledelse og medarbejdere
+
+AMLA udarbejder tekniske standarder og retningslinjer, der uddyber mange af kravene, blandt andet hvilke oplysninger der skal indhentes om kunderne. Flere ventes i løbet af 2026 og 2027, så arbejdet skal planlægges, så det kan rumme dem.
+
+<h2 id="saadan-hjaelper-vi">Sådan hjælper vi</h2>
+
+- hvidvaskdelen af ansøgninger om tilladelse som CASP, betalingsinstitut og e-pengeinstitut
+- risikovurderinger, politikker og procedurer, der passer til forretningsmodellen
+- gap-analyse mod AMLR og planlægning af overgangen fra hvidvaskloven
+- mock-inspektioner, der forbereder ledelse og medarbejdere på Finanstilsynets hvidvaskinspektioner
+- dialog med Finanstilsynet om hvidvaskspørgsmål
+- uddannelse af ledelse og medarbejdere
+
+<h2 id="spoergsmaal-og-svar">Spørgsmål og svar</h2>
+
+### Hvornår gælder AMLR?
+
+AMLR gælder fra 10. juli 2027. Indtil da gælder hvidvaskloven. Enkelte regler, fx for professionelle fodboldklubber og -agenter, gælder senere.
+
+### Kommer AMLA til at føre tilsyn med vores virksomhed?
+
+Sandsynligvis ikke. AMLA vil fra 2028 føre direkte tilsyn med et begrænset antal store finansielle koncerner, der er aktive i flere medlemslande og har en høj risiko. Andre virksomheder forbliver under Finanstilsynets tilsyn, som AMLA koordinerer.
+
+<h2 id="kilder">Kilder</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2024/1624/oj" rel="noopener">AMLR, forordning (EU) 2024/1624</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2024/1640/oj" rel="noopener">AMLD6, direktiv (EU) 2024/1640</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2024/1620/oj" rel="noopener">AMLA-forordningen, forordning (EU) 2024/1620</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1113/oj" rel="noopener">Forordningen om overførsel af midler, forordning (EU) 2023/1113</a></li>
+</ul>

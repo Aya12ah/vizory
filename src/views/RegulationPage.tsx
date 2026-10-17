@@ -29,6 +29,14 @@ const GUIDES = [
       da: 'Hvilken tilladelse en betalings- eller e-pengevirksomhed skal have, hvad ansøgningen skal indeholde, og hvad PSD3 og PSR ændrer.',
     },
   },
+  {
+    href: '/aml',
+    title: { en: 'Anti-money laundering: the AMLR and the new EU rules', da: 'Hvidvask: AMLR og de nye EU-regler' },
+    summary: {
+      en: 'Who is covered, what the AML Regulation changes from July 2027, and what the Danish FSA expects of AML in an application for authorisation.',
+      da: 'Hvem der er omfattet, hvad hvidvaskforordningen ændrer fra juli 2027, og hvad Finanstilsynet forventer af hvidvaskdelen i en ansøgning om tilladelse.',
+    },
+  },
 ];
 
 export function RegulationPage({ lang }: { lang: Lang }) {

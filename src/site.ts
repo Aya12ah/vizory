@@ -61,6 +61,19 @@ export const PAGES = {
     },
     lastModified: '2026-10-16',
   },
+  aml: {
+    path: '/aml',
+    og: 'regulation',
+    title: {
+      en: 'AMLR: the new EU anti-money laundering rules · Vizory',
+      da: 'Hvidvask: AMLR og de nye EU-regler · Vizory',
+    },
+    description: {
+      en: 'What the EU AML Regulation (AMLR) changes from July 2027, what the Danish FSA expects of AML in an application, and how firms prepare.',
+      da: 'Hvad EU\'s hvidvaskforordning (AMLR) ændrer fra juli 2027, hvad Finanstilsynet forventer af hvidvaskdelen i en ansøgning, og hvordan I forbereder jer.',
+    },
+    lastModified: '2026-10-17',
+  },
   regulation: {
     path: '/regulation',
     og: 'regulation',

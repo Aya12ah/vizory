@@ -13,6 +13,8 @@ const en = {
     authorisation: 'Authorisation and compliance',
     qa: 'ESMA Q&As',
     payments: 'Payments',
+    aml: 'AML/CFT',
+    amlr: 'AMLR and the new rules',
   },
   contents: 'Contents',
 };
@@ -28,6 +30,8 @@ const da: typeof en = {
     authorisation: 'Tilladelse og compliance',
     qa: 'ESMA\'s spørgsmål og svar',
     payments: 'Betalinger',
+    aml: 'Hvidvask',
+    amlr: 'AMLR og de nye regler',
   },
   contents: 'Indhold',
 };

@@ -1,0 +1,140 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["who-is-covered", "Who is covered?"],
+  ["the-new-eu-rules", "The new EU rules and when they apply"],
+  ["what-amlr-changes", "What the AMLR changes", [
+    ["risk-assessment-and-controls", "Risk assessment, policies and controls"],
+    ["compliance-functions", "Responsibility in the management and compliance function"],
+    ["customer-due-diligence", "Customer due diligence"],
+    ["beneficial-owners", "Beneficial owners"],
+    ["reporting-and-records", "Reporting and record keeping"],
+  ]],
+  ["crypto-asset-service-providers", "Crypto-asset service providers"],
+  ["aml-in-the-application", "AML in an application for authorisation"],
+  ["preparing-for-2027", "Preparing for July 2027"],
+  ["how-we-help", "How we help"],
+  ["questions-and-answers", "Questions and answers"],
+];
+
+# Anti-money laundering: the AMLR and the new EU rules
+
+<p className="lede">Financial firms in Denmark must prevent money laundering and terrorist financing under the Danish AML Act (hvidvaskloven), which implements the EU anti-money laundering directives. From 10 July 2027 most of the obligations move into an EU regulation, the AMLR, which applies directly in every member state.</p>
+
+<p className="lede">The change affects banks, payment and e-money institutions, crypto-asset service providers and every other firm covered by the rules. Below we go through who is covered, what the new rules change, what the Danish FSA expects of the AML part of an application for authorisation, and how a firm prepares for 2027.</p>
+
+<Toc title="Contents" items={toc} />
+
+<h2 id="who-is-covered">Who is covered?</h2>
+
+The rules apply to obliged entities. In the financial sector these include:
+
+- credit institutions
+- payment institutions and e-money institutions
+- crypto-asset service providers
+- investment firms, fund managers and insurance undertakings with life insurance
+- lenders, currency exchange offices and crowdfunding service providers
+
+Outside the financial sector, lawyers, auditors, accountants, estate agents, gambling providers and traders in high-value goods are also covered. In Denmark the Danish FSA supervises the financial firms, and suspicious activity is reported to the Danish FIU (Hvidvasksekretariatet) at the National Special Crime Unit.
+
+<h2 id="the-new-eu-rules">The new EU rules and when they apply</h2>
+
+The EU adopted a package of anti-money laundering rules in 2024:
+
+- **The AML Regulation (AMLR):** one rulebook for obliged entities on internal controls, customer due diligence, beneficial owners and reporting. It applies from 10 July 2027.
+- **The 6th AML Directive (AMLD6):** the national part: supervisors, the FIU, registers of beneficial owners and bank accounts. It must be implemented in Danish law, mainly by July 2027.
+- **The AMLA Regulation:** sets up the EU Anti-Money Laundering Authority (AMLA) in Frankfurt. AMLA coordinates the national supervisors, drafts technical standards and will supervise a limited number of large cross-border financial groups directly from 2028.
+
+The Transfer of Funds Regulation, which requires information on the sender and the recipient to accompany transfers of crypto-assets, has applied since 30 December 2024.
+
+Because the AMLR is a regulation, the obligations will be the same across the EU, with less room for national rules. The Danish AML Act will be adapted, and firms will have to work from the text of the AMLR itself and AMLA's technical standards.
+
+<h2 id="what-amlr-changes">What the AMLR changes</h2>
+
+Many of the obligations are known from the Danish AML Act, but the AMLR describes them in more detail and leaves less to the firm's own judgement. The main areas are these.
+
+<h3 id="risk-assessment-and-controls">Risk assessment, policies and controls</h3>
+
+The firm must have a documented risk assessment of its whole business, covering customers, products, delivery channels and geography. It must be kept up to date and approved by the management body. Policies, procedures and controls must follow from the risk assessment and be proportionate to the size and nature of the business. Groups must apply group-wide policies.
+
+<h3 id="compliance-functions">Responsibility in the management and compliance function</h3>
+
+A member of the management body is responsible for the firm's compliance with the rules, and a compliance manager is responsible for the day-to-day work and reports to the management body. Where the size of the firm calls for it, the firm must also have an independent audit function that tests the policies and procedures.
+
+<h3 id="customer-due-diligence">Customer due diligence</h3>
+
+The AMLR sets out in detail which information the firm must obtain about customers and how it must be verified, when simplified and enhanced due diligence apply, and how often customer information must be updated. There are specific rules on politically exposed persons, high-risk third countries and correspondent relationships. Anonymous accounts are prohibited, and so are accounts for crypto-assets that allow the holder to remain anonymous.
+
+<h3 id="beneficial-owners">Beneficial owners</h3>
+
+Beneficial owners are identified both through ownership, from 25 per cent of the shares or voting rights, and through control by other means. The firm must understand the customer's ownership and control structure and report discrepancies with the register of beneficial owners.
+
+<h3 id="reporting-and-records">Reporting and record keeping</h3>
+
+Suspicious transactions and activity must be reported to the FIU, and the firm must respond to its requests promptly. Customer information and transaction records must be kept for five years after the business relationship ends. A general limit of EUR 10,000 applies to cash payments for goods and services.
+
+<h2 id="crypto-asset-service-providers">Crypto-asset service providers</h2>
+
+Under the AMLR, crypto-asset service providers are financial institutions on an equal footing with banks and payment institutions. Some rules are particular to them:
+
+- customer due diligence applies to occasional transactions from EUR 1,000
+- transfers of crypto-assets must be accompanied by information on the sender and recipient, without a lower threshold (the travel rule in the Transfer of Funds Regulation)
+- for transfers of more than EUR 1,000 to or from a self-hosted address, the firm must verify that the address is owned or controlled by its own customer
+- relationships with crypto-asset service providers outside the EU call for enhanced measures
+- the firm must not provide or keep accounts for crypto-assets that conceal who holds them
+
+A CASP authorised under MiCA must meet the AML rules from its first day of operation, and the Danish FSA assesses the AML set-up as part of the authorisation.
+
+<h2 id="aml-in-the-application">AML in an application for authorisation</h2>
+
+An application for authorisation as a crypto-asset service provider, a payment institution or an e-money institution must describe how the firm will prevent money laundering and terrorist financing. In our experience the Danish FSA will look for:
+
+- a risk assessment that describes the firm's own business model, not a general template
+- policies and procedures for customer due diligence, monitoring, screening against sanctions lists and PEP lists, and reporting
+- a description of the systems for onboarding and transaction monitoring, including any outsourcing
+- who in the management is responsible, who the compliance manager is, and how they are resourced
+- a plan for training staff
+- that the procedures are ready to be used from the first day, not merely written
+
+Weaknesses in the AML part are among the most frequent reasons for questions from the Danish FSA and for applications taking longer.
+
+<h2 id="preparing-for-2027">Preparing for July 2027</h2>
+
+Firms that are covered by the Danish AML Act today should go through their set-up well before the AMLR applies:
+
+- a gap analysis of the risk assessment, policies and procedures against the AMLR
+- an update of the information collected about customers and beneficial owners, and of the systems that hold it
+- a review of the allocation of responsibility in the management and of the compliance function
+- an assessment of outsourcing and group-wide policies
+- training of the management body and staff
+
+AMLA is drafting technical standards and guidelines that specify many of the requirements, among them the information that must be collected about customers. Several are expected during 2026 and 2027, so the work must be planned so that it can absorb them.
+
+<h2 id="how-we-help">How we help</h2>
+
+- the AML part of applications for CASP, payment institution and e-money institution authorisation
+- risk assessments, policies and procedures that fit the business model
+- gap analysis against the AMLR and planning of the move from the Danish AML Act
+- mock-inspections that prepare management and staff for the Danish FSA's AML inspections
+- dialogue with the Danish FSA on AML matters
+- training of the management body and staff
+
+<h2 id="questions-and-answers">Questions and answers</h2>
+
+### When does the AMLR apply?
+
+The AMLR applies from 10 July 2027. Until then the Danish AML Act applies. A few rules, for example for professional football clubs and agents, apply later.
+
+### Will AMLA supervise our firm?
+
+Probably not. AMLA will directly supervise a limited number of large financial groups that operate in several member states and carry a high risk, starting in 2028. Other firms remain under the supervision of the Danish FSA, which AMLA coordinates.
+
+<h2 id="sources">Sources</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2024/1624/oj" rel="noopener">AMLR, Regulation (EU) 2024/1624</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2024/1640/oj" rel="noopener">AMLD6, Directive (EU) 2024/1640</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2024/1620/oj" rel="noopener">AMLA Regulation, Regulation (EU) 2024/1620</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1113/oj" rel="noopener">Transfer of Funds Regulation, Regulation (EU) 2023/1113</a></li>
+</ul>

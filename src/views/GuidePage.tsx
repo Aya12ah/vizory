@@ -12,7 +12,7 @@ export type Faq = Record<Lang, [question: string, answer: string][]>;
 
 /** A guide page under Regulation: the Markdown text with the topic menu, and its structured data. */
 export function GuidePage({ lang, page: key, content, toc, name, about, faq }: {
-  lang: Lang; page: Extract<PageKey, 'mica' | 'payments'>; content: Record<Lang, ComponentType>; toc: Record<Lang, TocItem[]>; name: Text; about: string[]; faq: Faq;
+  lang: Lang; page: Extract<PageKey, 'mica' | 'payments' | 'aml'>; content: Record<Lang, ComponentType>; toc: Record<Lang, TocItem[]>; name: Text; about: string[]; faq: Faq;
 }) {
   const Content = content[lang];
   const { path, lastModified } = PAGES[key];

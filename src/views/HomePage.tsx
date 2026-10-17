@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ActScope } from '@/components/ActScope';
 import { JsonLd } from '@/components/JsonLd';
-import { buttonPrimary } from '@/components/styles';
+import { buttonMint } from '@/components/styles';
 import { Wordmark, wordmarkClass } from '@/components/Wordmark';
 import { type Lang, localPath } from '@/i18n/lang';
 import { danny, graph, organisation, website } from '@/lib/schema';
@@ -20,10 +20,10 @@ const CAMPAIGN = {
 function Campaign({ lang }: { lang: Lang }) {
   const t = CAMPAIGN[lang];
   return (
-    <aside className="grid gap-3 justify-items-start rounded-[12px] border border-solid border-line bg-panel p-6 phone:p-5" data-campaign>
+    <aside className="grid gap-3 justify-items-start" data-campaign>
       <h2 className="text-[17px] leading-[1.35]">{t.title}</h2>
       <p className="text-[14px] leading-[1.55] text-ink-soft">{t.text}</p>
-      <Link className={`${buttonPrimary} mt-2`} href={localPath('/get-started', lang)}>
+      <Link className={`${buttonMint} mt-2`} href={localPath('/get-started', lang)}>
         {t.cta}
         <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
       </Link>

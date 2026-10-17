@@ -15,6 +15,8 @@ export const signalLink = 'text-[14px] text-signal-text no-underline hover:under
 const button = 'inline-flex items-center justify-center gap-[10px] h-12 box-border rounded-pill px-6 font-sans text-[16px] font-medium leading-none no-underline whitespace-nowrap cursor-pointer transition-[color,background-color,box-shadow,opacity] duration-180 ease-[ease] disabled:opacity-35 disabled:cursor-default';
 /** The main action: a filled pill in the signal colour. */
 export const buttonPrimary = `${button} border-none bg-signal text-on-signal enabled:hover:bg-mint`;
+/** A call to action outside a form (the front page's campaign): a pill in mint. */
+export const buttonMint = `${button} border-none bg-mint text-on-signal hover:shadow-[inset_0_0_0_100px_rgba(255,255,255,.18)]`;
 /** A secondary action: an outlined pill. */
 export const buttonSecondary = `${button} border-none bg-transparent text-ink shadow-[inset_0_0_0_1px_var(--outline)] enabled:hover:text-signal-text enabled:hover:shadow-[inset_0_0_0_1px_var(--signal)]`;
 /** A text, email or date field, a list or a text area, without its width (fieldBase) and full width

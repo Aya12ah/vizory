@@ -271,8 +271,8 @@ for (const viewport of [PHONE, undefined]) {
   check(`lead: one progress segment per step (${where})`, (await p.locator('[data-lead-progress] > div').count()) === Number((await p.textContent('[data-lead-count]')).match(/af (\d+)/)[1]));
   check(`lead: progress and buttons in a bar at the bottom of the screen (${where})`, await p.evaluate(() => { const b = document.querySelector('[data-lead-progress]').closest('.sticky').getBoundingClientRect(); return Math.abs(b.bottom - innerHeight) < 2 && !!document.querySelector('.sticky button[type=submit]'); }));
   check(`lead: the bar does not widen the page (${where})`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  await next();
-  check(`lead: an unanswered step shows an error (${where})`, (await step()) === 'area' && await p.isVisible('[role=alert]'));
+  check(`lead: Next is disabled until the step is answered (${where})`, await p.getByRole('button', { name: 'Næste' }).isDisabled());
+  check(`lead: Back, the progress and Next in that order (${where})`, await p.evaluate((phone) => { const bar = document.querySelector('[data-lead-progress]').closest('.sticky'); const [b, n] = [...bar.querySelectorAll('button')].map((x) => x.getBoundingClientRect()); const g = document.querySelector('[data-lead-progress]').getBoundingClientRect(); return phone ? g.bottom < b.top && b.right < n.left : b.right < g.left && g.right < n.left; }, !!viewport));
   await pick('Kryptoaktiver (MiCA)'); await pick('Betalinger og e-penge'); await next();
   check(`lead: the why changes with the step (${where})`, (await why()).includes('hvilken vej sagen skal gå'));
   check(`lead: segments filled up to the current step (${where})`, (await p.locator('[data-lead-progress] > .bg-signal').count()) === 2);
@@ -302,8 +302,7 @@ for (const viewport of [PHONE, undefined]) {
   const summary = await p.textContent('[data-lead-summary]');
   check(`lead: summary holds the chosen areas only (${where})`, summary.includes('Kryptoaktiver (MiCA)') && summary.includes('Betalinger og e-penge') && !summary.includes('Hvidvask'), summary);
   check(`lead: summary shows the country and the phone with its code (${where})`, summary.includes('Land: Danmark') && summary.includes('+46 701234567'), summary);
-  await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).click();
-  check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.isVisible('[role=alert]'));
+  check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).isDisabled());
   await p.getByLabel(/Jeg accepterer/).check();
   await p.getByRole('button', { name: 'Kopiér teksten' }).click();
   const text = await p.evaluate(() => navigator.clipboard.readText());

@@ -11,6 +11,7 @@ function sectionOf(pathname: string) {
   const path = pathname.replace(/^\/da(?=\/|$)/, '') || '/';
   if (path === '/people') return 'people';
   if (['/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins', '/dlt'].includes(path)) return 'regulation';
+  if (path === '/get-started') return 'getStarted';
   return path === '/' ? 'home' : null;
 }
 
@@ -21,7 +22,8 @@ function sectionOf(pathname: string) {
  *  The links sit in a rail down the right edge of the page, so from 900px they can stay on screen
  *  (12px from the top, level with the regulation menu's wordmark), with the page's background to
  *  hide what scrolls beneath them, such as the Q&A list. On narrower screens they scroll away, as
- *  the text runs full width there and the regulation pages have their own contents bar on top. */
+ *  the text runs full width there and the regulation pages have their own contents bar on top. The
+ *  get-started page keeps them in place, as its steps have a bar of their own at the bottom. */
 export function Header({ lang }: { lang: Lang }) {
   const t = dictionary[lang];
   const section = sectionOf(usePathname());
@@ -34,7 +36,7 @@ export function Header({ lang }: { lang: Lang }) {
       )}
     </header>
     <div className="absolute z-2 inset-y-0 right-(--gutter) pointer-events-none">
-      <div className="flex gap-1 mt-6 phone:mt-2 wide:sticky wide:top-3 rounded-full bg-bg pointer-events-auto">
+      <div className={`flex gap-1 mt-6 phone:mt-2 ${section === 'getStarted' ? '' : 'wide:sticky wide:top-3'} rounded-full bg-bg pointer-events-auto`}>
         <Link className={iconButton} id="regBtn" href={localPath('/regulation', lang)} aria-current={current('regulation')} aria-label={t.regulation}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 6.5C14.9 5 13.5 4 11.9 4 10 4 8.5 5.2 8.5 6.8c0 3.7 7 3 7 7 0 1.2-.8 2.2-2 2.7" /><path d="M8.5 17.5c.6 1.5 2 2.5 3.6 2.5 1.9 0 3.4-1.2 3.4-2.8 0-3.7-7-3-7-7 0-1.2.8-2.2 2-2.7" /></svg>
         </Link>

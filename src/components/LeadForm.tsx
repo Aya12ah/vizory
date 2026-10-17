@@ -136,6 +136,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   }
 
   const only = step.questions.length === 1;
+  const incomplete = Object.values(validate(flow, answers, step.questions)).includes('required');
   return (
     <form className="flex flex-col min-h-[calc(100dvh-148px)] phone:min-h-[calc(100dvh-90px)]" noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
       <div className={`${grid} mb-14`}>
@@ -164,21 +165,22 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       </div>
       {/* The bar: its background and top line reach the screen's edges (border-image outset, which
           does not widen the page). */}
-      <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3 [border-image:linear-gradient(var(--line)_0_1px,var(--bg)_1px)_fill_0/0/0_100vmax]">
-        <div className="flex items-center gap-5 flex-1 min-w-[140px] max-w-[560px] phone:flex-col phone:items-stretch phone:gap-2">
+      <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3 [border-image:linear-gradient(var(--line)_0_1px,var(--bg)_1px)_fill_0/0/0_100vmax]">
+        {/* From 721px: Back, the progress, Next. On a phone the progress above the two buttons. */}
+        <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
+        <div className="flex items-center gap-5 flex-1 min-w-0 phone:basis-full phone:order-1 phone:flex-col phone:items-stretch phone:gap-2">
           <p className="flex-none text-[15px] text-ink-soft tabular-nums whitespace-nowrap" data-lead-count>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. */}
           <div className="flex flex-1 gap-[6px]" aria-hidden="true" data-lead-progress>
             {steps.map((s, i) => <div key={s.id} className={`h-[4px] flex-1 rounded-sm transition-[background-color] duration-300 ease-[ease] ${i <= index ? 'bg-signal' : 'bg-line'}`} />)}
           </div>
         </div>
-        <div className="flex flex-none gap-3 ml-auto phone:gap-2">
-          <button type="button" className={buttonSecondary} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
-          <button type="submit" className={buttonPrimary}>
-            {last ? t.send : t.next}
-            {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
-          </button>
-        </div>
+        {/* Disabled until every required question of the step is answered; other mistakes (an
+            email without a domain) show when it is pressed. */}
+        <button type="submit" className={`${buttonPrimary} phone:order-3 phone:ml-auto`} disabled={incomplete}>
+          {last ? t.send : t.next}
+          {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
+        </button>
       </div>
     </form>
   );
@@ -202,7 +204,7 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
       <fieldset className="m-0 p-0 border-0 min-w-0 grid gap-2" {...invalid}>
         <legend className={hideLabel ? 'sr-only' : 'p-0 mb-2 text-[15px] font-medium'}>{label}</legend>
         {help}
-        <div className="grid gap-3 wide:grid-cols-2">
+        <div className="grid gap-3">
           {q.options.map((o) => (
             <label key={o.id} className={choice}>
               {q.type === 'single'

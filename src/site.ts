@@ -63,7 +63,7 @@ export const PAGES = {
   },
   aml: {
     path: '/aml',
-    og: 'regulation',
+    og: 'aml',
     title: {
       en: 'AMLR: the new EU anti-money laundering rules · Vizory',
       da: 'Hvidvask: AMLR og de nye EU-regler · Vizory',

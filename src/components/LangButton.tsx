@@ -21,7 +21,7 @@ function browserLang(): Lang {
 }
 
 /** `copy`: a second button on the same page (the regulation menu's), without the id, which leaves
- *  the redirect above to the header's. */
+ *  the redirect above to the footer's. */
 export function LangButton({ lang, copy = false }: { lang: Lang; copy?: boolean }) {
   const t = dictionary[lang].langButton;
   const ref = useRef<HTMLButtonElement>(null);

@@ -3,8 +3,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
-import { LangButton } from './LangButton';
-import { ThemeToggle } from './ThemeToggle';
 import { iconButton } from './styles';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
@@ -16,26 +14,19 @@ function sectionOf(pathname: string) {
   return path === '/' ? 'home' : null;
 }
 
-/** Top bar: on the left the small wordmark (except on the front page, which has the large one)
- *  followed by the language and theme buttons; on the right the links to the sections. It lives in
- *  the layout, so it stays in place while the page below it changes. From 900px the regulation
- *  pages carry the wordmark, and the language and theme buttons, in their left menu, which reaches
- *  up beside the header, so the header leaves its own out and lets clicks through except on its
- *  own links. The front page has the two buttons in the footer; the header's are only hidden there,
- *  as its language button also does the automatic redirect. */
+/** Top bar: the small wordmark (except on the front page, which has the large one) and the links
+ *  to the sections. It lives in the layout, so it stays in place while the page below it changes.
+ *  From 900px the regulation pages carry the wordmark in their left menu, which reaches up beside
+ *  the header, so the header leaves its own out and lets clicks through except on its own links. */
 export function Header({ lang }: { lang: Lang }) {
   const t = dictionary[lang];
   const section = sectionOf(usePathname());
   const current = (s: string) => (section === s ? ('page' as const) : undefined);
   return (
-    <header className="relative z-2 flex items-center gap-4 py-6 phone:py-2 phone:gap-2 pointer-events-none [&>*]:pointer-events-auto">
+    <header className="relative z-2 flex items-center gap-4 py-6 phone:py-2 pointer-events-none [&>*]:pointer-events-auto">
       {section !== 'home' && (
         <Link className={`${wordmarkClass} text-[20px] no-underline ${section === 'regulation' ? 'wide:hidden' : ''}`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
       )}
-      <div className={`flex gap-1 ${section === 'home' ? 'hidden' : section === 'regulation' ? 'wide:hidden' : ''}`}>
-        <LangButton lang={lang} />
-        <ThemeToggle />
-      </div>
       <div className="flex gap-1 ml-auto">
         <Link className={iconButton} id="peopleBtn" href={localPath('/people', lang)} aria-current={current('people')} aria-label={t.people}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.86" cy="7.43" r="3.43" /><path d="M2 20c0-3.77 3.09-6.86 6.86-6.86s6.86 3.09 6.86 6.86" /><circle cx="18" cy="6.86" r="2.86" /><path d="M16.29 13.37c3.2.46 5.71 3.2 5.71 6.63" /></svg>

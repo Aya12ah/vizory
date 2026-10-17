@@ -13,7 +13,7 @@ export function HomePage({ lang }: { lang: Lang }) {
   return (
     <>
       <JsonLd data={graph(website, organisation(lang), danny)} />
-        <section data-home>
+        <section>
           <div className="pt-14 pb-20 phone:py-0">
             {/* The wordmark is the logo; the lede is the page's heading for search engines, styled as a lede. */}
             <p className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></p>

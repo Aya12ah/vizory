@@ -15,14 +15,13 @@ export function Address({ lang }: { lang: Lang }) {
 }
 
 // From 900px the regulation pages show the address in their left menu column (RegNav), so the
-// footer is left out there. On the front page the language and theme buttons sit above the address
-// instead of in the header.
+// footer is left out there. The language and theme buttons sit above the address.
 export function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 phone:py-6 wide:[body:has([data-reg-nav])_&]:hidden">
       <div>
         {/* -ml-3 lines the button labels up with the address below. */}
-        <div className="hidden [body:has([data-home])_&]:flex gap-1 -ml-3 mb-3"><LangButton lang={lang} copy /><ThemeToggle copy /></div>
+        <div className="flex gap-1 -ml-3 mb-3"><LangButton lang={lang} /><ThemeToggle /></div>
         <Address lang={lang} />
       </div>
     </footer>

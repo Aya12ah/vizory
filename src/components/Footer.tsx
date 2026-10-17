@@ -14,16 +14,23 @@ export function Address({ lang }: { lang: Lang }) {
   );
 }
 
-// From 900px the regulation pages show the address in their left menu column (RegNav), so the
-// footer is left out there. The language and theme buttons sit above the address.
+/** The theme and language buttons, at the right edge in line with the email address: shifted down
+ *  so their centre meets the middle of the address's last line (44px buttons, 14px line). */
+export function FootButtons({ lang, copy = false }: { lang: Lang; copy?: boolean }) {
+  return (
+    <div className="flex gap-1 translate-y-[15px] rounded-full bg-bg">
+      <ThemeToggle copy={copy} /><LangButton lang={lang} copy={copy} />
+    </div>
+  );
+}
+
+// From 900px the regulation pages show the address and the buttons in a bar of their own (RegNav),
+// so the footer is left out there.
 export function Footer({ lang }: { lang: Lang }) {
   return (
-    <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav])_&]:hidden">
-      <div>
-        {/* -ml-3 lines the theme icon up with the address below. */}
-        <div className="flex gap-1 -ml-3 mb-3"><ThemeToggle /><LangButton lang={lang} /></div>
-        <Address lang={lang} />
-      </div>
+    <footer className="flex justify-between items-end gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav])_&]:hidden">
+      <Address lang={lang} />
+      <FootButtons lang={lang} />
     </footer>
   );
 }

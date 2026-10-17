@@ -3,20 +3,19 @@ import type { ReactNode } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import type { Section } from './ContentsBar';
-import { Address } from './Footer';
-import { LangButton } from './LangButton';
+import { Address, FootButtons } from './Footer';
 import { SideSections } from './SideSections';
-import { ThemeToggle } from './ThemeToggle';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
 /** Layout of the regulation pages: topic menu on the left, content on the right; menu on top on phones.
  *  From 900px the menu column starts level with the header (92px: py-6 around the 44px buttons), so
  *  the menu can carry the wordmark, and the content (the second child) starts where it did below it.
  *  The section then fills at least the screen, so the address at the foot of the menu column sits at
- *  the bottom of the screen on short pages too. */
+ *  the bottom of the screen on short pages too. From 900px every child sits in the one grid row, so
+ *  the menu's bottom bar (address and buttons) can span both columns over the foot of the content. */
 export function RegSection({ children }: { children: ReactNode }) {
   return (
-    <section className="w-full grid grid-cols-[minmax(0,1fr)] gap-10 self-start pt-14 pb-20 wide:grid-cols-[200px_minmax(0,1fr)] wide:gap-14 wide:self-stretch wide:-mt-[92px] wide:pt-6 wide:pb-6 wide:[&>:nth-child(2)]:pt-[124px] wide:[&>:nth-child(2)]:pb-14 phone:py-6">
+    <section className="w-full grid grid-cols-[minmax(0,1fr)] gap-10 self-start pt-14 pb-20 wide:grid-cols-[200px_minmax(0,1fr)] wide:gap-14 wide:self-stretch wide:-mt-[92px] wide:pt-6 wide:pb-6 wide:[&>*]:row-start-1 wide:[&>:first-child]:col-start-1 wide:[&>:last-child]:col-start-2 wide:[&>:last-child]:pt-[124px] wide:[&>:last-child]:pb-14 phone:py-6">
       {children}
     </section>
   );
@@ -24,13 +23,14 @@ export function RegSection({ children }: { children: ReactNode }) {
 
 const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=page]:text-signal-text';
 
-/** The topic menu of the regulation pages. From 900px the column also carries the wordmark, the
- *  language and theme buttons and the address (instead of the header and the footer) and lists the sections of the current page. Three
- *  sticky siblings in a full-height column: at the top of the page the wordmark is level with the
- *  header buttons and the menu level with the content; on scrolling the wordmark stops 12px from
- *  the top and the menu rises to just below it (64px), as the gap between them scrolls away; the
- *  address keeps to the bottom of the screen. Siblings rather than nested sticky elements, which
- *  jitter in some browsers when scrolling back up. */
+/** The topic menu of the regulation pages. From 900px the column also carries the wordmark (instead
+ *  of the header) and lists the sections of the current page, and a bar across the bottom of the
+ *  screen carries the address on the left and the theme and language buttons on the right (instead
+ *  of the footer). Two sticky siblings in a full-height column: at the top of the page the wordmark
+ *  is level with the header buttons and the menu level with the content; on scrolling the wordmark
+ *  stops 12px from the top and the menu rises to just below it (64px), as the gap between them
+ *  scrolls away. Siblings rather than nested sticky elements, which jitter in some browsers when
+ *  scrolling back up. The bar is the grid's own child, after the column. */
 export function RegNav({ lang, current, sections }: { lang: Lang; current: string; sections?: Section[] }) {
   const t = dictionary[lang];
   const href = (path: string) => ({ href: localPath(path, lang), 'aria-current': current === path ? ('page' as const) : undefined });
@@ -39,6 +39,7 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
     <li><Link className={link} {...href(path)}>{label}</Link>{current === path && sections && <SideSections sections={sections} />}</li>
   );
   return (
+    <>
     <div className="wide:flex wide:flex-col">
       <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-20" data-reg-mark>
         <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
@@ -64,11 +65,11 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
           {item('/aml', t.regNav.amlr)}
         </ul>
       </nav>
-      <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address>
-        {/* -ml-3 lines the theme icon up with the address below. */}
-        <div className="flex gap-1 -ml-3 mb-3"><ThemeToggle copy /><LangButton lang={lang} copy /></div>
-        <Address lang={lang} />
-      </div>
     </div>
+    <div className="hidden wide:flex wide:sticky wide:bottom-6 col-span-full self-end justify-between items-end pointer-events-none [&>*]:pointer-events-auto" data-reg-address>
+      <Address lang={lang} />
+      <FootButtons lang={lang} copy />
+    </div>
+    </>
   );
 }

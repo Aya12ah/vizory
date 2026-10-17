@@ -255,6 +255,50 @@ for (const viewport of [undefined, PHONE]) {
   check('/api/geo not cached', (r.headers.get('cache-control') || '').includes('no-store'));
 }
 
+// The get-started flow (LeadForm with Vizory's flow): steps follow the answers, answers survive
+// Back and a reload, errors show, the summary holds only the chosen areas, and the text to send
+// carries the subject the rules give. Run on a phone and wide.
+for (const viewport of [PHONE, undefined]) {
+  const where = viewport ? 'phone' : 'wide';
+  const p = await page('/da/get-started', { lang: 'da', viewport });
+  await p.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  const step = () => p.getAttribute('form[data-lead-step]', 'data-lead-step');
+  const pick = (name) => p.getByLabel(name, { exact: true }).check();
+  const next = () => p.getByRole('button', { name: 'Næste' }).click();
+  check(`lead: starts at the area step (${where})`, (await step()) === 'area');
+  await next();
+  check(`lead: an unanswered step shows an error (${where})`, (await step()) === 'area' && await p.isVisible('[role=alert]'));
+  await pick('Kryptoaktiver (MiCA)'); await pick('Betalinger og e-penge'); await next();
+  await pick('Ny virksomhed uden tilladelse'); await next();
+  check(`lead: crypto follow-up for crypto (${where})`, (await step()) === 'crypto');
+  await p.locator('input[name=lead-cryptoLicence][value=no]').check(); await next();
+  check(`lead: payments follow-up for payments (${where})`, (await step()) === 'payments');
+  await p.locator('input[name=lead-payEmoney][value=no]').check(); await pick('Under 3 mio. euro'); await next();
+  check(`lead: no step for areas not chosen (${where})`, (await step()) === 'help');
+  await p.getByRole('button', { name: 'Tilbage' }).click();
+  check(`lead: Back keeps the answers (${where})`, (await step()) === 'payments' && await p.isChecked('input[name=lead-payVolume][value=under3]'));
+  await next(); await pick('Ansøgning eller meddelelse'); await next();
+  await pick('Inden for 3 måneder'); await next();
+  await p.fill('#lead-company', 'Firma ApS'); await p.fill('#lead-country', 'Danmark'); await next();
+  await p.reload({ waitUntil: 'networkidle' });
+  check(`lead: a reload keeps the step and answers (${where})`, (await step()) === 'contact');
+  await p.fill('#lead-name', 'Ann'); await p.fill('#lead-email', 'ann@firma'); await next();
+  check(`lead: an invalid email shows an error (${where})`, (await step()) === 'contact' && (await p.textContent('[role=alert]')).includes('e-mail'));
+  await p.fill('#lead-email', 'ann@firma.dk'); await next();
+  const summary = await p.textContent('[data-lead-summary]');
+  check(`lead: summary holds the chosen areas only (${where})`, summary.includes('Kryptoaktiver (MiCA)') && summary.includes('Betalinger og e-penge') && !summary.includes('Hvidvask'), summary);
+  await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).click();
+  check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.isVisible('[role=alert]'));
+  await p.getByLabel(/Jeg accepterer/).check();
+  await p.getByRole('button', { name: 'Kopiér teksten' }).click();
+  const text = await p.evaluate(() => navigator.clipboard.readText());
+  check(`lead: the text carries the subject the rules give (${where})`, text.startsWith('[Haster] Ansøgning om CASP-tilladelse / Betalinger: begrænset tilladelse kan være nok · Firma ApS'), text.split('\n')[0]);
+  await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).click();
+  await p.waitForSelector('[data-lead-done]');
+  check(`lead: the receipt suggests the chosen areas' guides (${where})`, (await p.locator('[data-lead-done] a').evaluateAll((as) => as.map((a) => a.getAttribute('href')))).join(' ') === '/da/mica /da/payments');
+  await p.context().close();
+}
+
 await browser.close();
 console.log(failed ? `${failed} check(s) failed` : 'all checks passed');
 process.exitCode = failed ? 1 : 0;

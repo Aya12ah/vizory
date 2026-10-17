@@ -7,10 +7,13 @@ const USER = 'olleh';
 const DOMAIN = 'kd.yroziv';
 const rev = (x: string) => x.split('').reverse().join('');
 
+/** The address, assembled in the browser (also used by LeadForm). */
+export const mailAddress = () => rev(USER) + '@' + rev(DOMAIN);
+
 export function Mail() {
   const [addr, setAddr] = useState<string | null>(null);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- must run in the browser only, never on the server
-  useEffect(() => setAddr(rev(USER) + '@' + rev(DOMAIN)), []);
+  useEffect(() => setAddr(mailAddress()), []);
   return (
     <a className="text-inherit no-underline transition-[color] duration-180 ease-[ease] hover:text-signal-text hover:underline hover:underline-offset-3" href={addr ? 'mailto:' + addr : undefined} hidden={!addr}>
       {addr}

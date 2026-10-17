@@ -13,7 +13,7 @@ import { chromium } from 'playwright';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-const PATHS = ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins', '/dlt', '/da', '/da/people', '/da/regulation', '/da/mica', '/da/mica-qa', '/da/payments', '/da/aml', '/da/stablecoins', '/da/dlt'];
+const PATHS = ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins', '/dlt', '/get-started', '/da', '/da/people', '/da/regulation', '/da/mica', '/da/mica-qa', '/da/payments', '/da/aml', '/da/stablecoins', '/da/dlt', '/da/get-started'];
 const VIEWPORTS = { desktop: { width: 1280, height: 800 }, mobile: { width: 390, height: 844 } };
 const THEMES = ['light', 'dark'];
 // Interactive states: a name, the page, what to do before the screenshot, and optionally only some viewports.

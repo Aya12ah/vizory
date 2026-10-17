@@ -100,6 +100,19 @@ export const PAGES = {
     },
     lastModified: '2026-10-17',
   },
+  getStarted: {
+    path: '/get-started',
+    og: 'home',
+    title: {
+      en: 'Get started: describe your compliance needs · Vizory',
+      da: 'Kom i gang: beskriv jeres behov for compliance-rådgivning · Vizory',
+    },
+    description: {
+      en: 'Describe your needs in a few minutes: area, status, timing and the help you need. Danny Dehghani, formerly of the Danish FSA, gets back to you.',
+      da: 'Beskriv jeres behov på få minutter: område, status, tidshorisont og den hjælp, I har brug for. Danny Dehghani, tidligere Finanstilsynet, vender tilbage.',
+    },
+    lastModified: '2026-10-17',
+  },
   regulation: {
     path: '/regulation',
     og: 'regulation',

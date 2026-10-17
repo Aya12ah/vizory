@@ -20,6 +20,27 @@ const en = {
     amlr: 'AMLR and the new rules',
   },
   contents: 'Contents',
+  getStarted: 'Describe your needs',
+  lead: {
+    step: (n: number, total: number) => `Step ${n} of ${total}`,
+    next: 'Next',
+    back: 'Back',
+    send: 'Open in your email',
+    copy: 'Copy the text',
+    copied: 'Copied',
+    errors: {
+      required: 'Please answer this.',
+      email: 'Please enter a valid email address.',
+      date: 'Please enter a valid date.',
+      option: 'Please choose one of the options.',
+      length: 'This is too long.',
+    },
+    doneTitle: 'Thank you',
+    doneText: 'When the email has been sent, Danny will get back to you within 2 working days.',
+    noMail: 'Did your email program not open? Copy the text and send it to',
+    readMore: 'Read more while you wait',
+    restart: 'Start again',
+  },
 };
 
 const da: typeof en = {
@@ -40,6 +61,27 @@ const da: typeof en = {
     amlr: 'AMLR og de nye regler',
   },
   contents: 'Indhold',
+  getStarted: 'Beskriv jeres behov',
+  lead: {
+    step: (n: number, total: number) => `Trin ${n} af ${total}`,
+    next: 'Næste',
+    back: 'Tilbage',
+    send: 'Åbn i dit mailprogram',
+    copy: 'Kopiér teksten',
+    copied: 'Kopieret',
+    errors: {
+      required: 'Besvar venligst dette.',
+      email: 'Skriv en gyldig e-mailadresse.',
+      date: 'Skriv en gyldig dato.',
+      option: 'Vælg en af mulighederne.',
+      length: 'Det er for langt.',
+    },
+    doneTitle: 'Tak',
+    doneText: 'Når mailen er sendt, vender Danny tilbage inden for 2 hverdage.',
+    noMail: 'Åbnede dit mailprogram ikke? Kopiér teksten, og send den til',
+    readMore: 'Læs videre, mens du venter',
+    restart: 'Start forfra',
+  },
 };
 
 export const dictionary = { en, da } satisfies Record<Lang, typeof en>;

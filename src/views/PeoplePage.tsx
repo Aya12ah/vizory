@@ -2,7 +2,8 @@ import { Entry, EntryList } from '@/components/EntryList';
 import { signalLink } from '@/components/styles';
 import { JsonLd } from '@/components/JsonLd';
 import { dictionary } from '@/i18n/dictionary';
-import type { Lang } from '@/i18n/lang';
+import Link from 'next/link';
+import { type Lang, localPath } from '@/i18n/lang';
 import { danny, graph, organisation } from '@/lib/schema';
 
 const PEOPLE = [
@@ -25,7 +26,7 @@ export function PeoplePage({ lang }: { lang: Lang }) {
           <EntryList>
             {PEOPLE.map((p) => (
               <Entry key={p.name} title={p.name} text={p.bio[lang]}>
-                <p><a className={signalLink} href={p.linkedin} rel="noopener">LinkedIn</a></p>
+                <p className="flex flex-wrap gap-x-5 gap-y-2"><a className={signalLink} href={p.linkedin} rel="noopener">LinkedIn</a><Link className={signalLink} href={localPath('/get-started', lang)}>{dictionary[lang].getStarted}</Link></p>
               </Entry>
             ))}
           </EntryList>

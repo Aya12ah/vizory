@@ -50,7 +50,7 @@ export const PAGES = {
   },
   payments: {
     path: '/payments',
-    og: 'home', // until the payments sharing images exist
+    og: 'payments',
     title: {
       en: 'Payment institution licence in Denmark: PSD2 to PSD3 · Vizory',
       da: 'Tilladelse som betalingsinstitut og e-pengeinstitut · Vizory',

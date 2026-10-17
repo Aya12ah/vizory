@@ -1,0 +1,124 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["financial-instrument-or-crypto-asset", "Financial instrument or crypto-asset?"],
+  ["tokenised-securities-under-existing-rules", "Tokenised securities under the existing rules"],
+  ["dlt-pilot-regime", "The DLT Pilot Regime", [
+    ["three-types-of-infrastructure", "Three types of DLT market infrastructure"],
+    ["which-instruments", "Which instruments and how much"],
+    ["exemptions", "Exemptions"],
+  ]],
+  ["applying-for-permission", "Applying for permission"],
+  ["settlement-and-csdr", "Settlement and the CSDR"],
+  ["what-is-coming", "What is coming"],
+  ["how-we-help", "How we help"],
+  ["questions-and-answers", "Questions and answers"],
+];
+
+# Tokenisation and the DLT Pilot Regime
+
+<p className="lede">Securities can be issued, traded and settled on distributed ledger technology (DLT). EU financial regulation is technology neutral: a tokenised share is a share, and a tokenised bond is a bond, so MiFID II, MiFIR, the CSDR and the Prospectus Regulation apply as to any other financial instrument.</p>
+
+<p className="lede">Where the existing rules stand in the way of DLT, the DLT Pilot Regime (DLTR) allows market infrastructures to obtain targeted exemptions. Below we go through how a token is classified, what the pilot regime allows, what an application must contain, and what is on its way.</p>
+
+<Toc title="Contents" items={toc} />
+
+<h2 id="financial-instrument-or-crypto-asset">Financial instrument or crypto-asset?</h2>
+
+The first question for any tokenisation project is which rules apply. MiCA does not apply to crypto-assets that qualify as financial instruments. They fall under the financial markets rules instead:
+
+- a token that gives rights equivalent to a share, such as dividends and votes, is a transferable security
+- a token that represents a claim for repayment with interest is normally a bond or another debt instrument
+- a token that gives a return linked to the performance of other assets may be a derivative or a unit in a collective investment undertaking
+
+Since 2023, MiFID II has stated expressly that financial instruments include instruments issued by means of DLT. ESMA has published guidelines on when a crypto-asset qualifies as a financial instrument. The assessment is made from the token's rights and economic substance, not from its technical form or name, and it must be made before the token is offered.
+
+<h2 id="tokenised-securities-under-existing-rules">Tokenised securities under the existing rules</h2>
+
+Tokenised securities can be issued and traded without the pilot regime, as long as all the ordinary requirements are met. That means, among other things:
+
+- a prospectus for public offers above the thresholds of the Prospectus Regulation
+- authorisation as an investment firm to provide investment services in the tokens
+- authorisation as a trading venue to operate a multilateral system
+- registration with a central securities depository for securities admitted to trading on a trading venue
+
+The last requirement in particular is difficult to meet when the token itself is to be the register of ownership. That is the gap the pilot regime is meant to fill.
+
+<h2 id="dlt-pilot-regime">The DLT Pilot Regime</h2>
+
+The DLT Pilot Regime Regulation has applied since 23 March 2023. It lets market infrastructures test trading and settlement of financial instruments on DLT with exemptions from specific requirements, under the supervision of the national authority and with ESMA following closely.
+
+<h3 id="three-types-of-infrastructure">Three types of DLT market infrastructure</h3>
+
+- **DLT MTF:** a multilateral trading facility that only admits DLT financial instruments to trading. It is operated by an investment firm or a market operator.
+- **DLT SS:** a settlement system that settles transactions in DLT financial instruments. It is operated by a central securities depository.
+- **DLT TSS:** a trading and settlement system that combines both services in one infrastructure. It can be operated by an investment firm, a market operator or a central securities depository, and a new firm can apply for the necessary authorisation together with the permission.
+
+<h3 id="which-instruments">Which instruments and how much</h3>
+
+Only some instruments may be admitted:
+
+- shares in issuers with a market capitalisation below EUR 500 million
+- bonds and other debt instruments with an issue size below EUR 1 billion, not including those that embed a derivative or have a structure that makes the risk difficult to understand
+- units in UCITS funds with assets under management below EUR 500 million
+
+The total market value of the DLT financial instruments on one infrastructure must not exceed EUR 6 billion when they are admitted. If it reaches EUR 9 billion, the infrastructure must activate its transition strategy.
+
+<h3 id="exemptions">Exemptions</h3>
+
+The exemptions are granted one by one and must be requested and justified in the application. Examples:
+
+- a DLT MTF can admit natural and legal persons directly as members, without an intermediary, if they meet requirements on fitness, knowledge and experience
+- a DLT SS can be exempted from the requirement that securities be recorded in book-entry form in securities accounts, so that the ledger itself serves as the register
+- settlement against payment can, under conditions, take place in commercial bank money or in e-money tokens instead of central bank money
+
+The infrastructure must propose compensatory measures that achieve the purpose of the rule it is exempted from.
+
+<h2 id="applying-for-permission">Applying for permission</h2>
+
+The application goes to the Danish FSA, which consults ESMA before it decides. A permission applies for up to six years. The application must contain, among other things:
+
+- a business plan and a description of the services and the instruments
+- a description of the DLT used, including how the ledger works, the rules for access and how transactions are validated
+- the requested exemptions, with justification and compensatory measures
+- IT and cyber security arrangements, which must also meet DORA
+- arrangements for safekeeping of clients' funds and DLT financial instruments, including private keys
+- a transition strategy for winding down the business or moving it to an ordinary regime if the permission ends or the limits are exceeded
+
+The application is technical. In our experience the description of the technology and of the legal effect of an entry in the ledger takes the most work, because it must be clear to the authority who owns what and when a transfer is final.
+
+<h2 id="settlement-and-csdr">Settlement and the CSDR</h2>
+
+Under the CSDR, securities admitted to trading on a trading venue must be recorded with a central securities depository, and settlement must take place in a securities settlement system. A DLT SS or DLT TSS can be exempted from parts of these rules, but the purpose stays the same: finality of settlement, protection of investors' assets and management of the risks of cash settlement. A tokenisation project that wants to work with an existing central securities depository should involve it early.
+
+<h2 id="what-is-coming">What is coming</h2>
+
+Few infrastructures have so far been granted permission under the pilot regime, and the EU has assessed whether the limits and the requirements are right. The Commission has proposed changes that would widen the regime, including higher limits. Until such changes are adopted, the current rules apply, and an application should be made on that basis.
+
+<h2 id="how-we-help">How we help</h2>
+
+- classification of tokens as financial instruments or crypto-assets
+- the regulatory structure of tokenisation projects: issuance, trading, settlement and custody
+- applications for permission under the DLT Pilot Regime, including requested exemptions and compensatory measures
+- applications for authorisation as an investment firm or a trading venue
+- dialogue with the Danish FSA and ESMA before, during and after the application
+
+<h2 id="questions-and-answers">Questions and answers</h2>
+
+### Is a tokenised share covered by MiCA?
+
+No. A tokenised share is a financial instrument and is covered by the financial markets rules, such as MiFID II, the Prospectus Regulation and the CSDR. MiCA only covers crypto-assets that are not financial instruments.
+
+### Do we need the pilot regime to trade tokenised securities?
+
+Not necessarily. Tokenised securities can be traded under the ordinary rules, provided all the requirements are met. The pilot regime is relevant when a requirement, typically on central securities depositories or intermediation, cannot be met with the technology chosen.
+
+<h2 id="sources">Sources</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2022/858/oj" rel="noopener">DLT Pilot Regime, Regulation (EU) 2022/858</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2014/65/oj" rel="noopener">MiFID II, Directive 2014/65/EU</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2014/909/oj" rel="noopener">CSDR, Regulation (EU) 909/2014</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj" rel="noopener">MiCA, Regulation (EU) 2023/1114</a></li>
+</ul>

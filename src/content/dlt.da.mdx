@@ -1,0 +1,124 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["finansielt-instrument-eller-kryptoaktiv", "Finansielt instrument eller kryptoaktiv?"],
+  ["tokeniserede-vaerdipapirer-efter-de-gaeldende-regler", "Tokeniserede værdipapirer efter de gældende regler"],
+  ["dlt-pilotordningen", "DLT-pilotordningen", [
+    ["tre-typer-infrastruktur", "Tre typer DLT-markedsinfrastruktur"],
+    ["hvilke-instrumenter", "Hvilke instrumenter og hvor meget"],
+    ["undtagelser", "Undtagelser"],
+  ]],
+  ["ansoegning-om-tilladelse", "Ansøgning om tilladelse"],
+  ["afvikling-og-csdr", "Afvikling og CSDR"],
+  ["hvad-der-er-paa-vej", "Hvad der er på vej"],
+  ["saadan-hjaelper-vi", "Sådan hjælper vi"],
+  ["spoergsmaal-og-svar", "Spørgsmål og svar"],
+];
+
+# Tokenisering og DLT-pilotordningen
+
+<p className="lede">Værdipapirer kan udstedes, handles og afvikles på distributed ledger-teknologi (DLT). EU's finansielle regulering er teknologineutral: en tokeniseret aktie er en aktie, og en tokeniseret obligation er en obligation, så MiFID II, MiFIR, CSDR og prospektforordningen gælder som for alle andre finansielle instrumenter.</p>
+
+<p className="lede">Hvor de gældende regler står i vejen for DLT, giver DLT-pilotordningen (DLTR) markedsinfrastrukturer mulighed for at få målrettede undtagelser. Nedenfor gennemgår vi, hvordan en token klassificeres, hvad pilotordningen tillader, hvad en ansøgning skal indeholde, og hvad der er på vej.</p>
+
+<Toc title="Indhold" items={toc} />
+
+<h2 id="finansielt-instrument-eller-kryptoaktiv">Finansielt instrument eller kryptoaktiv?</h2>
+
+Det første spørgsmål i ethvert tokeniseringsprojekt er, hvilke regler der gælder. MiCA gælder ikke for kryptoaktiver, der er finansielle instrumenter. De er i stedet omfattet af reglerne for de finansielle markeder:
+
+- en token, der giver rettigheder svarende til en aktie, fx udbytte og stemmeret, er et omsætteligt værdipapir
+- en token, der repræsenterer et krav på tilbagebetaling med rente, er normalt en obligation eller et andet gældsinstrument
+- en token, der giver et afkast knyttet til udviklingen i andre aktiver, kan være et derivat eller en andel i en investeringsforening
+
+Siden 2023 har MiFID II udtrykkeligt fastslået, at finansielle instrumenter også omfatter instrumenter udstedt ved hjælp af DLT. ESMA har udsendt retningslinjer for, hvornår et kryptoaktiv er et finansielt instrument. Vurderingen sker ud fra tokenens rettigheder og økonomiske indhold, ikke ud fra dens tekniske form eller navn, og den skal foretages, før tokenen udbydes.
+
+<h2 id="tokeniserede-vaerdipapirer-efter-de-gaeldende-regler">Tokeniserede værdipapirer efter de gældende regler</h2>
+
+Tokeniserede værdipapirer kan udstedes og handles uden pilotordningen, så længe alle de almindelige krav er opfyldt. Det betyder blandt andet:
+
+- et prospekt ved offentlige udbud over grænserne i prospektforordningen
+- tilladelse som investeringsselskab for at yde investeringsservice i tokens
+- tilladelse som handelsplads for at drive et multilateralt system
+- registrering i en værdipapircentral for værdipapirer, der er optaget til handel på en handelsplads
+
+Især det sidste krav er svært at opfylde, når selve tokenen skal være ejerbogen. Det er det hul, pilotordningen skal udfylde.
+
+<h2 id="dlt-pilotordningen">DLT-pilotordningen</h2>
+
+Forordningen om DLT-pilotordningen har gældt siden 23. marts 2023. Den lader markedsinfrastrukturer afprøve handel og afvikling af finansielle instrumenter på DLT med undtagelser fra bestemte krav under tilsyn af den nationale myndighed og tæt fulgt af ESMA.
+
+<h3 id="tre-typer-infrastruktur">Tre typer DLT-markedsinfrastruktur</h3>
+
+- **DLT MTF:** en multilateral handelsfacilitet, der kun optager DLT-finansielle instrumenter til handel. Den drives af et investeringsselskab eller en markedsoperatør.
+- **DLT SS:** et afviklingssystem, der afvikler transaktioner i DLT-finansielle instrumenter. Det drives af en værdipapircentral.
+- **DLT TSS:** et handels- og afviklingssystem, der samler begge tjenester i én infrastruktur. Det kan drives af et investeringsselskab, en markedsoperatør eller en værdipapircentral, og en ny virksomhed kan søge den nødvendige tilladelse sammen med tilladelsen efter pilotordningen.
+
+<h3 id="hvilke-instrumenter">Hvilke instrumenter og hvor meget</h3>
+
+Kun nogle instrumenter må optages:
+
+- aktier i udstedere med en markedsværdi under 500 mio. euro
+- obligationer og andre gældsinstrumenter med en udstedelse under 1 mia. euro, dog ikke dem, der indeholder et derivat eller har en struktur, der gør risikoen svær at forstå
+- andele i UCITS-fonde med en formue under 500 mio. euro
+
+Den samlede markedsværdi af DLT-finansielle instrumenter på én infrastruktur må ikke overstige 6 mia. euro, når de optages. Når den når 9 mia. euro, skal infrastrukturen sætte sin overgangsstrategi i gang.
+
+<h3 id="undtagelser">Undtagelser</h3>
+
+Undtagelserne gives enkeltvis og skal begæres og begrundes i ansøgningen. Eksempler:
+
+- en DLT MTF kan optage fysiske og juridiske personer direkte som medlemmer uden en mellemmand, hvis de opfylder krav til egnethed, viden og erfaring
+- en DLT SS kan undtages fra kravet om, at værdipapirer registreres i kontoform på værdipapirkonti, så registret på DLT selv fungerer som ejerbog
+- afvikling mod betaling kan på visse betingelser ske i kommercielle bankpenge eller i e-pengetokens i stedet for centralbankpenge
+
+Infrastrukturen skal foreslå kompenserende foranstaltninger, der opfylder formålet med den regel, den undtages fra.
+
+<h2 id="ansoegning-om-tilladelse">Ansøgning om tilladelse</h2>
+
+Ansøgningen indgives til Finanstilsynet, som hører ESMA, før det træffer afgørelse. En tilladelse gælder i op til seks år. Ansøgningen skal blandt andet indeholde:
+
+- en forretningsplan og en beskrivelse af tjenesterne og instrumenterne
+- en beskrivelse af den anvendte DLT, herunder hvordan registret fungerer, reglerne for adgang, og hvordan transaktioner valideres
+- de undtagelser, der søges om, med begrundelse og kompenserende foranstaltninger
+- ordninger for IT- og cybersikkerhed, som også skal opfylde DORA
+- ordninger for opbevaring af kundernes midler og DLT-finansielle instrumenter, herunder private nøgler
+- en overgangsstrategi for afvikling af forretningen eller overgang til de almindelige regler, hvis tilladelsen ophører eller grænserne overskrides
+
+Ansøgningen er teknisk. Vores erfaring er, at beskrivelsen af teknologien og af retsvirkningen af en registrering på DLT kræver mest arbejde, fordi det skal stå klart for myndigheden, hvem der ejer hvad, og hvornår en overdragelse er endelig.
+
+<h2 id="afvikling-og-csdr">Afvikling og CSDR</h2>
+
+Efter CSDR skal værdipapirer, der er optaget til handel på en handelsplads, registreres i en værdipapircentral, og afviklingen skal ske i et værdipapirafviklingssystem. En DLT SS eller DLT TSS kan undtages fra dele af reglerne, men formålet er det samme: endelig afvikling, beskyttelse af investorernes aktiver og styring af risiciene ved afvikling af betalinger. Et tokeniseringsprojekt, der vil samarbejde med en eksisterende værdipapircentral, bør inddrage den tidligt.
+
+<h2 id="hvad-der-er-paa-vej">Hvad der er på vej</h2>
+
+Indtil videre har få infrastrukturer fået tilladelse efter pilotordningen, og EU har vurderet, om grænserne og kravene er de rigtige. Kommissionen har foreslået ændringer, der vil udvide ordningen, herunder højere grænser. Indtil sådanne ændringer er vedtaget, gælder de nuværende regler, og en ansøgning bør udarbejdes ud fra dem.
+
+<h2 id="saadan-hjaelper-vi">Sådan hjælper vi</h2>
+
+- klassificering af tokens som finansielle instrumenter eller kryptoaktiver
+- den regulatoriske struktur i tokeniseringsprojekter: udstedelse, handel, afvikling og opbevaring
+- ansøgninger om tilladelse efter DLT-pilotordningen, herunder undtagelser og kompenserende foranstaltninger
+- ansøgninger om tilladelse som investeringsselskab eller handelsplads
+- dialog med Finanstilsynet og ESMA før, under og efter ansøgningen
+
+<h2 id="spoergsmaal-og-svar">Spørgsmål og svar</h2>
+
+### Er en tokeniseret aktie omfattet af MiCA?
+
+Nej. En tokeniseret aktie er et finansielt instrument og er omfattet af reglerne for de finansielle markeder, fx MiFID II, prospektforordningen og CSDR. MiCA omfatter kun kryptoaktiver, der ikke er finansielle instrumenter.
+
+### Skal vi bruge pilotordningen for at handle tokeniserede værdipapirer?
+
+Ikke nødvendigvis. Tokeniserede værdipapirer kan handles efter de almindelige regler, hvis alle kravene er opfyldt. Pilotordningen er relevant, når et krav, typisk om værdipapircentraler eller mellemmænd, ikke kan opfyldes med den valgte teknologi.
+
+<h2 id="kilder">Kilder</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2022/858/oj" rel="noopener">DLT-pilotordningen, forordning (EU) 2022/858</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2014/65/oj" rel="noopener">MiFID II, direktiv 2014/65/EU</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2014/909/oj" rel="noopener">CSDR, forordning (EU) nr. 909/2014</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj" rel="noopener">MiCA, forordning (EU) 2023/1114</a></li>
+</ul>

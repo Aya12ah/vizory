@@ -87,6 +87,19 @@ export const PAGES = {
     },
     lastModified: '2026-10-17',
   },
+  dlt: {
+    path: '/dlt',
+    og: 'dlt',
+    title: {
+      en: 'Tokenisation and the DLT Pilot Regime · Vizory',
+      da: 'Tokenisering og DLT-pilotordningen · Vizory',
+    },
+    description: {
+      en: 'Tokenised securities in the EU: financial instrument or crypto-asset, what the DLT Pilot Regime allows, and what an application to the Danish FSA needs.',
+      da: 'Tokeniserede værdipapirer i EU: finansielt instrument eller kryptoaktiv, hvad DLT-pilotordningen tillader, og hvad en ansøgning til Finanstilsynet kræver.',
+    },
+    lastModified: '2026-10-17',
+  },
   regulation: {
     path: '/regulation',
     og: 'regulation',

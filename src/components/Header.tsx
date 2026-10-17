@@ -10,7 +10,7 @@ import { Wordmark, wordmarkClass } from './Wordmark';
 function sectionOf(pathname: string) {
   const path = pathname.replace(/^\/da(?=\/|$)/, '') || '/';
   if (path === '/people') return 'people';
-  if (['/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins'].includes(path)) return 'regulation';
+  if (['/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins', '/dlt'].includes(path)) return 'regulation';
   return path === '/' ? 'home' : null;
 }
 

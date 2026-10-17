@@ -55,6 +55,10 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
         <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
           {item('/payments', t.regNav.authorisation)}
         </ul>
+        <p className="mt-2 text-ink font-medium">{t.regNav.dlt}</p>
+        <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
+          {item('/dlt', t.regNav.pilot)}
+        </ul>
         <p className="mt-2 text-ink font-medium">{t.regNav.aml}</p>
         <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
           {item('/aml', t.regNav.amlr)}

@@ -38,6 +38,14 @@ const GUIDES = [
     },
   },
   {
+    href: '/dlt',
+    title: { en: 'Tokenisation and the DLT Pilot Regime', da: 'Tokenisering og DLT-pilotordningen' },
+    summary: {
+      en: 'When a token is a financial instrument, what the DLT Pilot Regime allows, and what an application for permission must contain.',
+      da: 'Hvornår en token er et finansielt instrument, hvad DLT-pilotordningen tillader, og hvad en ansøgning om tilladelse skal indeholde.',
+    },
+  },
+  {
     href: '/aml',
     title: { en: 'Anti-money laundering: the AMLR and the new EU rules', da: 'Hvidvask: AMLR og de nye EU-regler' },
     summary: {

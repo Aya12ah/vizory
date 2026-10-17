@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import { type Answer, type Answers, type ErrorCode, type Flow, type Question, allQuestions, buildBrief, isAnswered, labelled, validate, visibleSteps } from '@/lead/engine';
 import { countries, countryOfNumber, dialCodes, flag } from '@/lead/countries';
 import { mailAddress } from './Mail';
-import { buttonPrimary, buttonSecondary, choice, field, fieldBase, signalLink } from './styles';
+import { buttonPrimary, buttonSecondary, choice, choiceBox, choiceInput, field, fieldBase, signalLink } from './styles';
 
 // Shows any question flow (src/lead/flows) one step at a time, from its description alone: the
 // engine decides which steps and questions are shown, checks the answers and builds the brief. The
@@ -19,8 +19,9 @@ const key = (flow: Flow) => `vz-lead-${flow.id}`;
 function load(flow: Flow): Saved | null { try { return JSON.parse(sessionStorage.getItem(key(flow)) || 'null'); } catch { return null; } }
 function save(flow: Flow, s: Saved | null) { try { if (s) sessionStorage.setItem(key(flow), JSON.stringify(s)); else sessionStorage.removeItem(key(flow)); } catch {} }
 
-/** `lede` is shown above the form; a step's own `why` takes its place while that step is shown. */
-export function LeadForm({ flow, lang, lede }: { flow: Flow; lang: Lang; lede: string }) {
+/** `title`, `lede` and `note` stand beside the steps; a step's own `why` takes the lede's place while
+ *  that step is shown. */
+export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: Lang; title: string; lede: string; note: ReactNode }) {
   const t = dictionary[lang].lead;
   const [answers, setAnswers] = useState<Answers>({});
   const [stepId, setStepId] = useState<string | null>(null);
@@ -85,72 +86,101 @@ export function LeadForm({ flow, lang, lede }: { flow: Flow; lang: Lang; lede: s
 
   // Clearing the answers asks first, so a stray click does not lose them.
   const startAgain = () => { if (window.confirm(t.restartConfirm)) restart(); };
+  const answered = Object.values(answers).some(isAnswered);
+
+  // From 900px two columns: the title, the text on why the step matters and the note stay put on
+  // the left while the step is answered on the right. The progress and the buttons sit in a bar at
+  // the bottom of the screen, so they stay in reach however long the step is.
+  // On a phone the note and "start again" follow the step instead, so the question comes first.
+  const aside = (
+    <>
+      <div className="max-w-[44ch] text-[13px] leading-[1.55] text-ink-soft">{note}</div>
+      {answered && !done && <p><button type="button" className="p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button></p>}
+    </>
+  );
+  const intro = (why: string) => (
+    <div className="grid gap-4 content-start wide:sticky wide:top-8">
+      <h1 className="page-title">{title}</h1>
+      <p className="lede mt-0" data-lead-why>{why}</p>
+      <div className="hidden wide:grid gap-4 mt-2">{aside}</div>
+    </div>
+  );
+  const asideBelow = <div className="grid gap-4 wide:hidden">{aside}</div>;
+  const grid = 'grid gap-8 wide:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] wide:gap-16 items-start';
+  const headingClass = 'text-[24px] leading-[1.25] tracking-[-0.01em] outline-none scroll-mt-8 phone:text-[21px]';
 
   if (done) {
     return (
-      <>
-      <p className="lede">{lede}</p>
-      <div className="mt-10 grid gap-5 max-w-[56ch]" data-lead-done>
-        <h2 ref={heading} tabIndex={-1} className="text-[21px] leading-[1.3] outline-none">{t.doneTitle}</h2>
-        <p className="text-ink-soft">{t.doneText}</p>
-        <p className="text-[14px] text-ink-soft">{t.noMail} {addr()}.</p>
-        <p className="flex flex-wrap gap-2">
-          <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>
-          <button type="button" className={buttonSecondary} onClick={restart}>{t.restart}</button>
-        </p>
-        {brief.links.length > 0 && (
-          <div className="grid gap-2">
-            <p className="text-[14px] font-medium">{t.readMore}</p>
-            <ul className="list-none m-0 p-0 grid gap-[6px]">
-              {brief.links.map((l) => <li key={l.href}><Link className={signalLink} href={localPath(l.href, lang)}>{l.label}</Link></li>)}
-            </ul>
-          </div>
-        )}
+      <div className={grid}>
+        {intro(lede)}
+        <div className="grid gap-5 max-w-[56ch]" data-lead-done>
+          <h2 ref={heading} tabIndex={-1} className={headingClass}>{t.doneTitle}</h2>
+          <p className="text-ink-soft">{t.doneText}</p>
+          <p className="text-[14px] text-ink-soft">{t.noMail} {addr()}.</p>
+          <p className="flex flex-wrap gap-2">
+            <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>
+            <button type="button" className={buttonSecondary} onClick={restart}>{t.restart}</button>
+          </p>
+          {brief.links.length > 0 && (
+            <div className="grid gap-2">
+              <p className="text-[14px] font-medium">{t.readMore}</p>
+              <ul className="list-none m-0 p-0 grid gap-[6px]">
+                {brief.links.map((l) => <li key={l.href}><Link className={signalLink} href={localPath(l.href, lang)}>{l.label}</Link></li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+        {asideBelow}
       </div>
-      </>
     );
   }
 
   const only = step.questions.length === 1;
-  const answered = Object.values(answers).some(isAnswered);
   return (
-    <>
-    <p className="lede" data-lead-why>{step.why?.[lang] ?? lede}</p>
-    <form className="mt-10 grid gap-6 max-w-[56ch]" noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
-      <div className="grid gap-2">
-        <p className="flex justify-between items-baseline gap-4 text-[12px] text-ink-soft tabular-nums">
-          {t.step(index + 1, steps.length)}
-          {answered && <button type="button" className="p-0 border-0 [background:none] [font:inherit] text-ink-soft cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button>}
-        </p>
-        {/* One segment per step: the steps done and the current one filled. */}
-        <div className="flex gap-[3px]" aria-hidden="true" data-lead-progress>
-          {steps.map((s, i) => <div key={s.id} className={`h-[4px] flex-1 rounded-pill transition-[background-color] duration-300 ease-[ease] ${i <= index ? 'bg-signal' : 'bg-line'}`} />)}
+    <form className="flex flex-col min-h-[calc(100dvh-148px)] phone:min-h-[calc(100dvh-90px)]" noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
+      <div className={`${grid} mb-14`}>
+        {intro(step.why?.[lang] ?? lede)}
+        <div className="grid gap-7 min-w-0">
+          <div className="grid gap-2">
+            <h2 ref={heading} tabIndex={-1} className={headingClass}>{step.title[lang]}</h2>
+            {step.intro && <p className="text-[15px] text-ink-soft">{step.intro[lang]}</p>}
+          </div>
+          {step.summary && (
+            <dl className="m-0 grid gap-5 text-[14px]" data-lead-summary>
+              {brief.sections.map((s) => (
+                <div key={s.title} className="grid gap-1">
+                  <dt className="font-medium text-ink">{s.title}</dt>
+                  {s.rows.map((r) => <dd key={r.label} className="m-0 text-ink-soft"><span className="text-ink">{labelled(r.label)}</span> {r.value}</dd>)}
+                </div>
+              ))}
+            </dl>
+          )}
+          {step.questions.map((q) => (
+            <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
+          ))}
+          {last && <p><button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button></p>}
+        </div>
+        {asideBelow}
+      </div>
+      {/* The bar: its background and top line reach the screen's edges (border-image outset, which
+          does not widen the page). */}
+      <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3 [border-image:linear-gradient(var(--line)_0_1px,var(--bg)_1px)_fill_0/0/0_100vmax]">
+        <div className="flex items-center gap-5 flex-1 min-w-[140px] max-w-[560px] phone:flex-col phone:items-stretch phone:gap-2">
+          <p className="flex-none text-[15px] text-ink-soft tabular-nums whitespace-nowrap" data-lead-count>{t.step(index + 1, steps.length)}</p>
+          {/* One segment per step: the steps done and the current one filled. */}
+          <div className="flex flex-1 gap-[6px]" aria-hidden="true" data-lead-progress>
+            {steps.map((s, i) => <div key={s.id} className={`h-[4px] flex-1 rounded-sm transition-[background-color] duration-300 ease-[ease] ${i <= index ? 'bg-signal' : 'bg-line'}`} />)}
+          </div>
+        </div>
+        <div className="flex flex-none gap-3 ml-auto phone:gap-2">
+          <button type="button" className={buttonSecondary} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
+          <button type="submit" className={buttonPrimary}>
+            {last ? t.send : t.next}
+            {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
+          </button>
         </div>
       </div>
-      <div className="grid gap-2">
-        <h2 ref={heading} tabIndex={-1} className="text-[21px] leading-[1.3] outline-none">{step.title[lang]}</h2>
-        {step.intro && <p className="text-[14px] text-ink-soft">{step.intro[lang]}</p>}
-      </div>
-      {step.summary && (
-        <dl className="m-0 grid gap-5 text-[14px]" data-lead-summary>
-          {brief.sections.map((s) => (
-            <div key={s.title} className="grid gap-1">
-              <dt className="font-medium text-ink">{s.title}</dt>
-              {s.rows.map((r) => <dd key={r.label} className="m-0 text-ink-soft"><span className="text-ink">{labelled(r.label)}</span> {r.value}</dd>)}
-            </div>
-          ))}
-        </dl>
-      )}
-      {step.questions.map((q) => (
-        <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
-      ))}
-      <div className="flex flex-wrap gap-2">
-        {index > 0 && <button type="button" className={buttonSecondary} onClick={() => go(index - 1)}>{t.back}</button>}
-        <button type="submit" className={buttonPrimary}>{last ? t.send : t.next}</button>
-        {last && <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>}
-      </div>
     </form>
-    </>
   );
 }
 
@@ -172,14 +202,17 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
       <fieldset className="m-0 p-0 border-0 min-w-0 grid gap-2" {...invalid}>
         <legend className={hideLabel ? 'sr-only' : 'p-0 mb-2 text-[15px] font-medium'}>{label}</legend>
         {help}
-        {q.options.map((o) => (
-          <label key={o.id} className={choice}>
-            {q.type === 'single'
-              ? <input type="radio" name={id} value={o.id} checked={value === o.id} onChange={() => onChange(o.id)} />
-              : <input type="checkbox" name={id} value={o.id} checked={list.includes(o.id)} onChange={(e) => onChange(e.target.checked ? [...list, o.id] : list.filter((x) => x !== o.id))} />}
-            <span>{o.label[lang]}</span>
-          </label>
-        ))}
+        <div className="grid gap-3 wide:grid-cols-2">
+          {q.options.map((o) => (
+            <label key={o.id} className={choice}>
+              {q.type === 'single'
+                ? <input className={choiceInput} type="radio" name={id} value={o.id} checked={value === o.id} onChange={() => onChange(o.id)} />
+                : <input className={choiceInput} type="checkbox" name={id} value={o.id} checked={list.includes(o.id)} onChange={(e) => onChange(e.target.checked ? [...list, o.id] : list.filter((x) => x !== o.id))} />}
+              <Box round={q.type === 'single'} />
+              <span>{o.label[lang]}</span>
+            </label>
+          ))}
+        </div>
         {err}
       </fieldset>
     );
@@ -188,7 +221,8 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
     return (
       <div className="grid gap-2">
         <label className={choice}>
-          <input type="checkbox" id={id} checked={value === true} onChange={(e) => onChange(e.target.checked)} {...invalid} />
+          <input className={choiceInput} type="checkbox" id={id} checked={value === true} onChange={(e) => onChange(e.target.checked)} {...invalid} />
+          <Box round={false} />
           <span>{label}</span>
         </label>
         {err}
@@ -226,6 +260,17 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
         : <input type={q.type === 'email' ? 'email' : q.type === 'date' ? 'date' : 'text'} {...common} />}
       {err}
     </div>
+  );
+}
+
+/** The drawn checkbox (a tick) or radio (a dot) of a choice card. */
+function Box({ round }: { round: boolean }) {
+  return (
+    <span className={choiceBox(round)} aria-hidden="true">
+      {round
+        ? <svg className="size-[10px]" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="var(--signal)" /></svg>
+        : <svg className="size-[14px]" viewBox="0 0 14 14" fill="none" stroke="var(--on-signal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 7.5l3 3 6-7" /></svg>}
+    </span>
   );
 }
 

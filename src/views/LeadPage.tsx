@@ -19,10 +19,8 @@ const T = {
 export function LeadPage({ lang }: { lang: Lang }) {
   const t = T[lang];
   return (
-    <section className="pt-14 pb-20 phone:py-6">
-      <h1 className="page-title">{t.title}</h1>
-      <LeadForm flow={vizoryFlow} lang={lang} lede={t.lede} />
-      <p className="mt-14 max-w-[56ch] text-[13px] leading-[1.55] text-ink-soft">{t.privacy} <Mail />.</p>
+    <section className="pt-14 phone:pt-6">
+      <LeadForm flow={vizoryFlow} lang={lang} title={t.title} lede={t.lede} note={<p>{t.privacy} <Mail />.</p>} />
     </section>
   );
 }

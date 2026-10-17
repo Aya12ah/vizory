@@ -268,7 +268,9 @@ for (const viewport of [PHONE, undefined]) {
   check(`lead: starts at the area step (${where})`, (await step()) === 'area');
   const why = () => p.textContent('[data-lead-why]');
   check(`lead: the text above says why the step matters (${where})`, (await why()).includes('fem områder'));
-  check(`lead: one progress segment per step (${where})`, (await p.locator('[data-lead-progress] > div').count()) === Number((await p.textContent('form p')).match(/af (\d+)/)[1]));
+  check(`lead: one progress segment per step (${where})`, (await p.locator('[data-lead-progress] > div').count()) === Number((await p.textContent('[data-lead-count]')).match(/af (\d+)/)[1]));
+  check(`lead: progress and buttons in a bar at the bottom of the screen (${where})`, await p.evaluate(() => { const b = document.querySelector('[data-lead-progress]').closest('.sticky').getBoundingClientRect(); return Math.abs(b.bottom - innerHeight) < 2 && !!document.querySelector('.sticky button[type=submit]'); }));
+  check(`lead: the bar does not widen the page (${where})`, await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await next();
   check(`lead: an unanswered step shows an error (${where})`, (await step()) === 'area' && await p.isVisible('[role=alert]'));
   await pick('Kryptoaktiver (MiCA)'); await pick('Betalinger og e-penge'); await next();

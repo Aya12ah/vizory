@@ -54,7 +54,7 @@ export function RootLayout({ lang, children }: { lang: Lang; children: ReactNode
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
-        <div className="max-w-[1120px] mx-auto px-(--gutter) min-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] flex flex-col">
+        <div className="relative max-w-[1120px] mx-auto px-(--gutter) min-h-[calc(100dvh-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))] flex flex-col">
           <Header lang={lang} />
           {/* Moving between pages crossfades the content; header and footer stay put. */}
           <ViewTransition default="page">

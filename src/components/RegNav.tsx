@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import type { Section } from './ContentsBar';
+import { Address } from './Footer';
 import { SideSections } from './SideSections';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
@@ -19,8 +20,12 @@ export function RegSection({ children }: { children: ReactNode }) {
 
 const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=page]:text-signal-text';
 
-/** The topic menu of the regulation pages. From 900px it carries the wordmark (instead of the header)
- *  and lists the sections of the current page, and stays in view while the page scrolls. */
+/** The topic menu of the regulation pages. From 900px it carries the wordmark and the address
+ *  (instead of the header and the footer), lists the sections of the current page, and stays in
+ *  view while the page scrolls. At the top of the page the wordmark is level with the header
+ *  buttons and the menu level with the content; on scrolling the wordmark stops 12px from the top
+ *  and the menu rises to just below it: the menu sticks at -60px (12px minus the 72px gap), so the
+ *  gap scrolls away, while the wordmark sticks on its own. */
 export function RegNav({ lang, current, sections }: { lang: Lang; current: string; sections?: Section[] }) {
   const t = dictionary[lang];
   const href = (path: string) => ({ href: localPath(path, lang), 'aria-current': current === path ? ('page' as const) : undefined });
@@ -29,9 +34,8 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
     <li><Link className={link} {...href(path)}>{label}</Link>{current === path && sections && <SideSections sections={sections} />}</li>
   );
   return (
-    <nav className="text-[14px] grid gap-2 content-start wide:self-start wide:sticky wide:top-3 wide:max-h-[calc(100dvh-24px)] wide:overflow-y-auto phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation}>
-      {/* Level with the header buttons; the gap below keeps the menu where it starts on other widths. */}
-      <p className="hidden wide:flex items-center h-11 mb-[72px]">
+    <nav className="text-[14px] grid gap-2 content-start wide:self-start wide:sticky wide:-top-15 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation} data-reg-nav>
+      <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-[72px]">
         <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
       </p>
       <p><Link className="text-ink font-medium no-underline hover:text-signal-text aria-[current=page]:text-signal-text" {...href('/regulation')}>{t.regulation}</Link></p>
@@ -44,6 +48,7 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
       <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
         {item('/payments', t.regNav.authorisation)}
       </ul>
+      <div className="hidden wide:block mt-10"><Address lang={lang} /></div>
     </nav>
   );
 }

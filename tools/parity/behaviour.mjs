@@ -193,7 +193,14 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('wordmark in the left menu, not the header', await p.locator('main nav a[aria-label="vizory, front page"]').isVisible() && !(await p.locator('header a[aria-label="vizory, front page"]').isVisible()));
   await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
   await p.waitForTimeout(300);
-  check('left menu stays in view', await p.evaluate(() => { const t = document.querySelector('[data-side-sections]').closest('nav').getBoundingClientRect().top; return t >= 0 && t < 40; }));
+  // Scrolled: the wordmark stops near the top and the menu sits just below it; the address shows.
+  const pos = await p.evaluate(() => {
+    const nav = document.querySelector('[data-reg-nav]'), top = (el) => el.getBoundingClientRect().top;
+    return { mark: top(nav.querySelector('a[aria-label]')), menu: top(nav.querySelector('p a[href="/regulation"]')), mail: nav.querySelector('a[href^="mailto:"]')?.checkVisibility() };
+  });
+  check('wordmark stays at the top of the left menu', pos.mark >= 0 && pos.mark < 40, JSON.stringify(pos));
+  check('menu rises to just below the wordmark', pos.menu - pos.mark > 20 && pos.menu - pos.mark < 60, JSON.stringify(pos));
+  check('address in the left menu, footer left out', pos.mail === true && !(await p.locator('footer').isVisible()));
   check('left menu marks the section of a subsection', (await side.locator('a[aria-current]').getAttribute('href')) === '#what-an-application-for-casp-authorisation-must-contain');
   check('header buttons still work beside the menu', await p.evaluate(() => { const b = document.getElementById('peopleBtn').getBoundingClientRect(); return document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2)?.closest('#peopleBtn') !== null; }) || (await p.evaluate(() => document.getElementById('peopleBtn').getBoundingClientRect().bottom)) < 0);
   await side.locator('a[href="#how-we-help"]').click();

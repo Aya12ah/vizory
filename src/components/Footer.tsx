@@ -2,13 +2,22 @@ import { dictionary } from '@/i18n/dictionary';
 import type { Lang } from '@/i18n/lang';
 import { Mail } from './Mail';
 
+/** City and email address: in the footer, and from 900px in the regulation pages' left menu. */
+export function Address({ lang }: { lang: Lang }) {
+  return (
+    <div className="flex flex-col gap-[6px] text-[14px] leading-none text-ink-soft">
+      <p>{dictionary[lang].copenhagen}</p>
+      <p><Mail /><noscript>hello [at] vizory.dk</noscript></p>
+    </div>
+  );
+}
+
+// From 900px the regulation pages show the address in their left menu (RegNav), so the footer
+// is left out there.
 export function Footer({ lang }: { lang: Lang }) {
   return (
-    <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 text-[14px] leading-none text-ink-soft phone:py-6">
-      <div className="flex flex-col gap-[6px]">
-        <p>{dictionary[lang].copenhagen}</p>
-        <p><Mail /><noscript>hello [at] vizory.dk</noscript></p>
-      </div>
+    <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 phone:py-6 wide:[body:has([data-reg-nav])_&]:hidden">
+      <Address lang={lang} />
     </footer>
   );
 }

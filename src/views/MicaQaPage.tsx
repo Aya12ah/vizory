@@ -105,12 +105,12 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
   const toc = (
     <ol>
       {all.map((topic) => (
-        <li key={topic.id}><a href={`#${topic.id}`} lang="en">{topic.title}</a> <span className="text-[12px] text-ink-soft">{topic.items.length}</span></li>
+        <li key={topic.id}><a href={`#${topic.id}`} lang="en">{topic.title}</a></li>
       ))}
     </ol>
   );
   const page = webPage('/mica-qa', lang, t.title, { about: ['MiCA', 'ESMA Q&A'] });
-  const sections = all.map((tp) => ({ id: tp.id, label: tp.title, count: tp.items.length, lang: 'en' }));
+  const sections = all.map((tp) => ({ id: tp.id, label: tp.title, lang: 'en' }));
   return (
     <>
       <JsonLd data={graph({ ...page, breadcrumb: { '@id': `${page.url}#breadcrumb` } }, regBreadcrumb('/mica-qa', lang, t.title))} />
@@ -121,11 +121,11 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
               <h1 className="page-title">{t.title}</h1>
               <p className="lede">{t.lede}</p>
               <p className="mt-6 text-[13px] leading-[1.55]">{t.source(qaCount, downloaded(lang))}</p>
-              <nav className="toc" aria-label={dictionary[lang].topics}>
-                <p className="toc-title">{dictionary[lang].topics}</p>
+              <nav className="toc" aria-label={dictionary[lang].contents}>
+                <p className="toc-title">{dictionary[lang].contents}</p>
                 {toc}
               </nav>
-              <ContentsBar title={dictionary[lang].topics} sections={sections} />
+              <ContentsBar title={dictionary[lang].contents} sections={sections} />
               <QaList>
                 {all.map((topic) => (
                   <section key={topic.id}>

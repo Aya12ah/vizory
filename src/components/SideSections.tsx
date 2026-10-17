@@ -16,10 +16,9 @@ export function SideSections({ sections }: { sections: Section[] }) {
   return (
     <ul className="hidden wide:grid list-none mt-[6px] mb-1 mx-0 py-0 pr-0 pl-3 border-l border-line gap-[5px] text-[13px] leading-[1.4]" data-side-sections>
       {sections.filter((s) => !s.depth).map((s) => (
-        <li key={s.id} className="m-0 flex items-baseline justify-between gap-3">
+        <li key={s.id} className="m-0">
           <a href={`#${s.id}`} lang={s.lang} aria-current={s.id === marked ? 'true' : undefined}
             className="text-ink-soft no-underline hover:text-signal-text aria-[current]:text-signal-text">{s.label}</a>
-          {s.count !== undefined && <span className="text-[12px] text-ink-soft">{s.count}</span>}
         </li>
       ))}
     </ul>

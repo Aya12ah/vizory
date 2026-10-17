@@ -14,7 +14,7 @@ const en = {
     qa: 'ESMA Q&As',
     payments: 'Payments',
   },
-  topics: 'Topics',
+  contents: 'Contents',
 };
 
 const da: typeof en = {
@@ -29,7 +29,7 @@ const da: typeof en = {
     qa: 'ESMA\'s spørgsmål og svar',
     payments: 'Betalinger',
   },
-  topics: 'Emner',
+  contents: 'Indhold',
 };
 
 export const dictionary = { en, da } satisfies Record<Lang, typeof en>;

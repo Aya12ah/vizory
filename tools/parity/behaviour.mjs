@@ -142,7 +142,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('topic menu opens', await p.isVisible('#contents-menu'));
   check('topic bar expanded', (await bar.getAttribute('aria-expanded')) === 'true');
   check('menu marks topic', (await p.locator('#contents-menu a[aria-current]').getAttribute('href')) === `#${second}`);
-  check('menu shows counts', (await p.locator('#contents-menu li span').count()) === (await p.locator('section > h2').count()));
+  check('topic menu titled Contents, no counts', (await bar.innerText()).startsWith('Contents') && (await p.locator('#contents-menu li span').count()) === 0);
   await p.keyboard.press('Escape');
   check('topic menu closes on Escape', !(await p.isVisible('#contents-menu')));
   check('focus back on topic bar', await bar.evaluate((b) => document.activeElement === b));
@@ -210,7 +210,8 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('left menu link jumps to the section', top >= 48 && top <= 80, String(top));
   await p.context().close();
   const q = await page('/mica-qa', { theme: 'light' });
-  check('Q&A topics with counts in the left menu', (await q.locator('[data-side-sections] li span').count()) === (await q.locator('section > h2').count()));
+  check('Q&A topics in the left menu, no counts', (await q.locator('[data-side-sections] li').count()) === (await q.locator('section > h2').count()) && (await q.locator('[data-side-sections] li span').count()) === 0);
+  check('Q&A contents titled Contents, no counts', (await q.locator('nav.toc .toc-title').innerText()) === 'Contents' && (await q.locator('nav.toc li span').count()) === 0);
   await q.context().close();
 }
 // Links between pages of the same language navigate without a full page load, and the header

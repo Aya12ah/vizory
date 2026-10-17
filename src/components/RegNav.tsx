@@ -4,7 +4,9 @@ import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import type { Section } from './ContentsBar';
 import { Address } from './Footer';
+import { LangButton } from './LangButton';
 import { SideSections } from './SideSections';
+import { ThemeToggle } from './ThemeToggle';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
 /** Layout of the regulation pages: topic menu on the left, content on the right; menu on top on phones.
@@ -22,8 +24,8 @@ export function RegSection({ children }: { children: ReactNode }) {
 
 const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=page]:text-signal-text';
 
-/** The topic menu of the regulation pages. From 900px the column also carries the wordmark and the
- *  address (instead of the header and the footer) and lists the sections of the current page. Three
+/** The topic menu of the regulation pages. From 900px the column also carries the wordmark, the
+ *  language and theme buttons and the address (instead of the header and the footer) and lists the sections of the current page. Three
  *  sticky siblings in a full-height column: at the top of the page the wordmark is level with the
  *  header buttons and the menu level with the content; on scrolling the wordmark stops 12px from
  *  the top and the menu rises to just below it (64px), as the gap between them scrolls away; the
@@ -53,7 +55,11 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
           {item('/payments', t.regNav.authorisation)}
         </ul>
       </nav>
-      <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address><Address lang={lang} /></div>
+      <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address>
+        {/* -ml-3 lines the button labels up with the address below. */}
+        <div className="flex gap-1 -ml-3 mb-3"><LangButton lang={lang} copy /><ThemeToggle copy /></div>
+        <Address lang={lang} />
+      </div>
     </div>
   );
 }

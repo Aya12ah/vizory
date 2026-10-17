@@ -19,9 +19,9 @@ function sectionOf(pathname: string) {
 /** Top bar: on the left the small wordmark (except on the front page, which has the large one)
  *  followed by the language and theme buttons; on the right the links to the sections. It lives in
  *  the layout, so it stays in place while the page below it changes. From 900px the regulation
- *  pages carry the wordmark in their left menu, which reaches up beside the header, so the header
- *  hides its own (and its transition name) but keeps its place, so the buttons sit just right of
- *  the menu's wordmark; it lets clicks through except on its own links. */
+ *  pages carry the wordmark, and the language and theme buttons, in their left menu, which reaches
+ *  up beside the header, so the header leaves its own out and lets clicks through except on its
+ *  own links. */
 export function Header({ lang }: { lang: Lang }) {
   const t = dictionary[lang];
   const section = sectionOf(usePathname());
@@ -29,9 +29,9 @@ export function Header({ lang }: { lang: Lang }) {
   return (
     <header className="relative z-2 flex items-center gap-4 py-6 phone:py-2 phone:gap-2 pointer-events-none [&>*]:pointer-events-auto">
       {section !== 'home' && (
-        <Link className={`${wordmarkClass} text-[20px] no-underline ${section === 'regulation' ? 'wide:invisible wide:[view-transition-name:none]' : ''}`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
+        <Link className={`${wordmarkClass} text-[20px] no-underline ${section === 'regulation' ? 'wide:hidden' : ''}`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
       )}
-      <div className="flex gap-1">
+      <div className={`flex gap-1 ${section === 'regulation' ? 'wide:hidden' : ''}`}>
         <LangButton lang={lang} />
         <ThemeToggle />
       </div>

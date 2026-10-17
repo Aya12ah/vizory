@@ -214,6 +214,18 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('Q&A contents titled Contents, no counts', (await q.locator('nav.toc .toc-title').innerText()) === 'Contents' && (await q.locator('nav.toc li span').count()) === 0);
   await q.context().close();
 }
+// The wordmark glides between pages as a view transition named "wordmark", which the browser skips
+// if two rendered elements carry the name: exactly one on every page, wide and on a phone.
+for (const viewport of [undefined, PHONE]) {
+  const p = await page('/', { viewport });
+  const counts = [];
+  for (const path of ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments']) {
+    await p.goto(base + path, { waitUntil: 'networkidle' });
+    counts.push(await p.evaluate(() => [...document.querySelectorAll('*')].filter((e) => getComputedStyle(e).viewTransitionName === 'wordmark' && e.checkVisibility()).length));
+  }
+  check(`one wordmark to glide on every page (${viewport ? 'phone' : 'wide'})`, counts.every((n) => n === 1), counts.join(' '));
+  await p.context().close();
+}
 // Links between pages of the same language navigate without a full page load, and the header
 // marks the new section.
 {

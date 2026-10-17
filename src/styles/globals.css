@@ -59,6 +59,11 @@
 ::view-transition-group(.page) { animation-duration: 340ms; }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: 340ms; }
+/* The wordmark glides and scales between the large one on the front page and the small one on
+   the other pages (see Wordmark), in step with the page transition. */
+::view-transition-group(wordmark) { animation-duration: 340ms; animation-timing-function: cubic-bezier(.2, 0, 0, 1); }
+::view-transition-old(wordmark),
+::view-transition-new(wordmark) { animation-duration: 340ms; }
 @keyframes vz-fade-out { to { opacity: 0; } }
 @keyframes vz-fade-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {

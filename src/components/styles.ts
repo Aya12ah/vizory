@@ -12,7 +12,7 @@ export const iconButton =
 export const signalLink = 'text-[14px] text-signal-text no-underline hover:underline hover:underline-offset-3';
 
 // Forms (the get-started flow). There is no preflight reset, so inputs set their font and box.
-const button = 'inline-flex items-center justify-center gap-[10px] h-12 box-border rounded-pill px-6 font-sans text-[16px] font-medium leading-none no-underline whitespace-nowrap cursor-pointer transition-[color,background-color,box-shadow,opacity] duration-180 ease-[ease] disabled:opacity-35 disabled:cursor-default';
+const button = 'inline-flex items-center justify-center gap-2 h-11 box-border rounded-md px-5 font-sans text-[15px] font-medium leading-none no-underline whitespace-nowrap cursor-pointer transition-[color,background-color,box-shadow,opacity] duration-180 ease-[ease] disabled:opacity-35 disabled:cursor-default';
 /** The main action: a filled pill in the signal colour. */
 export const buttonPrimary = `${button} border-none bg-signal text-on-signal not-disabled:hover:bg-mint`;
 /** A secondary action: an outlined pill. */

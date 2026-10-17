@@ -26,7 +26,7 @@ function Campaign({ lang }: { lang: Lang }) {
       <p className="text-ink-soft max-w-[52ch]">{t.text}</p>
       <Link className={`${buttonSecondary} mt-6`} href={localPath('/get-started', lang)}>
         {t.cta}
-        <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
+        <svg className="size-4" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
       </Link>
     </aside>
   );

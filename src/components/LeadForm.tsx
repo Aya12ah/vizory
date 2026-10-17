@@ -186,12 +186,12 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress level with the buttons, Next, and "Step x of y" small above
-            the progress, centred in the 38px between the bar's top line and the progress. On a phone
+            the progress, centred in the 36px between the bar's top line and the progress. On a phone
             the progress runs across the top, with "Step x of y" between the buttons below it (left
             out on the last step, whose longer button needs the room). */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="relative flex-1 min-w-0 phone:contents">
-          <p className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-[13px] text-[12px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:mb-0 phone:order-3 phone:flex-1 phone:text-center phone:text-[14px] ${last ? 'phone:hidden' : ''}`} data-lead-count>{t.step(index + 1, steps.length)}</p>
+          <p className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-[12px] text-[12px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:mb-0 phone:order-3 phone:flex-1 phone:text-center phone:text-[14px] ${last ? 'phone:hidden' : ''}`} data-lead-count>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back. */}
           <div className="flex gap-[6px] phone:basis-full phone:order-1" aria-hidden="true" data-lead-progress>
@@ -206,7 +206,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             email without a domain) show when it is pressed. */}
         <button type="submit" className={`${buttonPrimary} phone:order-4 phone:ml-auto`} disabled={incomplete}>
           {last ? t.send : t.next}
-          {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
+          {!last && <svg className="size-4" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
         </button>
       </div>
       </div>

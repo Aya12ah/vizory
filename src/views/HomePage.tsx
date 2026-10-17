@@ -11,7 +11,7 @@ const LEDE = {
   da: 'Vi hjælper finansielle virksomheder med alt fra ansøgninger, compliance frameworks, drift af compliance, mock-inspektioner og dialog med nationale kompetente myndigheder.',
 };
 
-// Beside the scope list: the way into the get-started flow.
+// Below the scope list: the way into the get-started flow.
 const CAMPAIGN = {
   en: { title: 'Not sure where to start?', text: 'Answer a few questions about your firm and the help you need, so that we can give you the best possible advice.', cta: 'Describe your needs' },
   da: { title: 'Usikker på, hvor I skal starte?', text: 'Svar på et par spørgsmål om jeres virksomhed og den hjælp, I har brug for, så vi kan rådgive jer bedst muligt.', cta: 'Beskriv jeres behov' },
@@ -40,7 +40,7 @@ export function HomePage({ lang }: { lang: Lang }) {
             {/* The wordmark is the logo; the lede is the page's heading for search engines, styled as a lede. */}
             <p className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></p>
             <h1 className="lede font-normal text-wrap">{LEDE[lang]}</h1>
-            <div className="mt-14 grid gap-10 items-start wide:grid-cols-2 phone:mt-10">
+            <div className="mt-14 grid gap-10 justify-items-start phone:mt-10">
               <ActScope lang={lang} />
               <Campaign lang={lang} />
             </div>

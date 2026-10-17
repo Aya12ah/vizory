@@ -180,8 +180,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           <FootButtons lang={lang} copy />
         </div>
       </div>
-      {/* The bar, fixed to the bottom of the screen; the form keeps its height free below the step. */}
-      <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line" data-lead-bar>
+      {/* The bar, fixed to the bottom of the screen; the form keeps its height free below the step.
+          Its background reaches on below it: Safari on iPad can leave a strip under fixed elements
+          when its toolbar shrinks, and the page should not show through there. */}
+      <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress, Next. On a phone the progress above the two buttons. */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>

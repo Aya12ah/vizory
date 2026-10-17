@@ -3,14 +3,15 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
-import { type Answer, type Answers, type ErrorCode, type Flow, type Question, buildBrief, labelled, validate, visibleSteps } from '@/lead/engine';
+import { type Answer, type Answers, type ErrorCode, type Flow, type Question, allQuestions, buildBrief, isAnswered, labelled, validate, visibleSteps } from '@/lead/engine';
 import { countries, countryOfNumber, dialCodes, flag } from '@/lead/countries';
 import { mailAddress } from './Mail';
 import { buttonPrimary, buttonSecondary, choice, field, fieldBase, signalLink } from './styles';
 
 // Shows any question flow (src/lead/flows) one step at a time, from its description alone: the
 // engine decides which steps and questions are shown, checks the answers and builds the brief. The
-// answers are kept in sessionStorage, so a reload loses nothing. The brief is sent from the
+// answers are kept in sessionStorage, so a reload loses nothing. Country questions marked fromGeo
+// start at the visitor's country from /api/geo (as LangButton uses it), and so do phone codes. The brief is sent from the
 // visitor's own email program for now (the address is assembled in the browser, see Mail).
 
 type Saved = { answers: Answers; step: string | null };
@@ -25,6 +26,7 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
   const [errors, setErrors] = useState<Record<string, ErrorCode>>({});
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [geo, setGeo] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
 
@@ -35,6 +37,22 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
     if (s) { setAnswers(s.answers || {}); setStepId(s.step); }
   }, [flow]);
   useEffect(() => { if (!done) save(flow, { answers, step: stepId }); }, [flow, answers, stepId, done]);
+  // The visitor's country, for country questions marked fromGeo that are still unanswered.
+  useEffect(() => {
+    const fromGeo = allQuestions(flow).filter((q) => q.type === 'country' && q.fromGeo).map((q) => q.id);
+    if (!fromGeo.length) return;
+    let live = true;
+    fetch('/api/geo')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { country: string | null } | null) => {
+        const c = d?.country;
+        if (!live || !c || !dialCodes[c]) return;
+        setGeo(c);
+        setAnswers((a) => { const n = { ...a }; for (const id of fromGeo) if (!isAnswered(n[id])) n[id] = c; return n; });
+      })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [flow]);
   // After moving to another step, the step's heading takes the focus (and the page scrolls to it).
   useEffect(() => {
     if (!moved.current) return;
@@ -110,7 +128,7 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
         </dl>
       )}
       {step.questions.map((q) => (
-        <Field key={q.id} q={q} lang={lang} answers={answers} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
+        <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} />
       ))}
       <div className="flex flex-wrap gap-2">
         {index > 0 && <button type="button" className={buttonSecondary} onClick={() => go(index - 1)}>{t.back}</button>}
@@ -123,8 +141,8 @@ export function LeadForm({ flow, lang }: { flow: Flow; lang: Lang }) {
 
 /** One question of any type, with its error. On a step with a single question its label is only
  *  for screen readers: the step's title says it. */
-function Field({ q, lang, answers, error, hideLabel, onChange }: {
-  q: Question; lang: Lang; answers: Answers; error?: string; hideLabel: boolean; onChange: (v: Answer) => void;
+function Field({ q, lang, answers, geo, error, hideLabel, onChange }: {
+  q: Question; lang: Lang; answers: Answers; geo: string; error?: string; hideLabel: boolean; onChange: (v: Answer) => void;
 }) {
   const value = answers[q.id];
   const id = `lead-${q.id}`, errId = `${id}-error`;
@@ -178,7 +196,7 @@ function Field({ q, lang, answers, error, hideLabel, onChange }: {
       <fieldset className="m-0 p-0 border-0 min-w-0 grid gap-2" {...invalid}>
         <legend className={hideLabel ? 'sr-only' : 'p-0 mb-2 text-[15px] font-medium'}>{label}</legend>
         {help}
-        <Phone id={id} lang={lang} value={typeof value === 'string' ? value : ''} fallback={typeof from === 'string' ? from : lang === 'da' ? 'DK' : ''} autoComplete={q.autocomplete ?? 'tel'} onChange={onChange} />
+        <Phone id={id} lang={lang} value={typeof value === 'string' ? value : ''} fallback={(typeof from === 'string' && from) || geo || (lang === 'da' ? 'DK' : '')} autoComplete={q.autocomplete ?? 'tel'} onChange={onChange} />
         {err}
       </fieldset>
     );

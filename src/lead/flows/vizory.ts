@@ -166,7 +166,7 @@ export const vizoryFlow: Flow = {
       id: 'company', title: t('About the company', 'Om virksomheden'),
       questions: [
         { id: 'company', type: 'text', required: true, section: 'company', maxLength: 120, autocomplete: 'organization', label: t('Company name', 'Virksomhedens navn') },
-        { id: 'country', type: 'country', required: true, section: 'company', autocomplete: 'country', label: t('Country', 'Land') },
+        { id: 'country', type: 'country', required: true, section: 'company', autocomplete: 'country', fromGeo: true, label: t('Country', 'Land') },
         {
           id: 'size', type: 'single', section: 'company', label: t('Employees', 'Antal ansatte'),
           options: [o('1-10', '1–10', '1–10'), o('11-50', '11–50', '11–50'), o('51-250', '51–250', '51–250'), o('250+', 'Over 250', 'Over 250')],

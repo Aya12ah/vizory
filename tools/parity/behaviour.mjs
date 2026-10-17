@@ -307,6 +307,26 @@ for (const viewport of [PHONE, undefined]) {
   await p.context().close();
 }
 
+// Country and phone code start at the visitor's country from /api/geo (answered here as Sweden).
+{
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
+  await ctx.route('**/api/geo', (r) => r.fulfill({ json: { country: 'SE' } }));
+  await ctx.addInitScript(() => { if (!sessionStorage.getItem('init')) { sessionStorage.setItem('init', '1'); localStorage.setItem('vz-lang', 'da'); } });
+  const p = await ctx.newPage();
+  await p.goto(base + '/da/get-started', { waitUntil: 'networkidle' });
+  const next = () => p.getByRole('button', { name: 'Næste' }).click();
+  const pick = (name) => p.getByLabel(name, { exact: true }).check();
+  await pick('Hvidvask'); await next(); await pick('Ny virksomhed uden tilladelse'); await next();
+  await pick('Risikovurdering'); await next(); await pick('Ansøgning eller meddelelse'); await next(); await pick('Inden for 6 måneder'); await next();
+  check('lead: country starts at the visitor\'s country from /api/geo', (await p.inputValue('#lead-country')) === 'SE');
+  await p.fill('#lead-company', 'Firma AB'); await next();
+  check('lead: phone code follows that country', (await p.inputValue('select[aria-label=Landekode]')) === 'SE');
+  await p.getByRole('button', { name: 'Tilbage' }).click();
+  await p.selectOption('#lead-country', 'NO'); await next();
+  check('lead: a country the visitor chose wins', (await p.inputValue('select[aria-label=Landekode]')) === 'NO');
+  await ctx.close();
+}
+
 await browser.close();
 console.log(failed ? `${failed} check(s) failed` : 'all checks passed');
 process.exitCode = failed ? 1 : 0;

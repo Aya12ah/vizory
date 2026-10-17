@@ -43,10 +43,11 @@ export type Question =
   | (Base & { type: 'multi'; options: Option[] })
   | (Base & { type: 'text' | 'textarea' | 'email' | 'date'; maxLength?: number; placeholder?: Text })
   | (Base & { type: 'consent' })
-  /** A country from the list, answered as its ISO 3166 code (DK). */
-  | (Base & { type: 'country' })
+  /** A country from the list, answered as its ISO 3166 code (DK). With `fromGeo` it starts at the
+   *  visitor's country as the site's /api/geo sees it, until the visitor chooses one. */
+  | (Base & { type: 'country'; fromGeo?: boolean })
   /** A phone number with its country code, answered as '+45 12345678'; the code is preselected
-   *  from the answer to `countryFrom`, a country question, when there is one. */
+   *  from the answer to `countryFrom`, a country question, else from the visitor's country. */
   | (Base & { type: 'phone'; countryFrom?: string });
 
 /** A step is one screen. `summary` shows the answers so far above its questions (e.g. before sending). */

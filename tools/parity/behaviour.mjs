@@ -10,8 +10,9 @@ function check(name, ok, detail = '') {
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : '  ' + detail}`);
   if (!ok) failed++;
 }
-async function page(path, { lang = 'en', theme = 'light', locale = 'en-GB', timezoneId = 'UTC' } = {}) {
-  const ctx = await browser.newContext({ locale, timezoneId, reducedMotion: 'reduce' });
+const PHONE = { width: 390, height: 844 };
+async function page(path, { lang = 'en', theme = 'light', locale = 'en-GB', timezoneId = 'UTC', viewport = undefined } = {}) {
+  const ctx = await browser.newContext({ locale, timezoneId, reducedMotion: 'reduce', ...(viewport ? { viewport } : {}) });
   await ctx.addInitScript(([l, t]) => {
     // Only on the first load in this context, so a choice made on the page survives navigation.
     if (sessionStorage.getItem('init')) return;
@@ -122,7 +123,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
 }
 // ESMA Q&A
 {
-  const p = await page('/mica-qa', { theme: 'light' });
+  const p = await page('/mica-qa', { theme: 'light', viewport: PHONE });
   const qa = p.locator('details[name="qa"]');
   check('Q&As listed', (await qa.count()) === 46, String(await qa.count()));
   await qa.nth(0).locator('summary').click();
@@ -156,10 +157,11 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('menu closes on outside click', !(await p.isVisible('#contents-menu')));
   await p.context().close();
 }
-// The guides' contents bar: hidden at the top, sticks once the contents are passed, names the
-// section being read, and its menu jumps to a section with the heading clear of the bar.
+// The guides' contents bar (phones and tablets upright): hidden at the top, sticks once the
+// contents are passed, names the section being read, and its menu jumps to a section with the
+// heading clear of the bar.
 {
-  const p = await page('/mica', { theme: 'light' });
+  const p = await page('/mica', { theme: 'light', viewport: PHONE });
   const bar = p.locator('[data-contents-bar] button');
   check('contents bar hidden at the top', !(await bar.isVisible()));
   await p.locator('#prudential-requirements').scrollIntoViewIfNeeded();
@@ -178,6 +180,28 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('contents link jumps below the bar', top >= 48 && top <= 80, String(top));
   check('contents menu closes after jump', !(await p.isVisible('#contents-menu')));
   await p.context().close();
+}
+// From 900px the sections are in the left menu instead of the bar: the menu stays in view, marks
+// the section being read and shows the subsections of the top-level section being read.
+{
+  const p = await page('/mica', { theme: 'light' });
+  const side = p.locator('[data-side-sections]');
+  check('no contents bar on a wide screen', !(await p.locator('[data-contents-bar] button').isVisible()));
+  check('sections in the left menu', await side.isVisible());
+  check('subsections folded at the top', !(await side.locator('a[href="#prudential-requirements"]').isVisible()));
+  await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
+  await p.waitForTimeout(300);
+  check('left menu stays in view', await p.evaluate(() => { const t = document.querySelector('[data-side-sections]').closest('nav').getBoundingClientRect().top; return t >= 0 && t < 40; }));
+  check('left menu marks the section', (await side.locator('a[aria-current]').getAttribute('href')) === '#prudential-requirements');
+  check('subsections unfold for the section', await side.locator('a[href="#general-information"]').isVisible());
+  await side.locator('a[href="#how-we-help"]').click();
+  await p.waitForTimeout(300);
+  const top = await p.evaluate(() => document.getElementById('how-we-help').getBoundingClientRect().top);
+  check('left menu link jumps to the section', top >= 48 && top <= 80, String(top));
+  await p.context().close();
+  const q = await page('/mica-qa', { theme: 'light' });
+  check('Q&A topics with counts in the left menu', (await q.locator('[data-side-sections] li span').count()) === (await q.locator('section > h2').count()));
+  await q.context().close();
 }
 // Links between pages of the same language navigate without a full page load, and the header
 // marks the new section.

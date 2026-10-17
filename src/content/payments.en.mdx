@@ -1,12 +1,7 @@
 import { Toc } from '@/components/Toc';
 
-# Payment and e-money institution authorisation
-
-<p className="lede">Firms that provide payment services or issue electronic money in Denmark must be authorised by the Danish FSA (Finanstilsynet) under the Danish Payments Act. The rules implement the EU Payment Services Directive (PSD2) and the E-Money Directive, which are being replaced by PSD3 and a new Payment Services Regulation (PSR).</p>
-
-<p className="lede">An application for a payment institution or e-money institution licence is extensive. The content requirements are specified in the EBA guidelines on authorisation. Below we go through which authorisation a firm needs, what the application must contain, and what applies once authorisation is granted.</p>
-
-<Toc title="Contents" items={[
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
   ["who-needs-authorisation", "Who needs authorisation?"],
   ["which-authorisation", "Which authorisation: full, limited or registration"],
   ["what-the-application-must-contain", "What the application must contain", [
@@ -22,7 +17,15 @@ import { Toc } from '@/components/Toc';
   ["compliance-after-authorisation", "Compliance after authorisation"],
   ["how-we-help", "How we help"],
   ["questions-and-answers", "Questions and answers"],
-]} />
+];
+
+# Payment and e-money institution authorisation
+
+<p className="lede">Firms that provide payment services or issue electronic money in Denmark must be authorised by the Danish FSA (Finanstilsynet) under the Danish Payments Act. The rules implement the EU Payment Services Directive (PSD2) and the E-Money Directive, which are being replaced by PSD3 and a new Payment Services Regulation (PSR).</p>
+
+<p className="lede">An application for a payment institution or e-money institution licence is extensive. The content requirements are specified in the EBA guidelines on authorisation. Below we go through which authorisation a firm needs, what the application must contain, and what applies once authorisation is granted.</p>
+
+<Toc title="Contents" items={toc} />
 
 <h2 id="who-needs-authorisation">Who needs authorisation?</h2>
 

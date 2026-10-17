@@ -13,8 +13,9 @@ function List({ items }: { items: TocItem[] }) {
   );
 }
 
-const sections = (items: TocItem[], depth = 0): Section[] =>
-  items.flatMap(([id, label, children]) => [{ id, label, depth }, ...(children ? sections(children, depth + 1) : [])]);
+/** The table of contents as a flat list of sections, for ContentsBar and SideSections. */
+export const tocSections = (items: TocItem[], depth = 0): Section[] =>
+  items.flatMap(([id, label, children]) => [{ id, label, depth }, ...(children ? tocSections(children, depth + 1) : [])]);
 
 /** The table of contents, followed by the bar that keeps it at hand further down (ContentsBar). */
 export function Toc({ title, items }: { title: string; items: TocItem[] }) {
@@ -24,7 +25,7 @@ export function Toc({ title, items }: { title: string; items: TocItem[] }) {
         <p className="toc-title">{title}</p>
         <List items={items} />
       </nav>
-      <ContentsBar title={title} sections={sections(items)} />
+      <ContentsBar title={title} sections={tocSections(items)} />
     </>
   );
 }

@@ -1,12 +1,7 @@
 import { Toc } from '@/components/Toc';
 
-# MiCA licence and CASP authorisation
-
-<p className="lede">Since 1 July 2026, anyone providing crypto-asset services in the EU must be authorised under MiCA, Regulation (EU) 2023/1114, or, as an existing financial entity, have notified its intention to start providing crypto-asset services.</p>
-
-<p className="lede">An application for CASP authorisation, often called a MiCA licence, is extensive. The content requirements are set out in Article 62 of MiCA and specified in Commission Delegated Regulation (EU) 2025/305, the regulatory technical standards (RTS) for the application. Below we go through what an application must contain, and what a firm must keep on top of once authorisation is granted.</p>
-
-<Toc title="Contents" items={[
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
   ["who-needs-casp-authorisation", "Who needs CASP authorisation?"],
   ["authorisation-or-notification", "Authorisation or notification"],
   ["what-an-application-for-casp-authorisation-must-contain", "What an application for CASP authorisation must contain", [
@@ -26,7 +21,15 @@ import { Toc } from '@/components/Toc';
   ["mica-compliance-after-authorisation", "MiCA compliance after authorisation"],
   ["how-we-help", "How we help"],
   ["questions-and-answers", "Questions and answers"],
-]} />
+];
+
+# MiCA licence and CASP authorisation
+
+<p className="lede">Since 1 July 2026, anyone providing crypto-asset services in the EU must be authorised under MiCA, Regulation (EU) 2023/1114, or, as an existing financial entity, have notified its intention to start providing crypto-asset services.</p>
+
+<p className="lede">An application for CASP authorisation, often called a MiCA licence, is extensive. The content requirements are set out in Article 62 of MiCA and specified in Commission Delegated Regulation (EU) 2025/305, the regulatory technical standards (RTS) for the application. Below we go through what an application must contain, and what a firm must keep on top of once authorisation is granted.</p>
+
+<Toc title="Contents" items={toc} />
 
 <h2 id="who-needs-casp-authorisation">Who needs CASP authorisation?</h2>
 

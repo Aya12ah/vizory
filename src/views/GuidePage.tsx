@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { JsonLd } from '@/components/JsonLd';
 import { RegNav, RegSection } from '@/components/RegNav';
+import { type TocItem, tocSections } from '@/components/Toc';
 import type { Lang } from '@/i18n/lang';
 import { DANNY_ID, graph, ORG_ID, regBreadcrumb, webPage } from '@/lib/schema';
 import { PAGES, type PageKey } from '@/site';
@@ -10,8 +11,8 @@ type Text = Record<Lang, string>;
 export type Faq = Record<Lang, [question: string, answer: string][]>;
 
 /** A guide page under Regulation: the Markdown text with the topic menu, and its structured data. */
-export function GuidePage({ lang, page: key, content, name, about, faq }: {
-  lang: Lang; page: Extract<PageKey, 'mica' | 'payments'>; content: Record<Lang, ComponentType>; name: Text; about: string[]; faq: Faq;
+export function GuidePage({ lang, page: key, content, toc, name, about, faq }: {
+  lang: Lang; page: Extract<PageKey, 'mica' | 'payments'>; content: Record<Lang, ComponentType>; toc: Record<Lang, TocItem[]>; name: Text; about: string[]; faq: Faq;
 }) {
   const Content = content[lang];
   const { path, lastModified } = PAGES[key];
@@ -28,7 +29,7 @@ export function GuidePage({ lang, page: key, content, name, about, faq }: {
         regBreadcrumb(path, lang, name[lang]),
       )} />
         <RegSection>
-          <RegNav lang={lang} current={path} />
+          <RegNav lang={lang} current={path} sections={tocSections(toc[lang])} />
           <div>
             <article className="doc">
               <Content />

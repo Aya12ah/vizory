@@ -1,40 +1,28 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { useCurrentSection } from './useCurrentSection';
 
 // A long page's contents as a bar that sticks to the top of the screen once the reader has
 // scrolled past the place it is put (usually right after the table of contents). It names the
 // section being read and opens a menu of all sections. It works on any page whose sections are
 // headings with an id. The bar takes no space in the page flow and is hidden until it sticks,
-// so it never moves the text.
+// so it never moves the text. From 900px the sections are in the left menu instead (SideSections).
 
 /** A section of the page: the id of its heading, its name, and optionally its level (0 = top),
  *  a count shown next to it, and its language when that differs from the page's. */
 export type Section = { id: string; label: string; depth?: number; count?: number; lang?: string };
 
-/** Where the current section is decided: a heading counts as passed once its top is above this line. */
-const LINE = 80;
-
 export function ContentsBar({ title, sections }: { title: string; sections: Section[] }) {
   const [stuck, setStuck] = useState(false);
-  const [current, setCurrent] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
-  const ids = sections.map((s) => s.id).join(' ');
+  const current = useCurrentSection(sections.map((s) => s.id));
 
-  // Stuck once the bar's place in the page has scrolled to the top; the current section is the
-  // last heading that has passed under the bar.
+  // Stuck once the bar's place in the page has scrolled to the top.
   useEffect(() => {
-    const headings = ids.split(' ').map((id) => document.getElementById(id)).filter((h) => h !== null);
     let frame = 0;
-    const update = () => {
-      frame = 0;
-      const box = ref.current?.getBoundingClientRect();
-      setStuck(!!box && box.top <= 0);
-      let id: string | null = null;
-      for (const h of headings) if (h.getBoundingClientRect().top < LINE) id = h.id;
-      setCurrent(id);
-    };
+    const update = () => { frame = 0; setStuck((ref.current?.getBoundingClientRect().top ?? 1) <= 0); };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -44,7 +32,7 @@ export function ContentsBar({ title, sections }: { title: string; sections: Sect
       window.removeEventListener('resize', onScroll);
       cancelAnimationFrame(frame);
     };
-  }, [ids]);
+  }, []);
 
   // Close on Escape, on a click outside, and when the bar is no longer stuck.
   useEffect(() => {
@@ -63,7 +51,7 @@ export function ContentsBar({ title, sections }: { title: string; sections: Sect
 
   const now = sections.find((s) => s.id === current);
   return (
-    <div ref={ref} className="sticky top-0 z-1 h-0" data-contents-bar>
+    <div ref={ref} className="sticky top-0 z-1 h-0 wide:hidden" data-contents-bar>
       <div className={`-mx-2 px-2 bg-bg shadow-[0_1px_0_var(--line)] text-[14px] leading-[1.4] ${stuck ? 'visible' : 'invisible'}`}>
         <button ref={button} type="button" aria-expanded={open} aria-controls="contents-menu" tabIndex={stuck ? 0 : -1}
           className="group flex items-center gap-2 w-full py-3 px-0 border-0 [background:none] [font:inherit] text-inherit text-left cursor-pointer"

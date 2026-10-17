@@ -1,10 +1,11 @@
-import PaymentsDa from '@/content/payments.da.mdx';
-import PaymentsEn from '@/content/payments.en.mdx';
+import PaymentsDa, { toc as tocDa } from '@/content/payments.da.mdx';
+import PaymentsEn, { toc as tocEn } from '@/content/payments.en.mdx';
 import type { Lang } from '@/i18n/lang';
 import { type Faq, GuidePage } from './GuidePage';
 
 // The guide itself is Markdown: src/content/payments.en.mdx and src/content/payments.da.mdx.
 const CONTENT = { en: PaymentsEn, da: PaymentsDa };
+const TOC = { en: tocEn, da: tocDa };
 const NAME = { en: 'Payment and e-money institution authorisation', da: 'Tilladelse som betalingsinstitut og e-pengeinstitut' };
 const FAQ: Faq = {
   en: [
@@ -18,6 +19,6 @@ const FAQ: Faq = {
 };
 
 export function PaymentsPage({ lang }: { lang: Lang }) {
-  return <GuidePage lang={lang} page="payments" content={CONTENT} name={NAME} faq={FAQ}
+  return <GuidePage lang={lang} page="payments" content={CONTENT} toc={TOC} name={NAME} faq={FAQ}
     about={['PSD2', 'PSD3', 'PSR', 'Payment institution authorisation', 'E-money institution authorisation']} />;
 }

@@ -1,12 +1,7 @@
 import { Toc } from '@/components/Toc';
 
-# Tilladelse som betalingsinstitut og e-pengeinstitut
-
-<p className="lede">Virksomheder, der udbyder betalingstjenester eller udsteder elektroniske penge i Danmark, skal have tilladelse fra Finanstilsynet efter lov om betalinger. Reglerne bygger på EU's betalingstjenestedirektiv (PSD2) og e-pengedirektiv og afløses af PSD3 og en ny betalingsforordning (PSR).</p>
-
-<p className="lede">En ansøgning om tilladelse som betalingsinstitut eller e-pengeinstitut er omfattende. Kravene til indholdet er uddybet i EBA's retningslinjer for tilladelse. Nedenfor gennemgår vi, hvilken tilladelse virksomheden har brug for, hvad ansøgningen skal indeholde, og hvad der gælder, når tilladelsen er givet.</p>
-
-<Toc title="Indhold" items={[
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
   ["hvem-skal-have-tilladelse", "Hvem skal have tilladelse?"],
   ["hvilken-tilladelse", "Hvilken tilladelse: fuld, begrænset eller registrering"],
   ["hvad-ansoegningen-skal-indeholde", "Hvad ansøgningen skal indeholde", [
@@ -22,7 +17,15 @@ import { Toc } from '@/components/Toc';
   ["compliance-efter-tilladelsen", "Compliance efter tilladelsen"],
   ["saadan-hjaelper-vi", "Sådan hjælper vi"],
   ["spoergsmaal-og-svar", "Spørgsmål og svar"],
-]} />
+];
+
+# Tilladelse som betalingsinstitut og e-pengeinstitut
+
+<p className="lede">Virksomheder, der udbyder betalingstjenester eller udsteder elektroniske penge i Danmark, skal have tilladelse fra Finanstilsynet efter lov om betalinger. Reglerne bygger på EU's betalingstjenestedirektiv (PSD2) og e-pengedirektiv og afløses af PSD3 og en ny betalingsforordning (PSR).</p>
+
+<p className="lede">En ansøgning om tilladelse som betalingsinstitut eller e-pengeinstitut er omfattende. Kravene til indholdet er uddybet i EBA's retningslinjer for tilladelse. Nedenfor gennemgår vi, hvilken tilladelse virksomheden har brug for, hvad ansøgningen skal indeholde, og hvad der gælder, når tilladelsen er givet.</p>
+
+<Toc title="Indhold" items={toc} />
 
 <h2 id="hvem-skal-have-tilladelse">Hvem skal have tilladelse?</h2>
 

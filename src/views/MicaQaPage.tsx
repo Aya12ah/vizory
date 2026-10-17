@@ -110,11 +110,12 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
     </ol>
   );
   const page = webPage('/mica-qa', lang, t.title, { about: ['MiCA', 'ESMA Q&A'] });
+  const sections = all.map((tp) => ({ id: tp.id, label: tp.title, count: tp.items.length, lang: 'en' }));
   return (
     <>
       <JsonLd data={graph({ ...page, breadcrumb: { '@id': `${page.url}#breadcrumb` } }, regBreadcrumb('/mica-qa', lang, t.title))} />
         <RegSection>
-          <RegNav lang={lang} current="/mica-qa" />
+          <RegNav lang={lang} current="/mica-qa" sections={sections} />
           <div>
             <article className="doc">
               <h1 className="page-title">{t.title}</h1>
@@ -124,7 +125,7 @@ export function MicaQaPage({ lang }: { lang: Lang }) {
                 <p className="toc-title">{dictionary[lang].topics}</p>
                 {toc}
               </nav>
-              <ContentsBar title={dictionary[lang].topics} sections={all.map((tp) => ({ id: tp.id, label: tp.title, count: tp.items.length, lang: 'en' }))} />
+              <ContentsBar title={dictionary[lang].topics} sections={sections} />
               <QaList>
                 {all.map((topic) => (
                   <section key={topic.id}>

@@ -16,12 +16,13 @@ import { PNG } from 'pngjs';
 const PATHS = ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/da', '/da/people', '/da/regulation', '/da/mica', '/da/mica-qa', '/da/payments'];
 const VIEWPORTS = { desktop: { width: 1280, height: 800 }, mobile: { width: 390, height: 844 } };
 const THEMES = ['light', 'dark'];
-// Interactive states: a name, the page, and what to do before the screenshot.
+// Interactive states: a name, the page, what to do before the screenshot, and optionally only some viewports.
 const STATES = [
   { name: 'act-open', path: '/', run: (p) => p.click('button[data-act="MiCAR"]') },
   { name: 'qa-open', path: '/mica-qa', run: (p) => p.click('details[name="qa"] summary') },
-  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, run: async (p) => { await p.evaluate(() => document.querySelectorAll('section > h2')[1].scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
-  { name: 'contents-menu', path: '/mica', viewportOnly: true, run: async (p) => { await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
+  { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, viewports: ['mobile'], run: async (p) => { await p.evaluate(() => document.querySelectorAll('section > h2')[1].scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
+  { name: 'side-sections', path: '/mica', viewportOnly: true, viewports: ['desktop'], run: async (p) => { await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView()); await p.waitForTimeout(300); } },
+  { name: 'contents-menu', path: '/mica', viewportOnly: true, viewports: ['mobile'], run: async (p) => { await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
 ];
 
 function serve(dir) {
@@ -91,7 +92,7 @@ async function capture(target, out) {
     await page.screenshot({ path: path.join(out, `${slug(p)}.${vp}.${theme}.png`), fullPage: true });
     await ctx.close();
   }
-  for (const s of STATES) for (const vp of Object.keys(VIEWPORTS)) for (const theme of THEMES) {
+  for (const s of STATES) for (const vp of s.viewports || Object.keys(VIEWPORTS)) for (const theme of THEMES) {
     const { ctx, page } = await open(s.path, vp, theme);
     await s.run(page);
     await page.waitForTimeout(100);

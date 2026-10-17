@@ -1,10 +1,11 @@
-import MicaDa from '@/content/mica.da.mdx';
-import MicaEn from '@/content/mica.en.mdx';
+import MicaDa, { toc as tocDa } from '@/content/mica.da.mdx';
+import MicaEn, { toc as tocEn } from '@/content/mica.en.mdx';
 import type { Lang } from '@/i18n/lang';
 import { type Faq, GuidePage } from './GuidePage';
 
 // The guide itself is Markdown: src/content/mica.en.mdx and src/content/mica.da.mdx.
 const CONTENT = { en: MicaEn, da: MicaDa };
+const TOC = { en: tocEn, da: tocDa };
 const NAME = { en: 'MiCA licence and CASP authorisation', da: 'MiCA og CASP-tilladelse' };
 const FAQ: Faq = {
   en: [
@@ -18,6 +19,6 @@ const FAQ: Faq = {
 };
 
 export function MicaPage({ lang }: { lang: Lang }) {
-  return <GuidePage lang={lang} page="mica" content={CONTENT} name={NAME} faq={FAQ}
+  return <GuidePage lang={lang} page="mica" content={CONTENT} toc={TOC} name={NAME} faq={FAQ}
     about={['MiCA', 'CASP authorisation', 'Crypto-asset service providers']} />;
 }

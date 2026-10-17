@@ -1,12 +1,7 @@
 import { Toc } from '@/components/Toc';
 
-# MiCA og CASP-tilladelse
-
-<p className="lede">Siden 1. juli 2026 skal alle, der udbyder kryptoaktivtjenester i EU, have tilladelse efter MiCA, forordning (EU) 2023/1114, eller have givet meddelelse om påtænkt påbegyndelse af udbud af kryptoaktivtjenester som eksisterende finansiel virksomhed.</p>
-
-<p className="lede">En ansøgning om CASP-tilladelse, i daglig tale en MiCA-licens, er omfattende. Kravene til indholdet står i MiCA artikel 62 og er uddybet i Kommissionens delegerede forordning (EU) 2025/305, der fastsætter de reguleringsmæssige tekniske standarder (RTS) for ansøgningen. Nedenfor gennemgår vi, hvad en ansøgning skal indeholde, og hvad man løbende skal have styr på, når tilladelsen er givet.</p>
-
-<Toc title="Indhold" items={[
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
   ["hvem-skal-have-en-casp-tilladelse", "Hvem skal have en CASP-tilladelse?"],
   ["tilladelse-eller-meddelelse", "Tilladelse eller meddelelse"],
   ["hvad-en-ansoegning-om-casp-tilladelse-skal-indeholde", "Hvad en ansøgning om CASP-tilladelse skal indeholde", [
@@ -26,7 +21,15 @@ import { Toc } from '@/components/Toc';
   ["mica-compliance-efter-tilladelsen", "MiCA compliance efter tilladelsen"],
   ["saadan-hjaelper-vi", "Sådan hjælper vi"],
   ["spoergsmaal-og-svar", "Spørgsmål og svar"],
-]} />
+];
+
+# MiCA og CASP-tilladelse
+
+<p className="lede">Siden 1. juli 2026 skal alle, der udbyder kryptoaktivtjenester i EU, have tilladelse efter MiCA, forordning (EU) 2023/1114, eller have givet meddelelse om påtænkt påbegyndelse af udbud af kryptoaktivtjenester som eksisterende finansiel virksomhed.</p>
+
+<p className="lede">En ansøgning om CASP-tilladelse, i daglig tale en MiCA-licens, er omfattende. Kravene til indholdet står i MiCA artikel 62 og er uddybet i Kommissionens delegerede forordning (EU) 2025/305, der fastsætter de reguleringsmæssige tekniske standarder (RTS) for ansøgningen. Nedenfor gennemgår vi, hvad en ansøgning skal indeholde, og hvad man løbende skal have styr på, når tilladelsen er givet.</p>
+
+<Toc title="Indhold" items={toc} />
 
 <h2 id="hvem-skal-have-en-casp-tilladelse">Hvem skal have en CASP-tilladelse?</h2>
 

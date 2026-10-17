@@ -9,10 +9,12 @@ import { Wordmark, wordmarkClass } from './Wordmark';
 
 /** Layout of the regulation pages: topic menu on the left, content on the right; menu on top on phones.
  *  From 900px the menu column starts level with the header (92px: py-6 around the 44px buttons), so
- *  the menu can carry the wordmark, and the content (the second child) starts where it did below it. */
+ *  the menu can carry the wordmark, and the content (the second child) starts where it did below it.
+ *  The section then fills at least the screen, so the address at the foot of the menu column sits at
+ *  the bottom of the screen on short pages too. */
 export function RegSection({ children }: { children: ReactNode }) {
   return (
-    <section className="w-full grid grid-cols-[minmax(0,1fr)] gap-10 self-start pt-14 pb-20 wide:grid-cols-[200px_minmax(0,1fr)] wide:gap-14 wide:-mt-[92px] wide:pt-6 wide:[&>:nth-child(2)]:pt-[124px] phone:py-6">
+    <section className="w-full grid grid-cols-[minmax(0,1fr)] gap-10 self-start pt-14 pb-20 wide:grid-cols-[200px_minmax(0,1fr)] wide:gap-14 wide:self-stretch wide:-mt-[92px] wide:pt-6 wide:pb-6 wide:[&>:nth-child(2)]:pt-[124px] wide:[&>:nth-child(2)]:pb-14 phone:py-6">
       {children}
     </section>
   );
@@ -21,7 +23,7 @@ export function RegSection({ children }: { children: ReactNode }) {
 const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=page]:text-signal-text';
 
 /** The topic menu of the regulation pages. From 900px it carries the wordmark and the address
- *  (instead of the header and the footer), lists the sections of the current page, and stays in
+ *  (instead of the header and the footer; the address below the menu, at the bottom of the screen), lists the sections of the current page, and stays in
  *  view while the page scrolls. At the top of the page the wordmark is level with the header
  *  buttons and the menu level with the content; on scrolling the wordmark stops 12px from the top
  *  and the menu rises to just below it: the menu sticks at -60px (12px minus the 72px gap), so the
@@ -33,22 +35,25 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
   const item = (path: string, label: string) => (
     <li><Link className={link} {...href(path)}>{label}</Link>{current === path && sections && <SideSections sections={sections} />}</li>
   );
+  // The address keeps to the bottom of the screen (sticky bottom) at the foot of the full-height column.
   return (
-    <nav className="text-[14px] grid gap-2 content-start wide:self-start wide:sticky wide:-top-15 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation} data-reg-nav>
-      <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-[72px]">
-        <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
-      </p>
-      <p><Link className="text-ink font-medium no-underline hover:text-signal-text aria-[current=page]:text-signal-text" {...href('/regulation')}>{t.regulation}</Link></p>
-      <p className="mt-2 text-ink font-medium">{t.regNav.topic}</p>
-      <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
-        {item('/mica', t.regNav.authorisation)}
-        {item('/mica-qa', t.regNav.qa)}
-      </ul>
-      <p className="mt-2 text-ink font-medium">{t.regNav.payments}</p>
-      <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
-        {item('/payments', t.regNav.authorisation)}
-      </ul>
-      <div className="hidden wide:block mt-10"><Address lang={lang} /></div>
-    </nav>
+    <div className="wide:flex wide:flex-col">
+      <nav className="text-[14px] grid gap-2 content-start wide:sticky wide:-top-15 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation} data-reg-nav>
+        <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-[72px]">
+          <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
+        </p>
+        <p><Link className="text-ink font-medium no-underline hover:text-signal-text aria-[current=page]:text-signal-text" {...href('/regulation')}>{t.regulation}</Link></p>
+        <p className="mt-2 text-ink font-medium">{t.regNav.topic}</p>
+        <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
+          {item('/mica', t.regNav.authorisation)}
+          {item('/mica-qa', t.regNav.qa)}
+        </ul>
+        <p className="mt-2 text-ink font-medium">{t.regNav.payments}</p>
+        <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">
+          {item('/payments', t.regNav.authorisation)}
+        </ul>
+      </nav>
+      <div className="hidden wide:block wide:sticky wide:bottom-6 mt-auto pt-10" data-reg-address><Address lang={lang} /></div>
+    </div>
   );
 }

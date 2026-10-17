@@ -12,8 +12,8 @@ export function Address({ lang }: { lang: Lang }) {
   );
 }
 
-// From 900px the regulation pages show the address in their left menu (RegNav), so the footer
-// is left out there.
+// From 900px the regulation pages show the address in their left menu column (RegNav), so the
+// footer is left out there.
 export function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 phone:py-6 wide:[body:has([data-reg-nav])_&]:hidden">

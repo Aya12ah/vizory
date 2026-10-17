@@ -18,7 +18,7 @@ export function Address({ lang }: { lang: Lang }) {
 // footer is left out there. The language and theme buttons sit above the address.
 export function Footer({ lang }: { lang: Lang }) {
   return (
-    <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 phone:py-6 wide:[body:has([data-reg-nav])_&]:hidden">
+    <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav])_&]:hidden">
       <div>
         {/* -ml-3 lines the button labels up with the address below. */}
         <div className="flex gap-1 -ml-3 mb-3"><LangButton lang={lang} /><ThemeToggle /></div>

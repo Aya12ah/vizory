@@ -1,10 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import { type Answer, type Answers, type ErrorCode, type Flow, type Question, allQuestions, buildBrief, isAnswered, labelled, validate, visibleSteps } from '@/lead/engine';
 import { countries, countryOfNumber, dialCodes, flag } from '@/lead/countries';
+import { Address, FootButtons } from './Footer';
 import { mailAddress } from './Mail';
 import { buttonPrimary, buttonSecondary, choice, choiceBox, choiceInput, field, fieldBase, signalLink } from './styles';
 
@@ -30,6 +31,8 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const [copied, setCopied] = useState(false);
   const [geo, setGeo] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
+  const bar = useRef<HTMLDivElement>(null);
+  const [barHeight, setBarHeight] = useState(80);
   const moved = useRef(false);
 
   // The answers so far, after a reload; must run in the browser only.
@@ -55,6 +58,14 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       .catch(() => {});
     return () => { live = false; };
   }, [flow]);
+  // The bar's height (it wraps on a phone), kept free below the step.
+  useEffect(() => {
+    const el = bar.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setBarHeight(el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [done]);
   // After moving to another step, the step's heading takes the focus (and the page scrolls to it).
   useEffect(() => {
     if (!moved.current) return;
@@ -99,7 +110,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     </>
   );
   const intro = (why: string) => (
-    <div className="grid gap-4 content-start wide:sticky wide:top-8">
+    <div className="grid gap-4 content-start wide:sticky wide:top-8 wide:col-start-1 wide:row-start-1">
       <h1 className="page-title">{title}</h1>
       <p className="lede mt-0" data-lead-why>{why}</p>
       <div className="hidden wide:grid gap-4 mt-2">{aside}</div>
@@ -138,10 +149,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const only = step.questions.length === 1;
   const incomplete = Object.values(validate(flow, answers, step.questions)).includes('required');
   return (
-    <form className="flex flex-col min-h-[calc(100dvh-148px)] phone:min-h-[calc(100dvh-90px)]" noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
-      <div className={`${grid} mb-14`}>
+    <form className="flex flex-col min-h-[calc(100dvh-148px)] pb-[calc(var(--bar)+56px)] phone:min-h-[calc(100dvh-90px)] phone:pb-[calc(var(--bar)+24px)]" style={{ '--bar': `${barHeight}px` } as CSSProperties} noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
+      <div className={`${grid} flex-1`}>
         {intro(step.why?.[lang] ?? lede)}
-        <div className="grid gap-7 min-w-0">
+        <div className="grid gap-7 min-w-0 wide:col-start-2 wide:row-start-1">
           <div className="grid gap-2">
             <h2 ref={heading} tabIndex={-1} className={headingClass}>{step.title[lang]}</h2>
             {step.intro && <p className="text-[15px] text-ink-soft">{step.intro[lang]}</p>}
@@ -162,10 +173,16 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           {last && <p><button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button></p>}
         </div>
         {asideBelow}
+        {/* From 900px the address and the theme and language buttons stand at the foot of the left
+            column, just above the bar, instead of in the footer (as on the regulation pages). */}
+        <div className="hidden wide:flex wide:col-start-1 wide:row-start-1 self-end sticky bottom-[calc(var(--bar)+24px)] justify-between items-end gap-6 pb-[15px]" data-lead-address>
+          <Address lang={lang} />
+          <FootButtons lang={lang} copy />
+        </div>
       </div>
-      {/* The bar: its background and top line reach the screen's edges (border-image outset, which
-          does not widen the page). */}
-      <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3 [border-image:linear-gradient(var(--line)_0_1px,var(--bg)_1px)_fill_0/0/0_100vmax]">
+      {/* The bar, fixed to the bottom of the screen; the form keeps its height free below the step. */}
+      <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line" data-lead-bar>
+      <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress, Next. On a phone the progress above the two buttons. */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="flex items-center gap-5 flex-1 min-w-0 phone:basis-full phone:order-1 phone:flex-col phone:items-stretch phone:gap-2">
@@ -181,6 +198,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           {last ? t.send : t.next}
           {!last && <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
         </button>
+      </div>
       </div>
     </form>
   );

@@ -25,10 +25,10 @@ export function FootButtons({ lang, copy = false }: { lang: Lang; copy?: boolean
 }
 
 // From 900px the regulation pages show the address and the buttons in a bar of their own (RegNav),
-// so the footer is left out there.
+// and the get-started page at the foot of its left column (LeadForm), so the footer is left out there.
 export function Footer({ lang }: { lang: Lang }) {
   return (
-    <footer className="flex justify-between items-end gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav])_&]:hidden">
+    <footer className="flex justify-between items-end gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav],[data-lead-address])_&]:hidden">
       <Address lang={lang} />
       <FootButtons lang={lang} />
     </footer>

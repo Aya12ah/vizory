@@ -97,6 +97,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   const p = await page('/');
   check('act links to its guide', (await p.getAttribute('a[data-act="MiCAR"]', 'href')) === '/mica' && (await p.getAttribute('a[data-act="AMLR"]', 'href')) === '/aml');
   check('act shows its full name', (await p.getAttribute('a[data-act="PSR"]', 'title')) === 'Payment Services Regulation');
+  check('campaign level with the act list, in its type size', await p.evaluate(() => { const l = document.querySelector('main dl > div'), c = document.querySelector('[data-campaign] h2'); return Math.abs(l.getBoundingClientRect().top - c.getBoundingClientRect().top) < 1 && getComputedStyle(l).fontSize === getComputedStyle(c).fontSize; }));
   check('campaign links to get started', (await p.getAttribute('[data-campaign] a', 'href')) === '/get-started');
   await p.click('a[data-act="MiCAR"]');
   await p.waitForURL('**/mica');

@@ -13,8 +13,8 @@ const LEDE = {
 
 // Beside the scope list: the way into the get-started flow.
 const CAMPAIGN = {
-  en: { title: 'Not sure where to start?', text: 'Answer a few questions about your firm and what you need help with. It takes about three minutes, and Vizory comes prepared to the first conversation.', cta: 'Describe your needs' },
-  da: { title: 'Usikker på, hvor I skal starte?', text: 'Svar på et par spørgsmål om jeres virksomhed og den hjælp, I har brug for. Det tager omkring tre minutter, og Vizory møder forberedt op til den første samtale.', cta: 'Beskriv jeres behov' },
+  en: { title: 'Not sure where to start?', text: 'Answer a few questions about your firm and the help you need, so that we can give you the best possible advice.', cta: 'Describe your needs' },
+  da: { title: 'Usikker på, hvor I skal starte?', text: 'Svar på et par spørgsmål om jeres virksomhed og den hjælp, I har brug for, så vi kan rådgive jer bedst muligt.', cta: 'Beskriv jeres behov' },
 };
 
 function Campaign({ lang }: { lang: Lang }) {

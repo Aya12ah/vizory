@@ -190,13 +190,13 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('no contents bar on a wide screen', !(await p.locator('[data-contents-bar] button').isVisible()));
   check('sections in the left menu', await side.isVisible());
   check('no subsections in the left menu', (await side.locator('a[href="#prudential-requirements"]').count()) === 0);
-  check('wordmark in the left menu, not the header', await p.locator('main nav a[aria-label="vizory, front page"]').isVisible() && !(await p.locator('header a[aria-label="vizory, front page"]').isVisible()));
+  check('wordmark in the left menu, not the header', await p.locator('[data-reg-mark] a').isVisible() && !(await p.locator('header a[aria-label="vizory, front page"]').isVisible()));
   await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView());
   await p.waitForTimeout(300);
   // Scrolled: the wordmark stops near the top and the menu sits just below it; the address shows.
   const pos = await p.evaluate(() => {
     const nav = document.querySelector('[data-reg-nav]'), top = (el) => el.getBoundingClientRect().top;
-    return { mark: top(nav.querySelector('a[aria-label]')), menu: top(nav.querySelector('p a[href="/regulation"]')), mail: document.querySelector('[data-reg-address] a[href^="mailto:"]')?.checkVisibility() };
+    return { mark: top(document.querySelector('[data-reg-mark] a')), menu: top(nav.querySelector('p a[href="/regulation"]')), mail: document.querySelector('[data-reg-address] a[href^="mailto:"]')?.checkVisibility() };
   });
   check('wordmark stays at the top of the left menu', pos.mark >= 0 && pos.mark < 40, JSON.stringify(pos));
   check('menu rises to just below the wordmark', pos.menu - pos.mark > 20 && pos.menu - pos.mark < 60, JSON.stringify(pos));
@@ -227,7 +227,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('title follows the page', (await p.title()).startsWith('MiCA licence (CASP authorisation)'));
   check('header marks regulation after navigation', (await p.getAttribute('#regBtn', 'aria-current')) === 'page' && !(await p.getAttribute('#peopleBtn', 'aria-current')));
   // From 900px the regulation pages carry the wordmark in the left menu.
-  await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('main nav a[aria-label="vizory, front page"]')]);
+  await Promise.all([p.waitForURL((u) => clean(u.href) === '/'), p.click('[data-reg-mark] a')]);
   check('wordmark leaves the header on the front page', (await p.locator('header a[aria-label="vizory, front page"]').count()) === 0);
   await p.context().close();
 }

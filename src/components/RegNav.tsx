@@ -22,12 +22,13 @@ export function RegSection({ children }: { children: ReactNode }) {
 
 const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=page]:text-signal-text';
 
-/** The topic menu of the regulation pages. From 900px it carries the wordmark and the address
- *  (instead of the header and the footer; the address below the menu, at the bottom of the screen), lists the sections of the current page, and stays in
- *  view while the page scrolls. At the top of the page the wordmark is level with the header
- *  buttons and the menu level with the content; on scrolling the wordmark stops 12px from the top
- *  and the menu rises to just below it: the menu sticks at -60px (12px minus the 72px gap), so the
- *  gap scrolls away, while the wordmark sticks on its own. */
+/** The topic menu of the regulation pages. From 900px the column also carries the wordmark and the
+ *  address (instead of the header and the footer) and lists the sections of the current page. Three
+ *  sticky siblings in a full-height column: at the top of the page the wordmark is level with the
+ *  header buttons and the menu level with the content; on scrolling the wordmark stops 12px from
+ *  the top and the menu rises to just below it (64px), as the gap between them scrolls away; the
+ *  address keeps to the bottom of the screen. Siblings rather than nested sticky elements, which
+ *  jitter in some browsers when scrolling back up. */
 export function RegNav({ lang, current, sections }: { lang: Lang; current: string; sections?: Section[] }) {
   const t = dictionary[lang];
   const href = (path: string) => ({ href: localPath(path, lang), 'aria-current': current === path ? ('page' as const) : undefined });
@@ -35,13 +36,12 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
   const item = (path: string, label: string) => (
     <li><Link className={link} {...href(path)}>{label}</Link>{current === path && sections && <SideSections sections={sections} />}</li>
   );
-  // The address keeps to the bottom of the screen (sticky bottom) at the foot of the full-height column.
   return (
     <div className="wide:flex wide:flex-col">
-      <nav className="text-[14px] grid gap-2 content-start wide:sticky wide:-top-15 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation} data-reg-nav>
-        <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-[72px]">
-          <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
-        </p>
+      <p className="hidden wide:flex wide:sticky wide:top-3 items-center h-11 mb-20" data-reg-mark>
+        <Link className={`${wordmarkClass} text-[20px] no-underline`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
+      </p>
+      <nav className="text-[14px] grid gap-2 content-start wide:sticky wide:top-16 phone:pb-6 phone:border-b phone:border-line" aria-label={t.regulation} data-reg-nav>
         <p><Link className="text-ink font-medium no-underline hover:text-signal-text aria-[current=page]:text-signal-text" {...href('/regulation')}>{t.regulation}</Link></p>
         <p className="mt-2 text-ink font-medium">{t.regNav.topic}</p>
         <ul className="list-none m-0 py-0 pr-0 pl-4 border-l border-line grid gap-[6px]">

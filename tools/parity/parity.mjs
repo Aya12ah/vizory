@@ -18,7 +18,6 @@ const VIEWPORTS = { desktop: { width: 1280, height: 800 }, mobile: { width: 390,
 const THEMES = ['light', 'dark'];
 // Interactive states: a name, the page, what to do before the screenshot, and optionally only some viewports.
 const STATES = [
-  { name: 'act-open', path: '/', run: (p) => p.click('button[data-act="MiCAR"]') },
   { name: 'qa-open', path: '/mica-qa', run: (p) => p.click('details[name="qa"] summary') },
   { name: 'topic-menu', path: '/mica-qa', viewportOnly: true, viewports: ['mobile'], run: async (p) => { await p.evaluate(() => document.querySelectorAll('section > h2')[1].scrollIntoView()); await p.waitForTimeout(200); await p.click('[data-contents-bar] button'); } },
   { name: 'side-sections', path: '/mica', viewportOnly: true, viewports: ['desktop'], run: async (p) => { await p.evaluate(() => document.getElementById('prudential-requirements').scrollIntoView()); await p.waitForTimeout(300); } },

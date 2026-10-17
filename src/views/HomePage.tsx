@@ -1,13 +1,35 @@
+import Link from 'next/link';
 import { ActScope } from '@/components/ActScope';
 import { JsonLd } from '@/components/JsonLd';
+import { buttonPrimary } from '@/components/styles';
 import { Wordmark, wordmarkClass } from '@/components/Wordmark';
-import type { Lang } from '@/i18n/lang';
+import { type Lang, localPath } from '@/i18n/lang';
 import { danny, graph, organisation, website } from '@/lib/schema';
 
 const LEDE = {
   en: 'We help financial firms with everything from applications, compliance frameworks, compliance operations, mock-inspections and dialogue with national competent authorities.',
   da: 'Vi hjælper finansielle virksomheder med alt fra ansøgninger, compliance frameworks, drift af compliance, mock-inspektioner og dialog med nationale kompetente myndigheder.',
 };
+
+// Beside the scope list: the way into the get-started flow.
+const CAMPAIGN = {
+  en: { title: 'Not sure where to start?', text: 'Answer a few questions about your firm and what you need help with. It takes about three minutes, and Vizory comes prepared to the first conversation.', cta: 'Describe your needs' },
+  da: { title: 'Usikker på, hvor I skal starte?', text: 'Svar på et par spørgsmål om jeres virksomhed og den hjælp, I har brug for. Det tager omkring tre minutter, og Vizory møder forberedt op til den første samtale.', cta: 'Beskriv jeres behov' },
+};
+
+function Campaign({ lang }: { lang: Lang }) {
+  const t = CAMPAIGN[lang];
+  return (
+    <aside className="grid gap-3 justify-items-start rounded-[12px] border border-solid border-line bg-panel p-6 phone:p-5" data-campaign>
+      <h2 className="text-[17px] leading-[1.35]">{t.title}</h2>
+      <p className="text-[14px] leading-[1.55] text-ink-soft">{t.text}</p>
+      <Link className={`${buttonPrimary} mt-2`} href={localPath('/get-started', lang)}>
+        {t.cta}
+        <svg className="size-[18px]" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>
+      </Link>
+    </aside>
+  );
+}
 
 export function HomePage({ lang }: { lang: Lang }) {
   return (
@@ -18,7 +40,10 @@ export function HomePage({ lang }: { lang: Lang }) {
             {/* The wordmark is the logo; the lede is the page's heading for search engines, styled as a lede. */}
             <p className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></p>
             <h1 className="lede font-normal text-wrap">{LEDE[lang]}</h1>
-            <ActScope lang={lang} />
+            <div className="mt-14 grid gap-10 items-start wide:grid-cols-2 phone:mt-10">
+              <ActScope lang={lang} />
+              <Campaign lang={lang} />
+            </div>
           </div>
         </section>
     </>

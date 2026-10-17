@@ -92,26 +92,19 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('email not in page source', !html.includes(['hello', 'vizory.dk'].join('@')));
   await p.context().close();
 }
-// Front page: acts
+// Front page: each act links straight to its guide; the campaign leads to the get-started flow.
 {
   const p = await page('/');
-  await p.click('button[data-act="MiCAR"]');
-  // The open act's description is the only visible block in #actInfo.
-  const openAct = p.locator('#actInfo > [data-act]:visible');
-  check('act opens', (await openAct.count()) === 1 && (await openAct.getAttribute('data-act')) === 'MiCAR');
-  check('act expanded', (await p.getAttribute('button[data-act="MiCAR"]', 'aria-expanded')) === 'true');
-  check('act link to guide', (await openAct.locator('a').getAttribute('href')) === '/mica');
-  await p.click('button[data-act="PSR"]');
-  check('other act replaces it', (await openAct.count()) === 1 && (await openAct.getAttribute('data-act')) === 'PSR');
-  await p.click('button[data-act="PSR"]');
-  check('act closes on second tap', (await openAct.count()) === 0);
-  await p.click('button[data-act="AMLR"]');
-  await p.keyboard.press('Escape');
-  check('act closes on Escape', (await openAct.count()) === 0);
+  check('act links to its guide', (await p.getAttribute('a[data-act="MiCAR"]', 'href')) === '/mica' && (await p.getAttribute('a[data-act="AMLR"]', 'href')) === '/aml');
+  check('act shows its full name', (await p.getAttribute('a[data-act="PSR"]', 'title')) === 'Payment Services Regulation');
+  check('campaign links to get started', (await p.getAttribute('[data-campaign] a', 'href')) === '/get-started');
+  await p.click('a[data-act="MiCAR"]');
+  await p.waitForURL('**/mica');
+  check('act opens the guide', new URL(p.url()).pathname === '/mica');
   await p.context().close();
   const d = await page('/da', { lang: 'da' });
-  await d.click('button[data-act="MiCAR"]');
-  check('danish act link', (await d.locator('#actInfo > [data-act]:visible a').getAttribute('href')) === '/da/mica');
+  check('danish act link', (await d.getAttribute('a[data-act="MiCAR"]', 'href')) === '/da/mica');
+  check('danish campaign link', (await d.getAttribute('[data-campaign] a', 'href')) === '/da/get-started');
   await d.context().close();
 }
 // Regulation menu marks the current page

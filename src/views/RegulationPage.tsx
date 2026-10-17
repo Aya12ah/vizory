@@ -22,6 +22,14 @@ const GUIDES = [
     },
   },
   {
+    href: '/stablecoins',
+    title: { en: 'Stablecoins under MiCA: e-money tokens and asset-referenced tokens', da: 'Stablecoins efter MiCA: e-pengetokens og tokens med aktivreference' },
+    summary: {
+      en: 'Who may issue an EMT or an ART, what the white paper and the reserve require, and which stablecoins a CASP may offer.',
+      da: 'Hvem der må udstede en EMT eller en ART, hvad whitepaper og reserve kræver, og hvilke stablecoins en CASP må tilbyde.',
+    },
+  },
+  {
     href: '/payments',
     title: { en: 'Payment and e-money institution authorisation', da: 'Tilladelse som betalingsinstitut og e-pengeinstitut' },
     summary: {

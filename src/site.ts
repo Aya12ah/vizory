@@ -74,6 +74,19 @@ export const PAGES = {
     },
     lastModified: '2026-10-17',
   },
+  stablecoins: {
+    path: '/stablecoins',
+    og: 'stablecoins',
+    title: {
+      en: 'Stablecoins under MiCA: EMT and ART rules · Vizory',
+      da: 'Stablecoins efter MiCA: regler for EMT og ART · Vizory',
+    },
+    description: {
+      en: 'E-money tokens and asset-referenced tokens under MiCA: who may issue them, the white paper, reserves and redemption, and what CASPs may offer.',
+      da: 'E-pengetokens og tokens med aktivreference efter MiCA: hvem der må udstede dem, whitepaper, reserver og indløsning, og hvad CASP\'er må tilbyde.',
+    },
+    lastModified: '2026-10-17',
+  },
   regulation: {
     path: '/regulation',
     og: 'regulation',

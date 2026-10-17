@@ -222,7 +222,7 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
 for (const viewport of [undefined, PHONE]) {
   const p = await page('/', { viewport });
   const counts = [];
-  for (const path of ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/aml']) {
+  for (const path of ['/', '/people', '/regulation', '/mica', '/mica-qa', '/payments', '/aml', '/stablecoins']) {
     await p.goto(base + path, { waitUntil: 'networkidle' });
     counts.push(await p.evaluate(() => [...document.querySelectorAll('*')].filter((e) => getComputedStyle(e).viewTransitionName === 'wordmark' && e.checkVisibility()).length));
   }

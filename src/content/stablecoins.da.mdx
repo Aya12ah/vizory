@@ -1,0 +1,117 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["emt-eller-art", "E-pengetoken eller token med aktivreference?"],
+  ["e-pengetokens", "E-pengetokens (EMT)", [
+    ["hvem-maa-udstede-en-emt", "Hvem må udstede en EMT"],
+    ["emt-whitepaper", "Whitepaperet"],
+    ["indloesning-og-beskyttelse", "Indløsning, rente og beskyttelse af midler"],
+  ]],
+  ["tokens-med-aktivreference", "Tokens med aktivreference (ART)", [
+    ["art-tilladelse", "Tilladelse og whitepaper"],
+    ["reserve-af-aktiver", "Reserve af aktiver"],
+    ["kapitalgrundlag", "Kapitalgrundlag"],
+  ]],
+  ["signifikante-tokens", "Signifikante tokens og EBA's tilsyn"],
+  ["udbydere-af-kryptoaktivtjenester", "Udbydere af kryptoaktivtjenester og stablecoins"],
+  ["compliance-efter-udstedelsen", "Compliance efter udstedelsen"],
+  ["saadan-hjaelper-vi", "Sådan hjælper vi"],
+  ["spoergsmaal-og-svar", "Spørgsmål og svar"],
+];
+
+# Stablecoins efter MiCA: e-pengetokens og tokens med aktivreference
+
+<p className="lede">MiCA har reguleret stablecoins i EU siden 30. juni 2024. En stablecoin er enten en e-pengetoken (EMT), som henviser til én officiel valuta, eller en token med aktivreference (ART), som henviser til noget andet eller en kombination. De to har forskellige regler for, hvem der må udstede dem, hvad whitepaperet skal indeholde, og hvordan midlerne bag tokenen opbevares.</p>
+
+<p className="lede">Nedenfor gennemgår vi, hvordan en token klassificeres, kravene til udstedere af EMT'er og ART'er, de ekstra krav til signifikante tokens, og hvad reglerne betyder for udbydere af kryptoaktivtjenester, der tilbyder stablecoins til deres kunder.</p>
+
+<Toc title="Indhold" items={toc} />
+
+<h2 id="emt-eller-art">E-pengetoken eller token med aktivreference?</h2>
+
+- **E-pengetoken (EMT):** et kryptoaktiv, der har til formål at bevare en stabil værdi ved at henvise til værdien af én officiel valuta, fx en token, der er knyttet til euro eller amerikanske dollar.
+- **Token med aktivreference (ART):** et kryptoaktiv, der ikke er en EMT, og som har til formål at bevare en stabil værdi ved at henvise til en anden værdi eller rettighed eller en kombination af dem, herunder en eller flere officielle valutaer. En token med guld eller en kurv af valutaer bag sig er en ART.
+
+Klassificeringen sker ud fra tokenens vilkår og funktion, ikke ud fra hvad udstederen kalder den. En forkert klassificering betyder den forkerte tilladelse og det forkerte whitepaper, så den bør afklares først. ESMA og EBA har udsendt retningslinjer med test for klassificeringen.
+
+<h2 id="e-pengetokens">E-pengetokens (EMT)</h2>
+
+<h3 id="hvem-maa-udstede-en-emt">Hvem må udstede en EMT</h3>
+
+Kun et pengeinstitut eller et e-pengeinstitut må udbyde en EMT til offentligheden i EU eller søge den optaget til handel. En virksomhed uden en af disse tilladelser skal først have tilladelse som e-pengeinstitut efter de regler, vi beskriver i vores vejledning om tilladelse som betalingsinstitut og e-pengeinstitut. En EMT behandles som elektroniske penge.
+
+<h3 id="emt-whitepaper">Whitepaperet</h3>
+
+Udstederen skal udarbejde et whitepaper med oplysninger om udstederen, tokenen, de rettigheder der knytter sig til den, den underliggende teknologi og risiciene. Whitepaperet indgives til Finanstilsynet, før det offentliggøres. Det godkendes ikke, men udstederen har ansvaret for, at det er retvisende, klart og ikke vildledende.
+
+<h3 id="indloesning-og-beskyttelse">Indløsning, rente og beskyttelse af midler</h3>
+
+- indehaverne har ret til at indløse tokenen når som helst og til pari værdi i andre midler end elektroniske penge
+- udstederen må ikke give rente, og det må en udbyder af kryptoaktivtjenester heller ikke i forbindelse med EMT'en
+- de midler, der modtages for tokens, skal beskyttes; mindst 30 procent skal indsættes på særskilte konti i pengeinstitutter, og resten investeres i sikre aktiver med lav risiko i samme valuta
+- udstederen skal have en genopretningsplan og en indløsningsplan
+
+<h2 id="tokens-med-aktivreference">Tokens med aktivreference (ART)</h2>
+
+<h3 id="art-tilladelse">Tilladelse og whitepaper</h3>
+
+En udsteder af en ART skal have tilladelse fra den kompetente myndighed i hjemlandet, i Danmark Finanstilsynet, og skal være en juridisk enhed etableret i EU. Et pengeinstitut skal ikke have en særskilt tilladelse, men skal have sit whitepaper godkendt. Ansøgningen skal indeholde en forretningsplan, whitepaperet, ledelsesordninger, politikker for reserven af aktiver, opbevaring og klager samt oplysninger om ledelse og kvalificerede aktionærer. Modsat en EMT skal whitepaperet for en ART godkendes, før det offentliggøres.
+
+<h3 id="reserve-af-aktiver">Reserve af aktiver</h3>
+
+Udstederen skal have en reserve af aktiver, der dækker risiciene ved de aktiver, tokenen henviser til, og likviditetsrisikoen ved indløsningsretten. Reserven skal være retligt adskilt fra udstederens egne aktiver, opbevares hos et pengeinstitut, en udbyder af kryptoaktivtjenester eller et investeringsselskab og må kun investeres i meget likvide instrumenter med minimal markeds-, kredit- og koncentrationsrisiko. Reserven revideres uafhængigt hver sjette måned.
+
+<h3 id="kapitalgrundlag">Kapitalgrundlag</h3>
+
+Udstederen skal have et kapitalgrundlag svarende til det højeste af 350.000 euro, 2 procent af den gennemsnitlige størrelse af reserven af aktiver og en fjerdedel af de faste omkostninger i det foregående år. Den kompetente myndighed kan kræve op til 20 procent mere, hvor risikoen tilsiger det.
+
+<h2 id="signifikante-tokens">Signifikante tokens og EBA's tilsyn</h2>
+
+EBA klassificerer en EMT eller en ART som signifikant, når den opfylder mindst tre kriterier, blandt andet over 10 millioner indehavere, en reserve eller markedsværdi over 5 mia. euro eller et stort antal transaktioner. Udstedere af signifikante tokens er underlagt strengere krav til kapital, likviditet og interoperabilitet, og EBA overtager tilsynet med udstedere af signifikante ART'er og dele af tilsynet med udstedere af signifikante EMT'er.
+
+ART'er og EMT'er i en valuta, der ikke er en EU-valuta, og som i vid udstrækning bruges som betalingsmiddel, er underlagt grænser for antallet og værdien af daglige transaktioner i EU.
+
+<h2 id="udbydere-af-kryptoaktivtjenester">Udbydere af kryptoaktivtjenester og stablecoins</h2>
+
+Udbydere af kryptoaktivtjenester i EU må kun tilbyde EMT'er og ART'er, hvis udstedere overholder MiCA. ESMA har bedt de nationale myndigheder sikre, at CASP'er ikke længere tilbyder stablecoins, der ikke overholder reglerne, og danske CASP'er skal kunne vise, hvordan de vurderer, hvilke tokens de tilbyder.
+
+En CASP, der overfører eller opbevarer EMT'er for kunder, kan samtidig udføre betalingstjenester, fordi en EMT er elektroniske penge. EBA har bedt de nationale myndigheder kræve, at sådanne CASP'er fra marts 2026 har tilladelse til betalingstjenester eller samarbejder med en virksomhed, der har det. Behovet bør vurderes for hver tjeneste.
+
+<h2 id="compliance-efter-udstedelsen">Compliance efter udstedelsen</h2>
+
+En udsteder af en EMT eller en ART skal løbende blandt andet:
+
+- efterkomme anmodninger om indløsning når som helst
+- forvalte og investere reserven eller de beskyttede midler efter reglerne
+- holde whitepaperet opdateret og offentliggøre væsentlige ændringer
+- håndtere klager og interessekonflikter
+- vedligeholde genopretningsplan og indløsningsplan
+- overholde hvidvaskreglerne
+- indberette til Finanstilsynet og til EBA, hvis tokenen er signifikant
+
+<h2 id="saadan-hjaelper-vi">Sådan hjælper vi</h2>
+
+- klassificering af tokenen som EMT, ART eller et andet kryptoaktiv
+- ansøgninger om tilladelse som e-pengeinstitut og som udsteder af ART'er
+- udarbejdelse af whitepapers for EMT'er og ART'er
+- politikker for reserve af aktiver, beskyttelse af midler, indløsning og genopretningsplaner
+- vurdering af, hvilke stablecoins en CASP må tilbyde, og af behovet for tilladelse til betalingstjenester
+- dialog med Finanstilsynet før, under og efter ansøgningen
+
+<h2 id="spoergsmaal-og-svar">Spørgsmål og svar</h2>
+
+### Må en CASP tilbyde USDT eller andre stablecoins udstedt uden for EU?
+
+En CASP må kun tilbyde EMT'er og ART'er til offentligheden i EU, når udstederen har tilladelse efter MiCA. Stablecoins, hvis udsteder ikke har tilladelse i EU, må ikke tilbydes kunder i EU.
+
+### Skal en virksomhed, der vil udstede en euro-stablecoin, have tilladelse?
+
+Ja. En euro-stablecoin er en e-pengetoken, så udstederen skal være et pengeinstitut eller et e-pengeinstitut med tilladelse, og den skal indgive et whitepaper til Finanstilsynet, før tokenen udbydes.
+
+<h2 id="kilder">Kilder</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj" rel="noopener">MiCA, forordning (EU) 2023/1114 (afsnit III og IV)</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2009/110/oj" rel="noopener">E-pengedirektivet, direktiv 2009/110/EF</a></li>
+</ul>

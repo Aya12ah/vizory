@@ -1,0 +1,117 @@
+import { Toc } from '@/components/Toc';
+
+{/* The table of contents, also used by the left menu (src/views/GuidePage.tsx). */}
+export const toc = [
+  ["emt-or-art", "E-money token or asset-referenced token?"],
+  ["e-money-tokens", "E-money tokens (EMT)", [
+    ["who-may-issue-an-emt", "Who may issue an EMT"],
+    ["emt-white-paper", "The white paper"],
+    ["redemption-and-safeguarding", "Redemption, interest and safeguarding"],
+  ]],
+  ["asset-referenced-tokens", "Asset-referenced tokens (ART)", [
+    ["art-authorisation", "Authorisation and white paper"],
+    ["reserve-of-assets", "Reserve of assets"],
+    ["own-funds", "Own funds"],
+  ]],
+  ["significant-tokens", "Significant tokens and EBA supervision"],
+  ["crypto-asset-service-providers", "Crypto-asset service providers and stablecoins"],
+  ["compliance-after-issuance", "Compliance after issuance"],
+  ["how-we-help", "How we help"],
+  ["questions-and-answers", "Questions and answers"],
+];
+
+# Stablecoins under MiCA: e-money tokens and asset-referenced tokens
+
+<p className="lede">MiCA has regulated stablecoins in the EU since 30 June 2024. A stablecoin is either an e-money token (EMT), which references one official currency, or an asset-referenced token (ART), which references something else or a combination. The two have different rules on who may issue them, what the white paper must contain and how the funds behind the token are held.</p>
+
+<p className="lede">Below we go through how a token is classified, the requirements for issuers of EMTs and ARTs, the extra requirements for significant tokens, and what the rules mean for crypto-asset service providers that offer stablecoins to their clients.</p>
+
+<Toc title="Contents" items={toc} />
+
+<h2 id="emt-or-art">E-money token or asset-referenced token?</h2>
+
+- **E-money token (EMT):** a crypto-asset that purports to maintain a stable value by referencing the value of one official currency, for example a token pegged to the euro or the US dollar.
+- **Asset-referenced token (ART):** a crypto-asset that is not an EMT and purports to maintain a stable value by referencing another value or right, or a combination of them, including one or more official currencies. A token backed by gold, or by a basket of currencies, is an ART.
+
+The classification is made from the token's terms and how it works, not from what the issuer calls it. A wrong classification means the wrong authorisation and the wrong white paper, so it should be settled first. ESMA and the EBA have published guidelines with tests for the classification.
+
+<h2 id="e-money-tokens">E-money tokens (EMT)</h2>
+
+<h3 id="who-may-issue-an-emt">Who may issue an EMT</h3>
+
+Only a credit institution or an e-money institution may offer an EMT to the public in the EU or seek its admission to trading. A firm without one of these authorisations must first be authorised as an e-money institution, under the rules described in our guide to payment and e-money institution authorisation. An EMT is treated as electronic money.
+
+<h3 id="emt-white-paper">The white paper</h3>
+
+The issuer must draw up a crypto-asset white paper with information about the issuer, the token, the rights attached to it, the underlying technology and the risks. The white paper is notified to the Danish FSA before it is published. It is not approved, but the issuer is responsible for it being fair, clear and not misleading.
+
+<h3 id="redemption-and-safeguarding">Redemption, interest and safeguarding</h3>
+
+- holders have a right to redeem the token at any time and at par value, in funds other than electronic money
+- the issuer must not grant interest, and neither may a crypto-asset service provider in connection with the EMT
+- the funds received in exchange for the tokens must be safeguarded; at least 30 per cent must be deposited in separate accounts with credit institutions, and the rest invested in secure, low-risk assets in the same currency
+- the issuer must have a recovery plan and a redemption plan
+
+<h2 id="asset-referenced-tokens">Asset-referenced tokens (ART)</h2>
+
+<h3 id="art-authorisation">Authorisation and white paper</h3>
+
+An issuer of an ART must be authorised by the competent authority in its home member state, in Denmark the Danish FSA, and must be a legal entity established in the EU. A credit institution does not need a separate authorisation but must have its white paper approved. The application must include a business plan, the white paper, governance arrangements, policies for the reserve of assets, custody and complaints, and information on the management and qualifying shareholders. Unlike for an EMT, the white paper for an ART must be approved before it is published.
+
+<h3 id="reserve-of-assets">Reserve of assets</h3>
+
+The issuer must hold a reserve of assets that covers the risks of the assets referenced and the liquidity risks of the redemption right. The reserve must be legally segregated from the issuer's own assets, held in custody with a credit institution, a crypto-asset service provider or an investment firm, and invested only in highly liquid instruments with minimal market, credit and concentration risk. The reserve is audited independently every six months.
+
+<h3 id="own-funds">Own funds</h3>
+
+The issuer must hold own funds equal to the highest of EUR 350,000, 2 per cent of the average amount of the reserve of assets, and a quarter of the fixed overheads of the preceding year. The competent authority can require up to 20 per cent more where the risk calls for it.
+
+<h2 id="significant-tokens">Significant tokens and EBA supervision</h2>
+
+The EBA classifies an EMT or an ART as significant when it meets at least three criteria, among them more than 10 million holders, a reserve or market value above EUR 5 billion, or a large number of transactions. Issuers of significant tokens are subject to stricter requirements on own funds, liquidity and interoperability, and the EBA takes over the supervision of the issuers of significant ARTs and parts of the supervision of issuers of significant EMTs.
+
+ARTs, and EMTs in a currency other than an EU currency, that are used widely as a means of exchange are subject to limits on the number and value of daily transactions within the EU.
+
+<h2 id="crypto-asset-service-providers">Crypto-asset service providers and stablecoins</h2>
+
+Crypto-asset service providers in the EU may only offer EMTs and ARTs whose issuers comply with MiCA. ESMA has asked the national authorities to make sure that CASPs no longer offer stablecoins that do not comply, and Danish CASPs must be able to show how they assess which tokens they offer.
+
+A CASP that transfers or holds EMTs for clients may also be providing payment services, because an EMT is electronic money. The EBA has asked the national authorities to require that such CASPs hold payment authorisation, or work with a firm that does, from March 2026. The need should be assessed for each service.
+
+<h2 id="compliance-after-issuance">Compliance after issuance</h2>
+
+An issuer of an EMT or an ART must on an ongoing basis, among other things:
+
+- honour redemption requests at any time
+- manage and invest the reserve or the safeguarded funds as required
+- keep the white paper up to date and publish material changes
+- handle complaints and conflicts of interest
+- maintain its recovery plan and redemption plan
+- comply with the AML rules
+- report to the Danish FSA, and to the EBA if the token is significant
+
+<h2 id="how-we-help">How we help</h2>
+
+- classification of the token as an EMT, an ART or another crypto-asset
+- applications for e-money institution authorisation and for ART authorisation
+- preparation of white papers for EMTs and ARTs
+- policies for the reserve of assets, safeguarding, redemption and recovery plans
+- assessment of which stablecoins a CASP may offer and of the need for payment authorisation
+- dialogue with the Danish FSA before, during and after the application
+
+<h2 id="questions-and-answers">Questions and answers</h2>
+
+### Can a CASP offer USDT or other stablecoins issued outside the EU?
+
+A CASP may only offer EMTs and ARTs to the public in the EU when the issuer is authorised under MiCA. Stablecoins whose issuer is not authorised in the EU must not be offered to clients in the EU.
+
+### Does a company that wants to issue a euro stablecoin need a licence?
+
+Yes. A euro stablecoin is an e-money token, so the issuer must be a credit institution or an authorised e-money institution, and it must notify a white paper to the Danish FSA before the token is offered.
+
+<h2 id="sources">Sources</h2>
+
+<ul className="sources">
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj" rel="noopener">MiCA, Regulation (EU) 2023/1114 (Titles III and IV)</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/dir/2009/110/oj" rel="noopener">E-Money Directive, Directive 2009/110/EC</a></li>
+</ul>

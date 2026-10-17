@@ -21,7 +21,8 @@ function sectionOf(pathname: string) {
  *  the layout, so it stays in place while the page below it changes. From 900px the regulation
  *  pages carry the wordmark, and the language and theme buttons, in their left menu, which reaches
  *  up beside the header, so the header leaves its own out and lets clicks through except on its
- *  own links. */
+ *  own links. The front page has the two buttons in the footer; the header's are only hidden there,
+ *  as its language button also does the automatic redirect. */
 export function Header({ lang }: { lang: Lang }) {
   const t = dictionary[lang];
   const section = sectionOf(usePathname());
@@ -31,7 +32,7 @@ export function Header({ lang }: { lang: Lang }) {
       {section !== 'home' && (
         <Link className={`${wordmarkClass} text-[20px] no-underline ${section === 'regulation' ? 'wide:hidden' : ''}`} href={localPath('/', lang)} aria-label={t.frontPage}><Wordmark /></Link>
       )}
-      <div className={`flex gap-1 ${section === 'regulation' ? 'wide:hidden' : ''}`}>
+      <div className={`flex gap-1 ${section === 'home' ? 'hidden' : section === 'regulation' ? 'wide:hidden' : ''}`}>
         <LangButton lang={lang} />
         <ThemeToggle />
       </div>

@@ -1,6 +1,8 @@
 import { dictionary } from '@/i18n/dictionary';
 import type { Lang } from '@/i18n/lang';
+import { LangButton } from './LangButton';
 import { Mail } from './Mail';
+import { ThemeToggle } from './ThemeToggle';
 
 /** City and email address: in the footer, and from 900px in the regulation pages' left menu. */
 export function Address({ lang }: { lang: Lang }) {
@@ -13,11 +15,16 @@ export function Address({ lang }: { lang: Lang }) {
 }
 
 // From 900px the regulation pages show the address in their left menu column (RegNav), so the
-// footer is left out there.
+// footer is left out there. On the front page the language and theme buttons sit above the address
+// instead of in the header.
 export function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="flex flex-wrap justify-between gap-6 pt-10 pb-14 phone:py-6 wide:[body:has([data-reg-nav])_&]:hidden">
-      <Address lang={lang} />
+      <div>
+        {/* -ml-3 lines the button labels up with the address below. */}
+        <div className="hidden [body:has([data-home])_&]:flex gap-1 -ml-3 mb-3"><LangButton lang={lang} copy /><ThemeToggle copy /></div>
+        <Address lang={lang} />
+      </div>
     </footer>
   );
 }

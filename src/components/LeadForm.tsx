@@ -165,6 +165,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   // Counted on the step as the flow describes it, not on the questions shown: a follow-up question
   // that appears on an answer must not make the first question's label appear too.
   const only = (flow.steps.find((s) => s.id === step.id) ?? step).questions.length === 1;
+  // Every step has one line under its title: its own intro, or for a step of one choice question
+  // whether to choose one or more.
+  const kind = only ? step.questions[0].type : null;
+  const hint = step.intro?.[lang] ?? (kind === 'multi' ? t.chooseMany : kind === 'single' ? t.chooseOne : null);
   const incomplete = Object.values(validate(flow, answers, step.questions)).includes('required');
   return (
     <form className="flex flex-col min-h-[calc(100dvh-148px)] pb-[calc(var(--bar)+56px)] phone:min-h-[calc(100dvh-90px)] phone:pb-[calc(var(--bar)+24px)]" style={{ '--bar': `${barHeight}px` } as CSSProperties} noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
@@ -173,7 +177,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
         <div className="grid gap-7 min-w-0 wide:col-start-2 wide:row-start-1">
           <div className="grid gap-2">
             <h2 ref={heading} tabIndex={-1} className={headingClass}>{step.title[lang]}</h2>
-            {step.intro && <p className="text-[15px] text-ink-soft">{step.intro[lang]}</p>}
+            {hint && <p className="text-[15px] text-ink-soft" data-lead-hint>{hint}</p>}
           </div>
           {step.summary && (
             <dl className="m-0 grid gap-5 text-[14px]" data-lead-summary>
@@ -203,13 +207,13 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           when its toolbar shrinks, and the page should not show through there. */}
       <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
-        {/* From 721px: Back, the progress level with the buttons, Next, and "Step x of y" small above
-            the progress, centred in the 36px between the bar's top line and the progress. On a phone
-            the progress runs across the top, with "Step x of y" between the buttons below it (left
-            out on the last step, whose longer button needs the room). */}
+        {/* From 721px: Back, the progress level with the buttons, Next, and "x of y" small above the
+            progress, in a tab hanging from the bar's top line (36px above the progress). On a phone
+            the progress runs across the top, with "x of y" between the buttons below it (left out on
+            the last step, whose longer button needs the room). */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="relative flex-1 min-w-0 phone:contents">
-          <p className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-[12px] text-[12px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:mb-0 phone:order-3 phone:flex-1 phone:text-center phone:text-[14px] ${last ? 'phone:hidden' : ''}`} data-lead-count>{t.step(index + 1, steps.length)}</p>
+          <p className={`absolute -top-9 left-1/2 -translate-x-1/2 px-[10px] pt-[3px] pb-[5px] border border-t-0 border-line rounded-b-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back. */}
           <div className="flex gap-[6px] phone:basis-full phone:order-1" aria-hidden="true" data-lead-progress>

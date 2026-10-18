@@ -28,7 +28,7 @@ export const vizoryFlow: Flow = {
   steps: [
     {
       id: 'area', title: t('What is it about?', 'Hvad drejer det sig om?'),
-      why: t('Vizory works in five areas. Your choice decides which questions follow, so you only answer what is relevant to you.', 'Vizory arbejder inden for fem områder. Jeres valg afgør, hvilke spørgsmål der følger, så I kun svarer på det, der er relevant for jer.'), intro: t('Choose one or more.', 'Vælg et eller flere.'),
+      why: t('Vizory works in five areas. Your choice decides which questions follow, so you only answer what is relevant to you.', 'Vizory arbejder inden for fem områder. Jeres valg afgør, hvilke spørgsmål der følger, så I kun svarer på det, der er relevant for jer.'),
       links: [
         l('Crypto-assets (MiCA)', 'Kryptoaktiver (MiCA)', '/mica'),
         l('Stablecoins', 'Stablecoins', '/stablecoins'),
@@ -64,6 +64,7 @@ export const vizoryFlow: Flow = {
     {
       id: 'crypto', title: t('Crypto-assets', 'Kryptoaktiver'),
       why: t('The services decide what the application must contain and the capital you need. An existing authorisation can mean that a notification under Article 60 is enough instead of a full application.', 'Tjenesterne afgør, hvad ansøgningen skal indeholde, og hvor stort kapitalkravet er. En eksisterende tilladelse kan betyde, at en meddelelse efter artikel 60 er nok i stedet for en fuld ansøgning.'), showIf: { area: { includes: 'crypto' } },
+      intro: t('Choose the services and answer the question on authorisation.', 'Vælg tjenesterne, og svar på spørgsmålet om tilladelse.'),
       links: [
         l('Who needs CASP authorisation?', 'Hvem skal have en CASP-tilladelse?', '/mica#who-needs-casp-authorisation', '/mica#hvem-skal-have-en-casp-tilladelse'),
         l('Authorisation or notification', 'Tilladelse eller meddelelse', '/mica#authorisation-or-notification', '/mica#tilladelse-eller-meddelelse'),
@@ -110,16 +111,23 @@ export const vizoryFlow: Flow = {
             o('other', 'Other', 'Andet'),
           ],
         },
-        {
-          id: 'stableLicence', type: 'single', required: true, section: 'stablecoins', options: yesNo, showIf: { stableRole: { equals: 'emt' } },
-          short: t('Credit or e-money institution?', 'Kredit- eller e-pengeinstitut?'),
-          label: t('Do you hold an authorisation as a credit institution or e-money institution?', 'Har I tilladelse som kreditinstitut eller e-pengeinstitut?'),
-        },
       ],
+    },
+    {
+      id: 'stableLicence', title: t('Do you hold an authorisation as a credit or e-money institution?', 'Har I tilladelse som kredit- eller e-pengeinstitut?'),
+      why: t('Only credit institutions and e-money institutions may issue e-money tokens. Without such an authorisation it must be applied for first.', 'Kun kreditinstitutter og e-pengeinstitutter må udstede e-pengetokens. Uden sådan en tilladelse skal den søges først.'),
+      showIf: { area: { includes: 'stablecoins' }, stableRole: { equals: 'emt' } },
+      links: [l('Who may issue an EMT', 'Hvem må udstede en EMT', '/stablecoins#who-may-issue-an-emt', '/stablecoins#hvem-maa-udstede-en-emt')],
+      questions: [{
+        id: 'stableLicence', type: 'single', required: true, section: 'stablecoins', options: yesNo,
+        short: t('Credit or e-money institution?', 'Kredit- eller e-pengeinstitut?'),
+        label: t('Do you hold an authorisation as a credit institution or e-money institution?', 'Har I tilladelse som kreditinstitut eller e-pengeinstitut?'),
+      }],
     },
     {
       id: 'payments', title: t('Payments and e-money', 'Betalinger og e-penge'),
       why: t('The services, e-money and the expected volume decide whether a limited authorisation may be enough or a full authorisation is needed.', 'Tjenesterne, e-penge og den forventede volumen afgør, om en begrænset tilladelse kan være nok, eller om der skal søges fuld tilladelse.'), showIf: { area: { includes: 'payments' } },
+      intro: t('Choose the services and answer the questions on e-money and volume.', 'Vælg tjenesterne, og svar på spørgsmålene om e-penge og volumen.'),
       links: [
         l('Who needs authorisation?', 'Hvem skal have tilladelse?', '/payments#who-needs-authorisation', '/payments#hvem-skal-have-tilladelse'),
         l('Which authorisation: full, limited or registration', 'Hvilken tilladelse: fuld, begrænset eller registrering', '/payments#which-authorisation', '/payments#hvilken-tilladelse'),
@@ -184,7 +192,7 @@ export const vizoryFlow: Flow = {
     },
     {
       id: 'help', title: t('What should Vizory help with?', 'Hvad skal Vizory hjælpe med?'),
-      why: t('This tells Vizory what the first conversation should be about, and who should take part.', 'Så ved Vizory, hvad den første samtale skal handle om, og hvem der skal være med.'), intro: t('Choose one or more.', 'Vælg et eller flere.'),
+      why: t('This tells Vizory what the first conversation should be about, and who should take part.', 'Så ved Vizory, hvad den første samtale skal handle om, og hvem der skal være med.'),
       questions: [{
         id: 'help', type: 'multi', required: true, section: 'need', label: t('Help', 'Hjælp'),
         options: [
@@ -200,6 +208,7 @@ export const vizoryFlow: Flow = {
     {
       id: 'timing', title: t('When?', 'Hvornår?'),
       why: t('Authorisations take time. If we know your deadline, Vizory can assess straight away whether it is realistic.', 'Tilladelser tager tid. Kender vi jeres frist, kan Vizory med det samme vurdere, om den er realistisk.'),
+      intro: t('Choose a timing. A fixed deadline is optional.', 'Vælg en tidshorisont. En fast frist er valgfri.'),
       questions: [
         {
           id: 'timing', type: 'single', required: true, section: 'timing', label: t('Timing', 'Tidshorisont'),
@@ -211,6 +220,7 @@ export const vizoryFlow: Flow = {
     {
       id: 'company', title: t('About the company', 'Om virksomheden'),
       why: t('The country decides which authority is competent, and the size of the firm affects how extensive the requirements are.', 'Landet afgør, hvilken myndighed der er kompetent, og virksomhedens størrelse har betydning for, hvor omfattende kravene er.'),
+      intro: t('Fields marked optional can be left empty.', 'Felter mærket valgfri kan stå tomme.'),
       questions: [
         { id: 'country', type: 'country', required: true, section: 'company', autocomplete: 'country', fromGeo: true, label: t('Country', 'Land') },
         { id: 'cvr', type: 'text', section: 'company', maxLength: 8, allow: '0-9', pattern: '\\d{8}', inputMode: 'numeric', lookup: { path: '/api/cvr', fill: 'company' }, showIf: { country: { equals: 'DK' } }, label: t('CVR number (optional)', 'CVR-nummer (valgfri)'), help: t('The Danish company number: 8 digits. We fill in the name from the CVR register.', '8 cifre. Vi henter navnet fra CVR-registret.') },
@@ -225,6 +235,7 @@ export const vizoryFlow: Flow = {
     {
       id: 'contact', title: t('Contact', 'Kontakt'),
       why: t('So that Vizory can get back to the right person.', 'Så Vizory kan vende tilbage til den rette person.'),
+      intro: t('Fields marked optional can be left empty.', 'Felter mærket valgfri kan stå tomme.'),
       questions: [
         { id: 'name', type: 'text', required: true, section: 'contact', maxLength: 120, autocomplete: 'name', label: t('Name', 'Navn') },
         { id: 'role', type: 'text', section: 'contact', maxLength: 120, autocomplete: 'organization-title', label: t('Role (optional)', 'Rolle (valgfri)') },
@@ -236,6 +247,7 @@ export const vizoryFlow: Flow = {
     {
       id: 'confirm', title: t('Check and send', 'Gennemse og send'),
       why: t('Check your answers. When you send, your email program opens with the request ready to go.', 'Gennemse jeres svar. Når I sender, åbner jeres mailprogram med henvendelsen klar til afsendelse.'), summary: true,
+      intro: t('To change an answer, go back to its step.', 'Gå tilbage til trinet for at rette et svar.'),
       questions: [{
         id: 'consent', type: 'consent', required: true,
         label: t('I agree that Vizory uses my answers to reply to my request.', 'Jeg accepterer, at Vizory bruger mine svar til at besvare min henvendelse.'),

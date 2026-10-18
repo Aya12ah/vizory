@@ -22,7 +22,10 @@ const en = {
   contents: 'Contents',
   getStarted: 'Describe your needs',
   lead: {
-    step: (n: number, total: number) => `Step ${n} of ${total}`,
+    step: (n: number, total: number) => `${n} of ${total}`,
+    stepWord: 'Step',
+    chooseOne: 'Choose one.',
+    chooseMany: 'Choose one or more.',
     next: 'Next',
     back: 'Back',
     send: 'Open in your email',
@@ -77,7 +80,10 @@ const da: typeof en = {
   contents: 'Indhold',
   getStarted: 'Beskriv jeres behov',
   lead: {
-    step: (n: number, total: number) => `Trin ${n} af ${total}`,
+    step: (n: number, total: number) => `${n} af ${total}`,
+    stepWord: 'Trin',
+    chooseOne: 'Vælg én.',
+    chooseMany: 'Vælg et eller flere.',
     next: 'Næste',
     back: 'Tilbage',
     send: 'Åbn i dit mailprogram',

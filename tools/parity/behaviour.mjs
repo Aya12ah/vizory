@@ -314,12 +314,13 @@ for (const viewport of [PHONE, undefined]) {
   const summary = await p.textContent('[data-lead-summary]');
   check(`lead: summary holds the chosen areas only (${where})`, summary.includes('Kryptoaktiver (MiCA)') && summary.includes('Betalinger og e-penge') && !summary.includes('Hvidvask'), summary);
   check(`lead: summary shows the country and the phone with its code (${where})`, summary.includes('Land: Danmark') && summary.includes('12345678') && summary.includes('+46 701234567'), summary);
-  check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).isDisabled());
+  check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.getByRole('button', { name: 'Afslut' }).isDisabled() && await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).isDisabled());
+  check(`lead: the note on the answers stands in the consent, with the address (${where})`, (await p.textContent('label:has(#lead-consent) [data-lead-note]')).includes('cvrapi.dk') && (await p.locator('label:has(#lead-consent) [data-lead-note] a[href^="mailto:"]').count()) === 1);
   await p.getByLabel(/Jeg accepterer/).check();
   await p.getByRole('button', { name: 'Kopiér teksten' }).click();
   const text = await p.evaluate(() => navigator.clipboard.readText());
   check(`lead: the text carries the subject the rules give (${where})`, text.startsWith('[Haster] Firma ApS · Ansøgning om CASP-tilladelse / Betalinger: begrænset tilladelse kan være nok'), text.split('\n')[0]);
-  await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).click();
+  await p.getByRole('button', { name: viewport ? 'Afslut' : 'Åbn i dit mailprogram' }).click();
   await p.waitForSelector('[data-lead-done]');
   check(`lead: the receipt suggests the chosen areas' guides (${where})`, (await p.locator('[data-lead-done] a').evaluateAll((as) => as.map((a) => a.getAttribute('href')))).join(' ') === '/da/mica /da/payments');
   await p.context().close();

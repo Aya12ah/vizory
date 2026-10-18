@@ -30,6 +30,7 @@ const en = {
     next: 'Next',
     back: 'Back',
     send: 'Open in your email',
+    finish: 'Finish',
     copy: 'Copy the text',
     copied: 'Copied',
     errors: {
@@ -89,6 +90,7 @@ const da: typeof en = {
     next: 'Næste',
     back: 'Tilbage',
     send: 'Åbn i dit mailprogram',
+    finish: 'Afslut',
     copy: 'Kopiér teksten',
     copied: 'Kopieret',
     errors: {

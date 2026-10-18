@@ -20,7 +20,7 @@ const key = (flow: Flow) => `vz-lead-${flow.id}`;
 function load(flow: Flow): Saved | null { try { return JSON.parse(sessionStorage.getItem(key(flow)) || 'null'); } catch { return null; } }
 function save(flow: Flow, s: Saved | null) { try { if (s) sessionStorage.setItem(key(flow), JSON.stringify(s)); else sessionStorage.removeItem(key(flow)); } catch {} }
 
-/** `title`, `lede` and `note` stand beside the steps; a step's own `why` takes the lede's place while
+/** `title` and `lede` stand beside the steps, `note` (on how the answers are used) under the consent; a step's own `why` takes the lede's place while
  *  that step is shown. */
 export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: Lang; title: string; lede: string; note: ReactNode }) {
   const t = dictionary[lang].lead;
@@ -192,7 +192,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             {hint && <p className="text-[15px] text-ink-soft" data-lead-hint>{hint}</p>}
           </div>
           {step.summary && (
-            <dl className="m-0 grid gap-5 text-[14px]" data-lead-summary>
+            <dl className="m-0 grid gap-5 pb-7 border-0 border-b border-solid border-line text-[14px]" data-lead-summary>
               {brief.sections.map((s) => (
                 <div key={s.title} className="grid gap-1">
                   <dt className="font-medium text-ink">{s.title}</dt>
@@ -202,10 +202,15 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             </dl>
           )}
           {step.questions.map((q) => (
-            <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} setAnswer={set} />
+            <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} note={q.type === 'consent' ? note : undefined} onChange={(v) => set(q.id, v)} setAnswer={set} />
           ))}
-          {last && <p><button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button></p>}
-          {last && <div className="max-w-[56ch] text-[13px] leading-[1.55] text-ink-soft" data-lead-note>{note}</div>}
+          {/* Beside "copy", the same as Finish in the bar. */}
+          {last && (
+            <p className="flex flex-wrap gap-2">
+              <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>
+              <button type="button" className={buttonSecondary} disabled={incomplete} onClick={send}>{t.send}</button>
+            </p>
+          )}
         </div>
         {asideBelow}
         {/* From 900px the address and the theme and language buttons stand at the foot of the left
@@ -222,11 +227,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress level with the buttons, Next, and "x of y" small above the
             progress, in a tab standing on the bar's top line (41px above the progress's foot). On a phone
-            the progress runs across the top, with "x of y" between the buttons below it (left out on
-            the last step, whose longer button needs the room). */}
+            the progress runs across the top, with "x of y" between the buttons below it. */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="relative flex-1 min-w-0 phone:contents">
-          <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
+          <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px]`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back (several
               one after the other). Each step done is a button back to it, 28px tall to tap, of which
@@ -245,7 +249,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
         {/* Disabled until every required question of the step is answered; other mistakes (an
             email without a domain) show when it is pressed. */}
         <button type="submit" className={`${buttonPrimary} phone:order-4 phone:ml-auto`} disabled={incomplete}>
-          {last ? t.send : t.next}
+          {last ? t.finish : t.next}
           {!last && <svg className="size-4" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
         </button>
       </div>
@@ -256,8 +260,8 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
 
 /** One question of any type, with its error. On a step with a single question its label is only
  *  for screen readers: the step's title says it. */
-function Field({ q, lang, answers, geo, error, hideLabel, onChange, setAnswer }: {
-  q: Question; lang: Lang; answers: Answers; geo: string; error?: string; hideLabel: boolean; onChange: (v: Answer) => void; setAnswer: (id: string, v: Answer) => void;
+function Field({ q, lang, answers, geo, error, hideLabel, note, onChange, setAnswer }: {
+  q: Question; lang: Lang; answers: Answers; geo: string; error?: string; hideLabel: boolean; note?: ReactNode; onChange: (v: Answer) => void; setAnswer: (id: string, v: Answer) => void;
 }) {
   const value = answers[q.id];
   const id = `lead-${q.id}`, errId = `${id}-error`;
@@ -293,7 +297,12 @@ function Field({ q, lang, answers, geo, error, hideLabel, onChange, setAnswer }:
         <label className={choice}>
           <input className={choiceInput} type="checkbox" id={id} checked={value === true} onChange={(e) => onChange(e.target.checked)} {...invalid} />
           <Box round={false} />
-          <span>{label}</span>
+          {/* The note's email link lies above the checkbox's input, which covers the card; the
+              rest of the card ticks the box. */}
+          <span className="grid gap-1">
+            <span>{label}</span>
+            {note && <span className="text-[13px] leading-[1.55] text-ink-soft [&_a]:relative [&_a]:z-[1]" data-lead-note>{note}</span>}
+          </span>
         </label>
         {err}
       </div>

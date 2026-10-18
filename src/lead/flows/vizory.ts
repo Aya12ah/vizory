@@ -2,10 +2,12 @@
 // meeting with Vizory would ask, the conditions that show the follow-up questions per area, the rules
 // that tag a brief as urgent or put it on a track, and the sections of the brief. To change the
 // flow, change this file; the engine and the form stay as they are.
-import type { Flow, Option, Text } from '../engine';
+import type { Flow, Option, StepLink, Text } from '../engine';
 
 const t = (en: string, da: string): Text => ({ en, da });
 const o = (id: string, en: string, da: string, link?: string): Option => ({ id, label: t(en, da), ...(link ? { link } : {}) });
+/** A help link: its label and its address in English and Danish (the anchors differ). */
+const l = (en: string, da: string, hrefEn: string, hrefDa = hrefEn): StepLink => ({ label: t(en, da), href: t(hrefEn, hrefDa) });
 const yesNo = [o('yes', 'Yes', 'Ja'), o('no', 'No', 'Nej')];
 
 export const vizoryFlow: Flow = {
@@ -27,6 +29,13 @@ export const vizoryFlow: Flow = {
     {
       id: 'area', title: t('What is it about?', 'Hvad drejer det sig om?'),
       why: t('Vizory works in five areas. Your choice decides which questions follow, so you only answer what is relevant to you.', 'Vizory arbejder inden for fem områder. Jeres valg afgør, hvilke spørgsmål der følger, så I kun svarer på det, der er relevant for jer.'), intro: t('Choose one or more.', 'Vælg et eller flere.'),
+      links: [
+        l('Crypto-assets (MiCA)', 'Kryptoaktiver (MiCA)', '/mica'),
+        l('Stablecoins', 'Stablecoins', '/stablecoins'),
+        l('Payments and e-money', 'Betalinger og e-penge', '/payments'),
+        l('DLT and tokenisation', 'DLT og tokenisering', '/dlt'),
+        l('AML/CFT', 'Hvidvask', '/aml'),
+      ],
       questions: [{
         id: 'area', type: 'multi', required: true, section: 'need', label: t('Area', 'Område'),
         options: [
@@ -55,6 +64,12 @@ export const vizoryFlow: Flow = {
     {
       id: 'crypto', title: t('Crypto-assets', 'Kryptoaktiver'),
       why: t('The services decide what the application must contain and the capital you need. An existing authorisation can mean that a notification under Article 60 is enough instead of a full application.', 'Tjenesterne afgør, hvad ansøgningen skal indeholde, og hvor stort kapitalkravet er. En eksisterende tilladelse kan betyde, at en meddelelse efter artikel 60 er nok i stedet for en fuld ansøgning.'), showIf: { area: { includes: 'crypto' } },
+      links: [
+        l('Who needs CASP authorisation?', 'Hvem skal have en CASP-tilladelse?', '/mica#who-needs-casp-authorisation', '/mica#hvem-skal-have-en-casp-tilladelse'),
+        l('Authorisation or notification', 'Tilladelse eller meddelelse', '/mica#authorisation-or-notification', '/mica#tilladelse-eller-meddelelse'),
+        l('Service-specific requirements', 'Krav til de enkelte tjenester', '/mica#service-specific-requirements', '/mica#krav-til-de-enkelte-tjenester'),
+        l("ESMA's Q&A on MiCA", "ESMA's Q&A om MiCA", '/mica-qa'),
+      ],
       questions: [
         {
           id: 'cryptoServices', type: 'multi', section: 'crypto', label: t('Which crypto-asset services?', 'Hvilke kryptoaktivtjenester?'),
@@ -80,6 +95,11 @@ export const vizoryFlow: Flow = {
     {
       id: 'stablecoins', title: t('Stablecoins', 'Stablecoins'),
       why: t('The rules differ for e-money tokens and asset-referenced tokens. E-money tokens can only be issued by credit institutions and e-money institutions.', 'Reglerne er forskellige for e-pengetokens og tokens med aktivreference. E-pengetokens kan kun udstedes af kreditinstitutter og e-pengeinstitutter.'), showIf: { area: { includes: 'stablecoins' } },
+      links: [
+        l('E-money token or asset-referenced token?', 'E-pengetoken eller token med aktivreference?', '/stablecoins#emt-or-art', '/stablecoins#emt-eller-art'),
+        l('Who may issue an EMT', 'Hvem må udstede en EMT', '/stablecoins#who-may-issue-an-emt', '/stablecoins#hvem-maa-udstede-en-emt'),
+        l('Crypto-asset service providers and stablecoins', 'Udbydere af kryptoaktivtjenester og stablecoins', '/stablecoins#crypto-asset-service-providers', '/stablecoins#udbydere-af-kryptoaktivtjenester'),
+      ],
       questions: [
         {
           id: 'stableRole', type: 'single', required: true, section: 'stablecoins', label: t('Your role', 'Jeres rolle'),
@@ -100,6 +120,11 @@ export const vizoryFlow: Flow = {
     {
       id: 'payments', title: t('Payments and e-money', 'Betalinger og e-penge'),
       why: t('The services, e-money and the expected volume decide whether a limited authorisation may be enough or a full authorisation is needed.', 'Tjenesterne, e-penge og den forventede volumen afgør, om en begrænset tilladelse kan være nok, eller om der skal søges fuld tilladelse.'), showIf: { area: { includes: 'payments' } },
+      links: [
+        l('Who needs authorisation?', 'Hvem skal have tilladelse?', '/payments#who-needs-authorisation', '/payments#hvem-skal-have-tilladelse'),
+        l('Which authorisation: full, limited or registration', 'Hvilken tilladelse: fuld, begrænset eller registrering', '/payments#which-authorisation', '/payments#hvilken-tilladelse'),
+        l('Initial capital and own funds', 'Startkapital og kapitalgrundlag', '/payments#capital-requirements', '/payments#kapitalkrav'),
+      ],
       questions: [
         {
           id: 'payServices', type: 'multi', section: 'payments', label: t('Which payment services?', 'Hvilke betalingstjenester?'),
@@ -123,6 +148,11 @@ export const vizoryFlow: Flow = {
     {
       id: 'dlt', title: t('DLT and tokenisation', 'DLT og tokenisering'),
       why: t('Your role decides which rules apply: the DLT Pilot Regime, MiFID II or others.', 'Jeres rolle afgør, hvilke regler der gælder: DLT-pilotordningen, MiFID II eller andre.'), showIf: { area: { includes: 'dlt' } },
+      links: [
+        l('Financial instrument or crypto-asset?', 'Finansielt instrument eller kryptoaktiv?', '/dlt#financial-instrument-or-crypto-asset', '/dlt#finansielt-instrument-eller-kryptoaktiv'),
+        l('The DLT Pilot Regime', 'DLT-pilotordningen', '/dlt#dlt-pilot-regime', '/dlt#dlt-pilotordningen'),
+        l('Three types of DLT market infrastructure', 'Tre typer DLT-markedsinfrastruktur', '/dlt#three-types-of-infrastructure', '/dlt#tre-typer-infrastruktur'),
+      ],
       questions: [{
         id: 'dltRole', type: 'single', required: true, section: 'dlt', label: t('Your role', 'Jeres rolle'),
         options: [
@@ -136,6 +166,11 @@ export const vizoryFlow: Flow = {
     {
       id: 'aml', title: t('AML/CFT', 'Hvidvask'),
       why: t('Knowing where the challenge lies lets Vizory prepare for exactly the parts of the AML rules that matter to you.', 'Når Vizory ved, hvor udfordringen ligger, kan vi forberede os på netop de dele af hvidvaskreglerne, der fylder hos jer.'), showIf: { area: { includes: 'aml' } },
+      links: [
+        l('What the AMLR changes', 'Hvad AMLR ændrer', '/aml#what-amlr-changes', '/aml#hvad-amlr-aendrer'),
+        l('AML in an application for authorisation', 'Hvidvask i en ansøgning om tilladelse', '/aml#aml-in-the-application', '/aml#hvidvask-i-ansoegningen'),
+        l('Preparing for July 2027', 'Forberedelse til juli 2027', '/aml#preparing-for-2027', '/aml#forberedelse-til-2027'),
+      ],
       questions: [{
         id: 'amlChallenge', type: 'multi', required: true, section: 'aml', label: t('Where is the challenge?', 'Hvor ligger udfordringen?'),
         options: [

@@ -44,6 +44,8 @@ const en = {
     doneText: 'When the email has been sent, Vizory will get back to you within 2 working days.',
     noMail: 'Did your email program not open? Copy the text and send it to',
     readMore: 'Read more while you wait',
+    help: 'Help with the questions',
+    newTab: '(opens in a new tab)',
     restart: 'Start again',
     restartConfirm: 'Start again? Your answers so far will be cleared.',
     lookup: {
@@ -97,6 +99,8 @@ const da: typeof en = {
     doneText: 'Når mailen er sendt, vender Vizory tilbage inden for 2 hverdage.',
     noMail: 'Åbnede dit mailprogram ikke? Kopiér teksten, og send den til',
     readMore: 'Læs videre, mens du venter',
+    help: 'Hjælp til spørgsmålene',
+    newTab: '(åbner i en ny fane)',
     restart: 'Start forfra',
     restartConfirm: 'Start forfra? Jeres svar indtil nu bliver slettet.',
     lookup: {

@@ -63,8 +63,11 @@ export type Question =
   | (Base & { type: 'phone'; countryFrom?: string });
 
 /** A step is one screen. `why` says why the step's questions matter (shown above the step);
- *  `intro` is a short hint under its title; `summary` shows the answers so far above its questions. */
-export type Step = { id: string; title: Text; why?: Text; intro?: Text; showIf?: Condition; summary?: boolean; questions: Question[] };
+ *  `intro` is a short hint under its title; `summary` shows the answers so far above its questions;
+ *  `links` are pages of the site that help answer it, shown beside it (the address per language, as
+ *  a heading's anchor differs: '/mica#authorisation-or-notification'). */
+export type Step = { id: string; title: Text; why?: Text; intro?: Text; showIf?: Condition; summary?: boolean; links?: StepLink[]; questions: Question[] };
+export type StepLink = { label: Text; href: Text };
 
 /** A tag the rules can give: a flag (shown in brackets first in the subject, e.g. urgent) or a track. */
 export type Tag = { id: string; kind: 'flag' | 'track'; label: Text };
@@ -274,6 +277,7 @@ export function checkFlow(flow: Flow): string[] {
   if (!byId.has(flow.subjectQuestion)) problems.push(`unknown subject question ${flow.subjectQuestion}`);
   for (const q of qs) if ('pattern' in q && q.pattern) { try { new RegExp(q.pattern); } catch { problems.push(`question ${q.id}: pattern ${q.pattern} is not a regular expression`); } }
   for (const q of qs) if ('lookup' in q && q.lookup?.fill && !byId.has(q.lookup.fill)) problems.push(`question ${q.id}: lookup fills unknown question ${q.lookup.fill}`);
+  for (const s of flow.steps) for (const l of s.links ?? []) for (const href of Object.values(l.href)) if (!href.startsWith('/')) problems.push(`step ${s.id}: link ${href} is not a page of the site`);
   for (const q of qs) if (q.type === 'phone' && q.countryFrom && byId.get(q.countryFrom)?.type !== 'country') problems.push(`question ${q.id}: countryFrom ${q.countryFrom} is not a country question`);
   return problems;
 }

@@ -109,14 +109,29 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       {answered && !done && <p><button type="button" className="p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button></p>}
     </>
   );
+  // The step's help links, to the guides on the site; they open in a new tab, so the step stays.
+  const links = !done && step.links?.length ? (
+    <nav className="grid gap-2" aria-label={t.help} data-lead-links>
+      <p className="text-[14px] font-medium">{t.help}</p>
+      <ul className="list-none m-0 p-0 grid gap-[6px]">
+        {step.links.map((l) => (
+          <li key={l.href[lang]}>
+            <a className={signalLink} href={localPath(l.href[lang], lang)} target="_blank" rel="noopener">
+              {l.label[lang]}<span aria-hidden="true"> ↗</span><span className="sr-only"> {t.newTab}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  ) : null;
   const intro = (why: string) => (
     <div className="grid gap-4 content-start wide:sticky wide:top-8 wide:col-start-1 wide:row-start-1">
       <h1 className="page-title">{title}</h1>
       <p className="lede mt-0" data-lead-why>{why}</p>
-      <div className="hidden wide:grid gap-4 mt-2">{aside}</div>
+      <div className="hidden wide:grid gap-4 mt-2">{links}{aside}</div>
     </div>
   );
-  const asideBelow = <div className="grid gap-4 wide:hidden">{aside}</div>;
+  const asideBelow = <div className="grid gap-4 wide:hidden">{links}{aside}</div>;
   const grid = 'grid gap-8 wide:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] wide:gap-16 items-start';
   const headingClass = 'text-[24px] leading-[1.25] tracking-[-0.01em] outline-none scroll-mt-8 phone:text-[21px]';
 

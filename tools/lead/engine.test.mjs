@@ -2,6 +2,7 @@
 // Vizory's flow (src/lead/flows/vizory.ts): its description is sound and its rules give the right
 // tracks and urgency. Run: npm test
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { buildBrief, checkFlow, clean, matches, tagsFor, validate, visibleSteps } from '../../src/lead/engine.ts';
 import { vizoryFlow } from '../../src/lead/flows/vizory.ts';
@@ -99,6 +100,15 @@ test('countries: dialling codes, flags and names', () => {
 // Vizory's flow
 const base = { status: 'new', help: ['application'], timing: 'later', company: 'Firma ApS', country: 'DK', name: 'Ann', email: 'ann@firma.dk', consent: true };
 const tags = (a) => tagsFor(vizoryFlow, clean(vizoryFlow, { ...base, ...a }, NOW), NOW).map((x) => x.id);
+
+test('Vizory: every help link goes to a page and heading that exist', () => {
+  const pages = { '/mica': 'mica', '/stablecoins': 'stablecoins', '/payments': 'payments', '/dlt': 'dlt', '/aml': 'aml', '/mica-qa': null };
+  for (const s of vizoryFlow.steps) for (const l of s.links ?? []) for (const lang of ['en', 'da']) {
+    const [path, anchor] = l.href[lang].split('#');
+    assert.ok(path in pages, `${s.id}: unknown page ${path}`);
+    if (anchor) assert.ok(readFileSync(new URL(`../../src/content/${pages[path]}.${lang}.mdx`, import.meta.url), 'utf8').includes(`id="${anchor}"`), `${s.id}: no heading #${anchor} in ${path} (${lang})`);
+  }
+});
 
 test('Vizory flow description is sound', () => {
   assert.deepEqual(checkFlow(vizoryFlow), []);

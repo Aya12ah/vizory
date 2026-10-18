@@ -30,6 +30,8 @@ export type Option = { id: string; label: Text; /** a page to suggest on the rec
 type Base = {
   id: string;
   label: Text;
+  /** A shorter label for the brief, for a long question. */
+  short?: Text;
   help?: Text;
   required?: boolean;
   showIf?: Condition;
@@ -176,8 +178,13 @@ export function answerText(flow: Flow, q: Question, a: Answer | undefined, lang:
   }
   if (q.type === 'consent') return a ? flow.words.yes[lang] : flow.words.no[lang];
   if (q.type === 'country') { try { return new Intl.DisplayNames([lang], { type: 'region' }).of(a as string) ?? String(a); } catch { return String(a); } }
+  if (q.type === 'date') { try { return new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${a}T00:00:00Z`)); } catch { return String(a); } }
   return String(a);
 }
+
+/** A question's label in the brief: its short label if it has one, without a note in brackets at
+ *  the end, such as '(optional)', which only matters while the form is filled in. */
+const briefLabel = (q: Question, lang: Lang) => (q.short ?? q.label)[lang].replace(/\s*\([^)]*\)$/, '');
 
 /** A label before its answer: with a colon, unless it is a question. */
 export const labelled = (label: string) => (/[?:]$/.test(label) ? label : `${label}:`);
@@ -186,6 +193,8 @@ export type Brief = {
   subject: string;
   tags: Tag[];
   sections: { title: string; rows: { label: string; value: string }[] }[];
+  /** As plain text for an email: headings in capitals, a choice of several options and a written
+   *  message each on lines of their own under the label. */
   text: string;
   /** Pages to suggest, from the chosen options that carry a link. */
   links: { href: string; label: string }[];
@@ -196,21 +205,32 @@ export function buildBrief(flow: Flow, input: Answers, lang: Lang, now = Date.no
   const answers = clean(flow, input, now);
   const shown = visibleSteps(flow, answers, now).flatMap((s) => s.questions);
   const tags = tagsFor(flow, answers, now);
-  const sections = flow.sections
+  const grouped = flow.sections
     .map((sec) => ({
       title: sec.title[lang],
       // Questions left unanswered (only optional ones can be) are left out.
-      rows: shown.filter((q) => q.section === sec.id && q.type !== 'consent' && isAnswered(answers[q.id]))
-        .map((q) => ({ label: q.label[lang], value: answerText(flow, q, answers[q.id], lang) })),
+      questions: shown.filter((q) => q.section === sec.id && q.type !== 'consent' && isAnswered(answers[q.id])),
     }))
-    .filter((s) => s.rows.length > 0);
+    .filter((s) => s.questions.length > 0);
+  const sections = grouped.map((s) => ({ title: s.title, rows: s.questions.map((q) => ({ label: briefLabel(q, lang), value: answerText(flow, q, answers[q.id], lang) })) }));
   const flags = tags.filter((t) => t.kind === 'flag').map((t) => `[${t.label[lang]}]`);
   const tracks = tags.filter((t) => t.kind === 'track').map((t) => t.label[lang]);
   const who = answers[flow.subjectQuestion];
-  const subject = [...flags, [tracks.join(' / '), typeof who === 'string' ? who : ''].filter(Boolean).join(' · ')].filter(Boolean).join(' ');
+  // The sender first, so it shows in the inbox however short the subject line is cut.
+  const subject = [...flags, [typeof who === 'string' ? who : '', tracks.join(' / ')].filter(Boolean).join(' · ')].filter(Boolean).join(' ');
+  const heading = (title: string) => title.toLocaleUpperCase(lang);
   const lines: string[] = [];
-  if (tags.length) lines.push(flow.words.assessment[lang], ...tags.map((t) => `- ${t.label[lang]}`), '');
-  for (const s of sections) lines.push(s.title, ...s.rows.map((r) => `- ${labelled(r.label)} ${r.value}`), '');
+  if (tags.length) lines.push(heading(flow.words.assessment[lang]), ...tags.map((t) => `- ${t.label[lang]}`), '');
+  for (const s of grouped) {
+    lines.push(heading(s.title));
+    for (const q of s.questions) {
+      const a = answers[q.id], label = labelled(briefLabel(q, lang));
+      if (q.type === 'multi' && Array.isArray(a) && a.length > 1) lines.push(`- ${label}`, ...a.map((id) => `  – ${q.options.find((o) => o.id === id)?.label[lang] ?? id}`));
+      else if (q.type === 'textarea') lines.push(`- ${label}`, ...String(a).split(/\r?\n/).map((l) => (l.trim() ? `  ${l.trimEnd()}` : '')));
+      else lines.push(`- ${label} ${answerText(flow, q, a, lang)}`);
+    }
+    lines.push('');
+  }
   const links: Brief['links'] = [];
   for (const q of shown) {
     if (q.type !== 'single' && q.type !== 'multi') continue;

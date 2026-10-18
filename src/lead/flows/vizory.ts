@@ -72,6 +72,7 @@ export const vizoryFlow: Flow = {
         },
         {
           id: 'cryptoLicence', type: 'single', required: true, section: 'crypto', options: yesNo,
+          short: t('Another financial authorisation already?', 'Anden finansiel tilladelse i forvejen?'),
           label: t('Do you already hold another financial authorisation, e.g. as a credit institution, investment firm or e-money institution?', 'Har I allerede en anden finansiel tilladelse, fx som kreditinstitut, investeringsselskab eller e-pengeinstitut?'),
         },
       ],
@@ -91,6 +92,7 @@ export const vizoryFlow: Flow = {
         },
         {
           id: 'stableLicence', type: 'single', required: true, section: 'stablecoins', options: yesNo, showIf: { stableRole: { equals: 'emt' } },
+          short: t('Credit or e-money institution?', 'Kredit- eller e-pengeinstitut?'),
           label: t('Do you hold an authorisation as a credit institution or e-money institution?', 'Har I tilladelse som kreditinstitut eller e-pengeinstitut?'),
         },
       ],

@@ -53,8 +53,9 @@ test('validation', () => {
 test('tags, subject, brief text and links', () => {
   const b = buildBrief(mini, { kind: ['a', 'b'], more: 'x', who: 'Ann', when: '2026-10-25' }, 'en', NOW);
   assert.deepEqual(b.tags.map((x) => x.id), ['hot', 'tb']);
-  assert.equal(b.subject, '[Hot] Track B · Ann');
-  assert.match(b.text, /^Tags\n- Hot\n- Track B\n\nSection\n- Kind: A, B\n- More: X\n- Who: Ann/);
+  assert.equal(b.subject, '[Hot] Ann · Track B');
+  assert.match(b.text, /^TAGS\n- Hot\n- Track B\n\nSECTION\n- Kind:\n  – A\n  – B\n- More: X\n- Who: Ann\n- When: October 25, 2026$/);
+  assert.deepEqual(b.sections[0].rows[0], { label: 'Kind', value: 'A, B' });
   assert.deepEqual(b.links, [{ href: '/a', label: 'A' }]);
   assert.equal(buildBrief(mini, { kind: ['a'], who: 'Ann' }, 'en', NOW).subject, 'Ann');
 });
@@ -130,9 +131,11 @@ test('Vizory: answers for an area no longer chosen do not count', () => {
 });
 
 test('Vizory: a whole brief in Danish', () => {
-  const b = buildBrief(vizoryFlow, { ...base, area: ['crypto', 'aml'], cryptoServices: ['custody', 'exchange'], cryptoLicence: 'no', amlChallenge: ['policies'], status: 'fsa-contact' }, 'da', NOW);
-  assert.equal(b.subject, '[Haster] Ansøgning om CASP-tilladelse · Firma ApS');
-  assert.match(b.text, /Kryptoaktiver \(MiCA\)\n- Hvilke kryptoaktivtjenester\? Opbevaring og forvaltning på vegne af kunder, Veksling til penge eller andre kryptoaktiver/);
+  const b = buildBrief(vizoryFlow, { ...base, area: ['crypto', 'aml'], cryptoServices: ['custody', 'exchange'], cryptoLicence: 'no', amlChallenge: ['policies'], status: 'fsa-contact', message: 'Linje et\n\nLinje to' }, 'da', NOW);
+  assert.equal(b.subject, '[Haster] Firma ApS · Ansøgning om CASP-tilladelse');
+  assert.match(b.text, /KRYPTOAKTIVER \(MICA\)\n- Hvilke kryptoaktivtjenester\?\n  – Opbevaring og forvaltning på vegne af kunder\n  – Veksling til penge eller andre kryptoaktiver\n- Anden finansiel tilladelse i forvejen\? Nej\n/);
+  assert.doesNotMatch(b.text, /valgfri/);
+  assert.match(b.text, /- Andet, vi bør vide\?\n  Linje et\n\n  Linje to$/);
   assert.deepEqual(b.links.map((l) => l.href), ['/mica', '/aml']);
   assert.doesNotMatch(b.text, /Ikke besvaret|Hjemmeside/);
   assert.deepEqual(validate(vizoryFlow, { ...base, area: ['crypto'], cryptoLicence: 'no' }, undefined, NOW), {});

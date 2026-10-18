@@ -18,7 +18,7 @@ export function Address({ lang }: { lang: Lang }) {
  *  so their centre meets the middle of the address's last line (44px buttons, 14px line). */
 export function FootButtons({ lang, copy = false }: { lang: Lang; copy?: boolean }) {
   return (
-    <div className="flex gap-1 translate-y-[15px] rounded-full bg-bg">
+    <div className="flex gap-1 translate-y-[15px]">
       <ThemeToggle copy={copy} /><LangButton lang={lang} copy={copy} />
     </div>
   );

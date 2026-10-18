@@ -106,13 +106,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   // From 900px two columns: the title, the text on why the step matters and the help links stay
   // put on the left while the step is answered on the right. The progress and the buttons sit in a
   // bar at the bottom of the screen, so they stay in reach however long the step is.
-  // On a phone the help links and "start again" follow the step instead, so the question comes
-  // first. The note on the answers stands at the foot of the last step, where they are sent.
-  const aside = (
-    <>
-      {answered && !done && <p><button type="button" className="p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button></p>}
-    </>
-  );
+  // On a phone the help links follow the step instead, so the question comes first. "Start again"
+  // stands at the right end of the title's line; the note on the answers at the foot of the last
+  // step, where they are sent.
   // The step's help links, to the guides on the site; they open in a new tab, so the step stays.
   const links = !done && step.links?.length ? (
     <nav className="grid gap-2" aria-label={t.help} data-lead-links>
@@ -130,12 +126,15 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   ) : null;
   const intro = (why: string) => (
     <div className="grid gap-4 content-start wide:sticky wide:top-8 wide:col-start-1 wide:row-start-1">
-      <h1 className="page-title">{title}</h1>
+      <div className="flex justify-between items-baseline gap-4">
+        <h1 className="page-title">{title}</h1>
+        {answered && !done && <button type="button" className="shrink-0 p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain} data-lead-restart>{t.restart}</button>}
+      </div>
       <p className="lede mt-0" data-lead-why>{why}</p>
-      <div className="hidden wide:grid gap-4 mt-2">{links}{aside}</div>
+      {links && <div className="hidden wide:grid gap-4 mt-2">{links}</div>}
     </div>
   );
-  const asideBelow = <div className="grid gap-4 wide:hidden">{links}{aside}</div>;
+  const asideBelow = links && <div className="grid gap-4 wide:hidden">{links}</div>;
   const grid = 'grid gap-8 wide:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] wide:gap-16 items-start';
   // The step's title the same size as the page's title beside it.
   const headingClass = 'page-title outline-none scroll-mt-8';
@@ -213,12 +212,12 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress level with the buttons, Next, and "x of y" small above the
-            progress, in a tab hanging from the bar's top line (36px above the progress). On a phone
+            progress, in a tab standing on the bar's top line (41px above the progress's foot). On a phone
             the progress runs across the top, with "x of y" between the buttons below it (left out on
             the last step, whose longer button needs the room). */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="relative flex-1 min-w-0 phone:contents">
-          <p className={`absolute -top-9 left-1/2 -translate-x-1/2 px-[10px] pt-[3px] pb-[5px] border border-t-0 border-line rounded-b-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
+          <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back. Each is
               a button to its step (see reachable), 28px tall to tap, of which the 4px line shows. */}

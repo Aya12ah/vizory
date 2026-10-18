@@ -193,8 +193,8 @@ export type Brief = {
   subject: string;
   tags: Tag[];
   sections: { title: string; rows: { label: string; value: string }[] }[];
-  /** As plain text for an email: headings in capitals, a choice of several options and a written
-   *  message each on lines of their own under the label. */
+  /** As plain text for an email: headings in capitals, each question on a line of its own and its
+   *  answer indented below it, one line per chosen option (with a dash) or per line of a message. */
   text: string;
   /** Pages to suggest, from the chosen options that carry a link. */
   links: { href: string; label: string }[];
@@ -220,14 +220,15 @@ export function buildBrief(flow: Flow, input: Answers, lang: Lang, now = Date.no
   const subject = [...flags, [typeof who === 'string' ? who : '', tracks.join(' / ')].filter(Boolean).join(' · ')].filter(Boolean).join(' ');
   const heading = (title: string) => title.toLocaleUpperCase(lang);
   const lines: string[] = [];
-  if (tags.length) lines.push(heading(flow.words.assessment[lang]), ...tags.map((t) => `- ${t.label[lang]}`), '');
+  if (tags.length) lines.push(heading(flow.words.assessment[lang]), ...tags.map((t) => `– ${t.label[lang]}`), '');
   for (const s of grouped) {
     lines.push(heading(s.title));
     for (const q of s.questions) {
-      const a = answers[q.id], label = labelled(briefLabel(q, lang));
-      if (q.type === 'multi' && Array.isArray(a) && a.length > 1) lines.push(`- ${label}`, ...a.map((id) => `  – ${q.options.find((o) => o.id === id)?.label[lang] ?? id}`));
-      else if (q.type === 'textarea') lines.push(`- ${label}`, ...String(a).split(/\r?\n/).map((l) => (l.trim() ? `  ${l.trimEnd()}` : '')));
-      else lines.push(`- ${label} ${answerText(flow, q, a, lang)}`);
+      const a = answers[q.id];
+      lines.push(labelled(briefLabel(q, lang)));
+      if (q.type === 'multi' && Array.isArray(a)) lines.push(...a.map((id) => `  – ${q.options.find((o) => o.id === id)?.label[lang] ?? id}`));
+      else if (q.type === 'textarea') lines.push(...String(a).split(/\r?\n/).map((l) => (l.trim() ? `  ${l.trimEnd()}` : '')));
+      else lines.push(`  – ${answerText(flow, q, a, lang)}`);
     }
     lines.push('');
   }

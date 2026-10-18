@@ -133,7 +133,8 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   );
   const asideBelow = <div className="grid gap-4 wide:hidden">{links}{aside}</div>;
   const grid = 'grid gap-8 wide:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] wide:gap-16 items-start';
-  const headingClass = 'text-[24px] leading-[1.25] tracking-[-0.01em] outline-none scroll-mt-8 phone:text-[21px]';
+  // The step's title the same size as the page's title beside it.
+  const headingClass = 'page-title outline-none scroll-mt-8';
 
   if (done) {
     return (
@@ -161,7 +162,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     );
   }
 
-  const only = step.questions.length === 1;
+  // Counted on the step as the flow describes it, not on the questions shown: a follow-up question
+  // that appears on an answer must not make the first question's label appear too.
+  const only = (flow.steps.find((s) => s.id === step.id) ?? step).questions.length === 1;
   const incomplete = Object.values(validate(flow, answers, step.questions)).includes('required');
   return (
     <form className="flex flex-col min-h-[calc(100dvh-148px)] pb-[calc(var(--bar)+56px)] phone:min-h-[calc(100dvh-90px)] phone:pb-[calc(var(--bar)+24px)]" style={{ '--bar': `${barHeight}px` } as CSSProperties} noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>

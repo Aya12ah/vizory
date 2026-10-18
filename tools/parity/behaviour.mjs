@@ -317,6 +317,7 @@ for (const viewport of [PHONE, undefined]) {
   check(`lead: sending needs consent (${where})`, (await step()) === 'confirm' && await p.getByRole('button', { name: 'Afslut' }).isDisabled() && await p.getByRole('button', { name: 'Åbn i dit mailprogram' }).isDisabled());
   check(`lead: the note on the answers stands in the consent, with the address (${where})`, (await p.textContent('label:has(#lead-consent) [data-lead-note]')).includes('cvrapi.dk') && (await p.locator('label:has(#lead-consent) [data-lead-note] a[href^="mailto:"]').count()) === 1);
   await p.getByLabel(/Jeg accepterer/).check();
+  check(`lead: "copy" and "open in your email" on one row (${where})`, await p.evaluate(() => { const [a, b] = [...document.querySelectorAll('[data-lead-actions] button')].map((x) => x.getBoundingClientRect()); return Math.abs(a.top - b.top) < 1 && a.right < b.left; }));
   await p.getByRole('button', { name: 'Kopiér teksten' }).click();
   const text = await p.evaluate(() => navigator.clipboard.readText());
   check(`lead: the text carries the subject the rules give (${where})`, text.startsWith('[Haster] Firma ApS · Ansøgning om CASP-tilladelse / Betalinger: begrænset tilladelse kan være nok'), text.split('\n')[0]);

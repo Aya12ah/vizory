@@ -206,9 +206,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           ))}
           {/* Beside "copy", the same as Finish in the bar. */}
           {last && (
-            <p className="flex flex-wrap gap-2">
-              <button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button>
-              <button type="button" className={buttonSecondary} disabled={incomplete} onClick={send}>{t.send}</button>
+            <p className="flex flex-wrap gap-2" data-lead-actions>
+              <button type="button" className={`${buttonSecondary} phone:flex-auto phone:px-3 phone:text-[14px]`} onClick={copy}>{copied ? t.copied : t.copy}</button>
+              <button type="button" className={`${buttonSecondary} phone:flex-auto phone:px-3 phone:text-[14px]`} disabled={incomplete} onClick={send}>{t.send}</button>
             </p>
           )}
         </div>
@@ -250,7 +250,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             email without a domain) show when it is pressed. */}
         <button type="submit" className={`${buttonPrimary} phone:order-4 phone:ml-auto`} disabled={incomplete}>
           {last ? t.finish : t.next}
-          {!last && <svg className="size-4" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
+          {last
+            ? <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.64l-19 6.5a.5.5 0 0 0-.02.94l7.93 3.18a2 2 0 0 1 1.11 1.11z" /><path d="m21.85 2.15-10.94 10.94" /></svg>
+            : <svg className="size-4" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" /></svg>}
         </button>
       </div>
       </div>

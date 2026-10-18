@@ -24,6 +24,7 @@ const en = {
   lead: {
     step: (n: number, total: number) => `${n} of ${total}`,
     stepWord: 'Step',
+    goTo: (n: number, title: string) => `Go to step ${n}: ${title}`,
     chooseOne: 'Choose one.',
     chooseMany: 'Choose one or more.',
     next: 'Next',
@@ -82,6 +83,7 @@ const da: typeof en = {
   lead: {
     step: (n: number, total: number) => `${n} af ${total}`,
     stepWord: 'Trin',
+    goTo: (n: number, title: string) => `Gå til trin ${n}: ${title}`,
     chooseOne: 'Vælg én.',
     chooseMany: 'Vælg et eller flere.',
     next: 'Næste',

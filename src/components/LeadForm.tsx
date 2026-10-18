@@ -84,6 +84,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
 
   const set = (id: string, v: Answer) => { setAnswers((a) => ({ ...a, [id]: v })); setErrors((e) => { const n = { ...e }; delete n[id]; return n; }); };
   const go = (to: number) => { moved.current = true; setErrors({}); setStepId(steps[to].id); };
+  // A step can be gone to from the progress if every step before it is answered: back at any time,
+  // forward up to the first step not yet answered.
+  const open = steps.findIndex((s) => Object.keys(validate(flow, answers, s.questions)).length > 0);
+  const reachable = (i: number) => i !== index && (open === -1 || i <= open);
   const checked = () => { const e = validate(flow, answers, step.questions); setErrors(e); return Object.keys(e).length === 0; };
   const next = () => { if (checked()) go(index + 1); };
   const send = () => {
@@ -99,13 +103,13 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const startAgain = () => { if (window.confirm(t.restartConfirm)) restart(); };
   const answered = Object.values(answers).some(isAnswered);
 
-  // From 900px two columns: the title, the text on why the step matters and the note stay put on
-  // the left while the step is answered on the right. The progress and the buttons sit in a bar at
-  // the bottom of the screen, so they stay in reach however long the step is.
-  // On a phone the note and "start again" follow the step instead, so the question comes first.
+  // From 900px two columns: the title, the text on why the step matters and the help links stay
+  // put on the left while the step is answered on the right. The progress and the buttons sit in a
+  // bar at the bottom of the screen, so they stay in reach however long the step is.
+  // On a phone the help links and "start again" follow the step instead, so the question comes
+  // first. The note on the answers stands at the foot of the last step, where they are sent.
   const aside = (
     <>
-      <div className="max-w-[44ch] text-[13px] leading-[1.55] text-ink-soft">{note}</div>
       {answered && !done && <p><button type="button" className="p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain}>{t.restart}</button></p>}
     </>
   );
@@ -193,6 +197,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             <Field key={q.id} q={q} lang={lang} answers={answers} geo={geo} error={errors[q.id] && t.errors[errors[q.id]]} hideLabel={only && q.type !== 'consent'} onChange={(v) => set(q.id, v)} setAnswer={set} />
           ))}
           {last && <p><button type="button" className={buttonSecondary} onClick={copy}>{copied ? t.copied : t.copy}</button></p>}
+          {last && <div className="max-w-[56ch] text-[13px] leading-[1.55] text-ink-soft" data-lead-note>{note}</div>}
         </div>
         {asideBelow}
         {/* From 900px the address and the theme and language buttons stand at the foot of the left
@@ -215,12 +220,16 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
         <div className="relative flex-1 min-w-0 phone:contents">
           <p className={`absolute -top-9 left-1/2 -translate-x-1/2 px-[10px] pt-[3px] pb-[5px] border border-t-0 border-line rounded-b-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
-              the left when its step is reached and empties back to the left on going back. */}
-          <div className="flex gap-[6px] phone:basis-full phone:order-1" aria-hidden="true" data-lead-progress>
+              the left when its step is reached and empties back to the left on going back. Each is
+              a button to its step (see reachable), 28px tall to tap, of which the 4px line shows. */}
+          <div className="flex gap-[6px] phone:basis-full phone:order-1" data-lead-progress>
             {steps.map((s, i) => (
-              <div key={s.id} className="relative h-[4px] flex-1 rounded-sm bg-line overflow-hidden" data-on={i <= index || undefined}>
-                <div className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} />
-              </div>
+              <button key={s.id} type="button" className="group flex-1 min-w-0 mx-0 -my-3 px-0 py-3 border-0 [background:none] cursor-pointer disabled:cursor-default"
+                disabled={!reachable(i)} onClick={() => go(i)} aria-label={t.goTo(i + 1, s.title[lang])} aria-current={i === index ? 'step' : undefined} data-on={i <= index || undefined}>
+                <span className="relative block h-[4px] rounded-sm bg-line overflow-hidden transition-opacity group-enabled:group-hover:opacity-70">
+                  <span className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} />
+                </span>
+              </button>
             ))}
           </div>
         </div>

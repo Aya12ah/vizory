@@ -26,9 +26,11 @@ export function FootButtons({ lang, copy = false }: { lang: Lang; copy?: boolean
 
 // From 900px the regulation pages show the address and the buttons in a bar of their own (RegNav),
 // and the get-started page at the foot of its left column (LeadForm), so the footer is left out there.
+// Below that, on the get-started page the footer keeps the height of its bar (--lead-bar) free below
+// it, so the bar fixed to the bottom of the screen does not cover it.
 export function Footer({ lang }: { lang: Lang }) {
   return (
-    <footer className="flex justify-between items-end gap-6 pt-10 pb-6 phone:pt-6 wide:[body:has([data-reg-nav],[data-lead-address])_&]:hidden">
+    <footer className="flex justify-between items-end gap-6 pt-10 pb-6 phone:pt-6 [body:has([data-lead-bar])_&]:pb-[calc(var(--lead-bar,80px)+24px)] wide:[body:has([data-reg-nav],[data-lead-address])_&]:hidden">
       <Address lang={lang} />
       <FootButtons lang={lang} />
     </footer>

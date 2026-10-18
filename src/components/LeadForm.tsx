@@ -71,6 +71,12 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     ro.observe(el);
     return () => ro.disconnect();
   }, [done]);
+  // Below 900px the footer follows the form, and keeps the bar's height free below it (Footer).
+  useEffect(() => {
+    const root = document.documentElement.style;
+    root.setProperty('--lead-bar', `${barHeight}px`);
+    return () => { root.removeProperty('--lead-bar'); };
+  }, [barHeight]);
   // After moving to another step, the step's heading takes the focus (and the page scrolls to it).
   useEffect(() => {
     if (!moved.current) return;
@@ -197,7 +203,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const hint = step.intro?.[lang] ?? (kind === 'multi' ? t.chooseMany : kind === 'single' ? t.chooseOne : null);
   const incomplete = Object.values(validate(flow, answers, step.questions)).includes('required');
   return (
-    <form className="flex flex-col min-h-[calc(100dvh-148px)] pb-[calc(var(--bar)+56px)] phone:min-h-[calc(100dvh-90px)] phone:pb-[calc(var(--bar)+24px)]" style={{ '--bar': `${barHeight}px` } as CSSProperties} noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
+    <form className="flex flex-col min-h-[calc(100dvh-148px)] pb-14 wide:pb-[calc(var(--bar)+56px)] phone:min-h-[calc(100dvh-90px)] phone:pb-6" style={{ '--bar': `${barHeight}px` } as CSSProperties} noValidate onSubmit={(e) => { e.preventDefault(); if (last) send(); else next(); }} data-lead-step={step.id}>
       <div className={`${grid} flex-1`}>
         {intro(step.why?.[lang] ?? lede)}
         <div className="grid gap-7 min-w-0 wide:col-start-2 wide:row-start-1">
@@ -206,7 +212,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
             {hint && <p className="text-[15px] text-ink-soft" data-lead-hint>{hint}</p>}
           </div>
           {step.summary && (
-            <dl className="m-0 grid gap-5 pb-7 border-0 border-b border-solid border-line text-[14px]" data-lead-summary>
+            <dl className="m-0 grid gap-5 text-[14px]" data-lead-summary>
               {brief.sections.map((s) => (
                 <div key={s.title} className="grid gap-1">
                   <dt className="font-medium text-ink">{s.title}</dt>

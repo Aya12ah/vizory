@@ -274,11 +274,12 @@ for (const viewport of [PHONE, undefined]) {
   await pick('Ny virksomhed uden tilladelse'); await next();
   check(`lead: crypto follow-up for crypto (${where})`, (await step()) === 'crypto');
   const segment = (i) => p.locator('[data-lead-progress] > button').nth(i);
-  check(`lead: no going past a step not answered from the progress (${where})`, await segment(3).isDisabled() && await segment(2).isDisabled() && await segment(1).isEnabled());
+  check(`lead: the progress goes back only (${where})`, await segment(3).isDisabled() && await segment(2).isDisabled() && await segment(1).isEnabled() && await segment(0).isEnabled());
   await segment(0).click();
-  check(`lead: the progress goes back to a step (${where})`, (await step()) === 'area');
-  await segment(2).click();
-  check(`lead: the progress goes forward to a step answered up to (${where})`, (await step()) === 'crypto');
+  check(`lead: the progress goes back to a step (${where})`, (await step()) === 'area' && await segment(1).isDisabled());
+  check(`lead: going back two steps empties their segments one after the other (${where})`, await p.evaluate(() => { const d = [...document.querySelectorAll('[data-lead-progress] > button > span > span')].map((x) => x.style.transitionDelay); return d[2] === '0ms' && d[1] === '160ms' && !d[0]; }));
+  await next(); await next();
+  check(`lead: Next goes forward again with the answers kept (${where})`, (await step()) === 'crypto');
   check(`lead: scrolled to the end, the last answer clears the bar (${where})`, await p.evaluate(() => { scrollTo(0, document.documentElement.scrollHeight); const last = [...document.querySelectorAll('form label')].pop().getBoundingClientRect(); return last.bottom <= document.querySelector('[data-lead-bar]').getBoundingClientRect().top; }));
   await p.locator('input[name=lead-cryptoLicence][value=no]').check(); await next();
   check(`lead: payments follow-up for payments (${where})`, (await step()) === 'payments');

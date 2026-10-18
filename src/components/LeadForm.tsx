@@ -34,6 +34,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const bar = useRef<HTMLDivElement>(null);
   const [barHeight, setBarHeight] = useState(80);
   const moved = useRef(false);
+  // The last move between steps, so that going back several steps empties their segments one
+  // after the other, the last first.
+  const [trail, setTrail] = useState({ from: 0, to: 0 });
 
   // The answers so far, after a reload; must run in the browser only.
   useEffect(() => {
@@ -83,11 +86,12 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const mailText = () => `${brief.subject}\n\n${brief.text}`;
 
   const set = (id: string, v: Answer) => { setAnswers((a) => ({ ...a, [id]: v })); setErrors((e) => { const n = { ...e }; delete n[id]; return n; }); };
-  const go = (to: number) => { moved.current = true; setErrors({}); setStepId(steps[to].id); };
-  // A step can be gone to from the progress if every step before it is answered: back at any time,
-  // forward up to the first step not yet answered.
-  const open = steps.findIndex((s) => Object.keys(validate(flow, answers, s.questions)).length > 0);
-  const reachable = (i: number) => i !== index && (open === -1 || i <= open);
+  const go = (to: number) => { moved.current = true; setErrors({}); setTrail({ from: index, to }); setStepId(steps[to].id); };
+  // The progress goes back only: forward is by Next, which checks the step's answers.
+  const reachable = (i: number) => i < index;
+  const SEGMENT_MS = 160;
+  const sequenced = trail.to === index && trail.from - trail.to > 1;
+  const segmentTiming = (i: number) => (sequenced && i > index && i <= trail.from ? { transitionDuration: `${SEGMENT_MS}ms`, transitionDelay: `${(trail.from - i) * SEGMENT_MS}ms` } : undefined);
   const checked = () => { const e = validate(flow, answers, step.questions); setErrors(e); return Object.keys(e).length === 0; };
   const next = () => { if (checked()) go(index + 1); };
   const send = () => {
@@ -97,7 +101,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     setDone(true);
   };
   const copy = async () => { try { await navigator.clipboard.writeText(mailText()); setCopied(true); } catch {} };
-  const restart = () => { save(flow, null); moved.current = true; setAnswers({}); setStepId(null); setDone(false); setCopied(false); };
+  const restart = () => { save(flow, null); moved.current = true; setTrail({ from: index, to: 0 }); setAnswers({}); setStepId(null); setDone(false); setCopied(false); };
 
   // Clearing the answers asks first, so a stray click does not lose them.
   const startAgain = () => { if (window.confirm(t.restartConfirm)) restart(); };
@@ -128,7 +132,12 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     <div className="grid gap-4 content-start wide:sticky wide:top-8 wide:col-start-1 wide:row-start-1">
       <div className="flex justify-between items-baseline gap-4">
         <h1 className="page-title">{title}</h1>
-        {answered && !done && <button type="button" className="shrink-0 p-0 border-0 [background:none] [font:inherit] text-[13px] text-ink-soft underline underline-offset-3 cursor-pointer hover:text-signal-text" onClick={startAgain} data-lead-restart>{t.restart}</button>}
+        {answered && !done && (
+          <button type="button" className="group shrink-0 self-center flex items-center justify-center size-8 -mr-[6px] p-0 border-0 [background:none] text-ink-soft cursor-pointer hover:text-signal-text" onClick={startAgain} aria-label={t.restart} title={t.restart} data-lead-restart>
+            {/* An arrow turning back, which turns back a little more on hover. */}
+            <svg className="size-[18px] transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] group-hover:-rotate-[120deg]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+          </button>
+        )}
       </div>
       <p className="lede mt-0" data-lead-why>{why}</p>
       {links && <div className="hidden wide:grid gap-4 mt-2">{links}</div>}
@@ -219,14 +228,15 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
         <div className="relative flex-1 min-w-0 phone:contents">
           <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px] ${last ? 'phone:hidden' : ''}`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
-              the left when its step is reached and empties back to the left on going back. Each is
-              a button to its step (see reachable), 28px tall to tap, of which the 4px line shows. */}
+              the left when its step is reached and empties back to the left on going back (several
+              one after the other). Each step done is a button back to it, 28px tall to tap, of which
+              the 4px line shows. */}
           <div className="flex gap-[6px] phone:basis-full phone:order-1" data-lead-progress>
             {steps.map((s, i) => (
               <button key={s.id} type="button" className="group flex-1 min-w-0 mx-0 -my-3 px-0 py-3 border-0 [background:none] cursor-pointer disabled:cursor-default"
                 disabled={!reachable(i)} onClick={() => go(i)} aria-label={t.goTo(i + 1, s.title[lang])} aria-current={i === index ? 'step' : undefined} data-on={i <= index || undefined}>
                 <span className="relative block h-[4px] rounded-sm bg-line overflow-hidden transition-opacity group-enabled:group-hover:opacity-70">
-                  <span className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} />
+                  <span className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} style={segmentTiming(i)} />
                 </span>
               </button>
             ))}

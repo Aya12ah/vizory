@@ -222,7 +222,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           {last && (
             <p className="flex flex-wrap gap-2" data-lead-actions>
               <button type="button" className={`${buttonSecondary} phone:flex-auto phone:px-3 phone:text-[14px]`} onClick={copy}>{copied ? t.copied : t.copy}</button>
-              <button type="button" className={`${buttonSecondary} phone:flex-auto phone:px-3 phone:text-[14px]`} disabled={incomplete} onClick={send}>{t.send}</button>
+              <button type="button" className={`${buttonPrimary} phone:flex-auto phone:px-3 phone:text-[14px]`} disabled={incomplete} onClick={send}>{t.send}</button>
             </p>
           )}
         </div>

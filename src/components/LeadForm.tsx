@@ -15,7 +15,8 @@ import { buttonPrimary, buttonSecondary, choice, choiceBox, choiceInput, field, 
 // start at the visitor's country from /api/geo (as LangButton uses it), and so do phone codes. The brief is sent from the
 // visitor's own email program for now (the address is assembled in the browser, see Mail).
 
-type Saved = { answers: Answers; step: string | null };
+/** The answers, the step shown and the steps seen so far (which the progress can go forward to). */
+type Saved = { answers: Answers; step: string | null; seen?: string[] };
 const key = (flow: Flow) => `vz-lead-${flow.id}`;
 function load(flow: Flow): Saved | null { try { return JSON.parse(sessionStorage.getItem(key(flow)) || 'null'); } catch { return null; } }
 function save(flow: Flow, s: Saved | null) { try { if (s) sessionStorage.setItem(key(flow), JSON.stringify(s)); else sessionStorage.removeItem(key(flow)); } catch {} }
@@ -26,6 +27,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const t = dictionary[lang].lead;
   const [answers, setAnswers] = useState<Answers>({});
   const [stepId, setStepId] = useState<string | null>(null);
+  const [seen, setSeen] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, ErrorCode>>({});
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -42,9 +44,9 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   useEffect(() => {
     const s = load(flow);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- sessionStorage exists only in the browser
-    if (s) { setAnswers(s.answers || {}); setStepId(s.step); }
+    if (s) { setAnswers(s.answers || {}); setStepId(s.step); setSeen(s.seen || []); }
   }, [flow]);
-  useEffect(() => { if (!done) save(flow, { answers, step: stepId }); }, [flow, answers, stepId, done]);
+  useEffect(() => { if (!done) save(flow, { answers, step: stepId, seen }); }, [flow, answers, stepId, seen, done]);
   // The visitor's country, for country questions marked fromGeo that are still unanswered.
   useEffect(() => {
     const fromGeo = allQuestions(flow).filter((q) => q.type === 'country' && q.fromGeo).map((q) => q.id);
@@ -86,12 +88,24 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
   const mailText = () => `${brief.subject}\n\n${brief.text}`;
 
   const set = (id: string, v: Answer) => { setAnswers((a) => ({ ...a, [id]: v })); setErrors((e) => { const n = { ...e }; delete n[id]; return n; }); };
-  const go = (to: number) => { moved.current = true; setErrors({}); setTrail({ from: index, to }); setStepId(steps[to].id); };
-  // The progress goes back only: forward is by Next, which checks the step's answers.
-  const reachable = (i: number) => i < index;
+  const go = (to: number) => {
+    moved.current = true; setErrors({}); setTrail({ from: index, to });
+    const id = steps[to].id, here = steps[index].id;
+    setSeen((s) => [...s, ...[here, id].filter((x, k, a) => !s.includes(x) && a.indexOf(x) === k)]);
+    setStepId(id);
+  };
+  // The progress goes back to any step, and forward to a step already seen, as long as every step
+  // before it is answered: a step added since (another area chosen) must be answered first.
+  const open = steps.findIndex((s) => Object.keys(validate(flow, answers, s.questions)).length > 0);
+  const reachable = (i: number) => i < index || (i > index && seen.includes(steps[i].id) && (open === -1 || i <= open));
+  // Moving several steps at once fills or empties their segments one after the other.
   const SEGMENT_MS = 160;
-  const sequenced = trail.to === index && trail.from - trail.to > 1;
-  const segmentTiming = (i: number) => (sequenced && i > index && i <= trail.from ? { transitionDuration: `${SEGMENT_MS}ms`, transitionDelay: `${(trail.from - i) * SEGMENT_MS}ms` } : undefined);
+  const sequenced = trail.to === index && Math.abs(trail.from - trail.to) > 1;
+  const segmentTiming = (i: number) => {
+    const { from, to } = trail;
+    const k = !sequenced ? -1 : from > to ? (i > to && i <= from ? from - i : -1) : (i > from && i <= to ? i - from - 1 : -1);
+    return k < 0 ? undefined : { transitionDuration: `${SEGMENT_MS}ms`, transitionDelay: `${k * SEGMENT_MS}ms` };
+  };
   const checked = () => { const e = validate(flow, answers, step.questions); setErrors(e); return Object.keys(e).length === 0; };
   const next = () => { if (checked()) go(index + 1); };
   const send = () => {
@@ -101,7 +115,7 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
     setDone(true);
   };
   const copy = async () => { try { await navigator.clipboard.writeText(mailText()); setCopied(true); } catch {} };
-  const restart = () => { save(flow, null); moved.current = true; setTrail({ from: index, to: 0 }); setAnswers({}); setStepId(null); setDone(false); setCopied(false); };
+  const restart = () => { save(flow, null); moved.current = true; setTrail({ from: index, to: 0 }); setAnswers({}); setSeen([]); setStepId(null); setDone(false); setCopied(false); };
 
   // Clearing the answers asks first, so a stray click does not lose them.
   const startAgain = () => { if (window.confirm(t.restartConfirm)) restart(); };
@@ -233,14 +247,14 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px]`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back (several
-              one after the other). Each step done is a button back to it, 28px tall to tap, of which
-              the 4px line shows. */}
+              one after the other); a step ahead that can be gone to again stays filled, dimmed. Each
+              step that can be gone to is a button, 28px tall to tap, of which the 4px line shows. */}
           <div className="flex gap-[6px] phone:basis-full phone:order-1" data-lead-progress>
             {steps.map((s, i) => (
               <button key={s.id} type="button" className="group flex-1 min-w-0 mx-0 -my-3 px-0 py-3 border-0 [background:none] cursor-pointer disabled:cursor-default"
-                disabled={!reachable(i)} onClick={() => go(i)} aria-label={t.goTo(i + 1, s.title[lang])} aria-current={i === index ? 'step' : undefined} data-on={i <= index || undefined}>
+                disabled={!reachable(i)} onClick={() => go(i)} aria-label={t.goTo(i + 1, s.title[lang])} aria-current={i === index ? 'step' : undefined} data-on={i <= index || undefined} data-ahead={(i > index && reachable(i)) || undefined}>
                 <span className="relative block h-[4px] rounded-sm bg-line overflow-hidden transition-opacity group-enabled:group-hover:opacity-70">
-                  <span className={`absolute inset-0 bg-signal origin-left transition-transform duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : 'scale-x-0'}`} style={segmentTiming(i)} />
+                  <span className={`absolute inset-0 bg-signal origin-left transition-[transform,opacity] duration-400 ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${i <= index ? 'scale-x-100' : reachable(i) ? 'scale-x-100 opacity-35' : 'scale-x-0'}`} style={segmentTiming(i)} />
                 </span>
               </button>
             ))}

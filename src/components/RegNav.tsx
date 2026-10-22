@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import type { Section } from './ContentsBar';
-import { Address, FootButtons } from './Footer';
+import { Address } from './Footer';
 import { SideSections } from './SideSections';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
@@ -25,8 +25,7 @@ const link = 'text-ink-soft no-underline hover:text-signal-text aria-[current=pa
 
 /** The topic menu of the regulation pages. From 900px the column also carries the wordmark (instead
  *  of the header) and lists the sections of the current page, and a bar across the bottom of the
- *  screen carries the address on the left and the theme and language buttons on the right (instead
- *  of the footer). Two sticky siblings in a full-height column: at the top of the page the wordmark
+ *  screen carries the address (instead of the footer). Two sticky siblings in a full-height column: at the top of the page the wordmark
  *  is level with the header buttons and the menu level with the content; on scrolling the wordmark
  *  stops 12px from the top and the menu rises to just below it (64px), as the gap between them
  *  scrolls away. Siblings rather than nested sticky elements, which jitter in some browsers when
@@ -66,9 +65,8 @@ export function RegNav({ lang, current, sections }: { lang: Lang; current: strin
         </ul>
       </nav>
     </div>
-    <div className="hidden wide:flex wide:sticky wide:bottom-6 col-span-full self-end justify-between items-end pointer-events-none [&>*]:pointer-events-auto" data-reg-address>
+    <div className="hidden wide:flex wide:sticky wide:bottom-6 col-span-full self-end items-end pointer-events-none [&>*]:pointer-events-auto" data-reg-address>
       <Address lang={lang} />
-      <FootButtons lang={lang} copy />
     </div>
     </>
   );

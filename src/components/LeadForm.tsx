@@ -5,7 +5,7 @@ import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
 import { type Answer, type Answers, type ErrorCode, type Flow, type Question, allQuestions, buildBrief, isAnswered, labelled, validate, visibleSteps } from '@/lead/engine';
 import { countries, countryOfNumber, dialCodes, flag } from '@/lead/countries';
-import { Address, FootButtons } from './Footer';
+import { Address } from './Footer';
 import { mailAddress } from './Mail';
 import { buttonPrimary, buttonSecondary, choice, choiceBox, choiceInput, field, fieldBase, signalLink } from './styles';
 
@@ -233,11 +233,10 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
           )}
         </div>
         {asideBelow}
-        {/* From 900px the address and the theme and language buttons stand at the foot of the left
-            column, just above the bar, instead of in the footer (as on the regulation pages). */}
-        <div className="hidden wide:flex wide:col-start-1 wide:row-start-1 self-end sticky bottom-[calc(var(--bar)+24px)] justify-between items-end gap-6 pb-[15px]" data-lead-address>
+        {/* From 900px the address stands at the foot of the left column, just above the bar, instead
+            of in the footer (as on the regulation pages). */}
+        <div className="hidden wide:flex wide:col-start-1 wide:row-start-1 self-end sticky bottom-[calc(var(--bar)+24px)] items-end gap-6" data-lead-address>
           <Address lang={lang} />
-          <FootButtons lang={lang} copy />
         </div>
       </div>
       {/* The bar, fixed to the bottom of the screen; the form keeps its height free below the step.

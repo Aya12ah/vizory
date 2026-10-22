@@ -4,9 +4,8 @@ import { pop } from './pop';
 import { iconButton } from './styles';
 
 // Fresh light and Fresh dark. The script in <head> picks the theme before the page paints;
-// this button switches it and remembers the choice. `copy`: a second button on the same page (the
-// regulation menu's), without the id; each button follows the theme, whichever was pressed.
-export function ThemeToggle({ copy = false }: { copy?: boolean }) {
+// this button, in the header, switches it and remembers the choice.
+export function ThemeToggle() {
   const [dark, setDark] = useState(false);
   const [ready, setReady] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
@@ -34,7 +33,7 @@ export function ThemeToggle({ copy = false }: { copy?: boolean }) {
   }
 
   return (
-    <button ref={ref} className={`${iconButton} relative`} id={copy ? undefined : 'themeBtn'} type="button"
+    <button ref={ref} className={`${iconButton} relative`} id="themeBtn" type="button"
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} aria-pressed={dark} onClick={toggle}>
       {/* Moon in day mode, sun in night mode, turning into each other. */}
       <svg viewBox="0 0 24 24" aria-hidden="true" className={`${icon} ${dark ? 'opacity-0 [transform:rotate(90deg)_scale(.4)]' : ''}`}><path d="M20 14.07A8.15 8.15 0 1 1 9.93 4a6.52 6.52 0 0 0 10.07 10.07Z" /></svg>

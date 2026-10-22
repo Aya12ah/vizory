@@ -20,14 +20,12 @@ function browserLang(): Lang {
   return 'en';
 }
 
-/** `copy`: a second button on the same page (the regulation menu's), without the id, which leaves
- *  the redirect above to the footer's. */
-export function LangButton({ lang, copy = false }: { lang: Lang; copy?: boolean }) {
+/** The language button in the header. */
+export function LangButton({ lang }: { lang: Lang }) {
   const t = dictionary[lang].langButton;
   const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (copy) return;
     const goTo = (l: Lang) => { if (l !== lang) location.replace(otherLangPath(location.pathname) + location.search + location.hash); };
     const chosen = get('vz-lang');
     if (chosen === 'en' || chosen === 'da') { goTo(chosen); return; }
@@ -39,7 +37,7 @@ export function LangButton({ lang, copy = false }: { lang: Lang; copy?: boolean 
         goTo(d && d.country ? (DA_COUNTRIES.includes(d.country) ? 'da' : 'en') : browserLang());
       })
       .catch(() => { if (!get('vz-lang')) goTo(browserLang()); });
-  }, [lang, copy]);
+  }, [lang]);
 
   function onClick() {
     set('vz-lang', lang === 'en' ? 'da' : 'en');
@@ -47,5 +45,5 @@ export function LangButton({ lang, copy = false }: { lang: Lang; copy?: boolean 
     location.href = otherLangPath(location.pathname) + location.hash;
   }
 
-  return <button ref={ref} className={iconButton} id={copy ? undefined : 'langBtn'} type="button" aria-label={t.label} onClick={onClick}>{t.text}</button>;
+  return <button ref={ref} className={iconButton} id="langBtn" type="button" aria-label={t.label} onClick={onClick}>{t.text}</button>;
 }

@@ -92,20 +92,20 @@ const clean = (u) => new URL(u).pathname.replace(/\/$/, '') || '/';
   check('email not in page source', !html.includes(['hello', 'vizory.dk'].join('@')));
   await p.context().close();
 }
-// Front page: each act links straight to its guide; the campaign leads to the get-started flow.
+// Front page: each act links straight to its guide; no campaign below the list. The theme and
+// language buttons sit in the header with the section links.
 {
   const p = await page('/');
   check('act links to its guide', (await p.getAttribute('a[data-act="MiCAR"]', 'href')) === '/mica' && (await p.getAttribute('a[data-act="AMLR"]', 'href')) === '/aml');
   check('act shows its full name', (await p.getAttribute('a[data-act="PSR"]', 'title')) === 'Payment Services Regulation');
-  check('campaign below the act list, in line, its title in the lede\'s size', await p.evaluate(() => { const l = document.querySelector('main dl'), c = document.querySelector('[data-campaign] h2'); return c.getBoundingClientRect().top > l.getBoundingClientRect().bottom && Math.abs(l.getBoundingClientRect().left - c.getBoundingClientRect().left) < 1 && getComputedStyle(document.querySelector('h1.lede')).fontSize === getComputedStyle(c).fontSize; }));
-  check('campaign links to get started', (await p.getAttribute('[data-campaign] a', 'href')) === '/get-started');
+  check('no campaign on the front page', (await p.$('[data-campaign]')) === null);
+  check('theme and language buttons beside the section links', await p.evaluate(() => { const r = document.getElementById('peopleBtn').parentElement; return r.contains(document.getElementById('themeBtn')) && r.contains(document.getElementById('langBtn')) && !document.querySelector('footer button'); }));
   await p.click('a[data-act="MiCAR"]');
   await p.waitForURL('**/mica');
   check('act opens the guide', new URL(p.url()).pathname === '/mica');
   await p.context().close();
   const d = await page('/da', { lang: 'da' });
   check('danish act link', (await d.getAttribute('a[data-act="MiCAR"]', 'href')) === '/da/mica');
-  check('danish campaign link', (await d.getAttribute('[data-campaign] a', 'href')) === '/da/get-started');
   await d.context().close();
 }
 // Regulation menu marks the current page

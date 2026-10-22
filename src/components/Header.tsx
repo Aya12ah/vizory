@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { dictionary } from '@/i18n/dictionary';
 import { type Lang, localPath } from '@/i18n/lang';
+import { LangButton } from './LangButton';
 import { iconButton } from './styles';
+import { ThemeToggle } from './ThemeToggle';
 import { Wordmark, wordmarkClass } from './Wordmark';
 
 /** The section a path belongs to, for marking the header button: '/da/mica' -> 'regulation'. */
@@ -15,8 +17,8 @@ function sectionOf(pathname: string) {
   return path === '/' ? 'home' : null;
 }
 
-/** Top bar: the small wordmark (except on the front page, which has the large one) and the links
- *  to the sections. It lives in the layout, so it stays in place while the page below it changes.
+/** Top bar: the small wordmark (except on the front page, which has the large one), the links
+ *  to the sections and the theme and language buttons. It lives in the layout, so it stays in place while the page below it changes.
  *  From 900px the regulation pages carry the wordmark in their left menu, which reaches up beside
  *  the header, so the header leaves its own out and lets clicks through except on its own links.
  *  The links sit in a rail down the right edge of the page, so from 900px they can stay on screen
@@ -43,6 +45,8 @@ export function Header({ lang }: { lang: Lang }) {
         <Link className={iconButton} id="peopleBtn" href={localPath('/people', lang)} aria-current={current('people')} aria-label={t.people}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.86" cy="7.43" r="3.43" /><path d="M2 20c0-3.77 3.09-6.86 6.86-6.86s6.86 3.09 6.86 6.86" /><circle cx="18" cy="6.86" r="2.86" /><path d="M16.29 13.37c3.2.46 5.71 3.2 5.71 6.63" /></svg>
         </Link>
+        <ThemeToggle />
+        <LangButton lang={lang} />
       </div>
     </div>
     </>

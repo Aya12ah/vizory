@@ -10,7 +10,15 @@ const PEOPLE = [
     name: 'Danny Dehghani',
     linkedin: 'https://www.linkedin.com/in/danny-dehghani-84559436',
     bio: {
-      en: "Danny spent nine years at the Danish Financial Supervisory Authority, working on fintech, crypto-assets, payments and DLT-based capital markets. He has extensive experience inspecting crypto firms. He has represented Denmark in EU forums on crypto-asset regulation and negotiated MiCA on Denmark's behalf.",
+      en: [
+        'Most advisers know the rules. Danny helped shape them and enforce them.',
+        "As Denmark's negotiator on the EU's regulation of crypto-assets, MiCA, Danny was at the table when the rules were written. He has represented Denmark in international forums in the EU, and so knows not only the wording of the rules but also the considerations and compromises behind them. That gives a rare insight into how the rules are meant to be interpreted and applied in practice.",
+        'He also has extensive experience of inspecting crypto firms, including with a focus on anti-money laundering and countering the financing of terrorism (AML/CFT). He has seen from the inside how the supervisor assesses a firm\'s risk assessment, customer due diligence procedures, transaction monitoring and internal controls, and where firms typically fall short. In AML/CFT in particular, the requirements for crypto firms are stricter, and the supervisor pays close attention to whether a firm\'s procedures work in practice and not only on paper.',
+        'That knowledge is particularly valuable for firms that are applying for authorisation, preparing for a supervisory inspection or strengthening their compliance before the supervisor asks the questions.',
+        "Danny's professional foundation is broad. Besides crypto-assets and AML/CFT, he has worked on fintech, payments and DLT-based capital markets, and so knows the regulation across the areas where new financial technology meets established rules. This allows him to advise firms whose business models do not fit neatly into a single category.",
+        'The experience comes from nine years at the Danish Financial Supervisory Authority, where Danny worked where innovation and regulation meet, both on developing new rules and on supervising the firms that must comply with them.',
+        'Today Danny uses that experience to help firms navigate the regulation, from the first assessment of whether an activity requires authorisation, through the application process, to building robust AML/CFT frameworks, ongoing compliance and dialogue with the supervisor. His advice rests on a thorough understanding of how the authorities think and what it takes to earn their trust.',
+      ],
       da: [
         'De fleste rådgivere kender reglerne. Danny har været med til at forme dem og til at håndhæve dem.',
         'Som Danmarks forhandler af EU’s regulering af kryptoaktiver, MiCA, sad Danny med ved bordet, da reglerne blev til. Han har repræsenteret Danmark i internationale fora i EU og kender derfor ikke kun ordlyden af reglerne, men også de hensyn og kompromiser, der ligger bag. Det giver et sjældent indblik i, hvordan reglerne er tænkt at skulle fortolkes og anvendes i praksis.',

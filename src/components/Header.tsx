@@ -38,7 +38,7 @@ export function Header({ lang }: { lang: Lang }) {
       )}
     </header>
     <div className="absolute z-2 inset-y-0 right-(--gutter) pointer-events-none">
-      <div className={`flex gap-1 mt-6 phone:mt-2 ${section === 'getStarted' ? '' : 'wide:sticky wide:top-3'} rounded-full bg-bg pointer-events-auto`}>
+      <div className={`flex gap-1 mt-6 phone:mt-2 ${section === 'getStarted' ? '' : 'wide:sticky wide:top-3'} rounded-full bg-bg transition-[background-color] duration-300 ease-[ease] pointer-events-auto`}>
         <Link className={iconButton} id="regBtn" href={localPath('/regulation', lang)} aria-current={current('regulation')} aria-label={t.regulation}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 6.5C14.9 5 13.5 4 11.9 4 10 4 8.5 5.2 8.5 6.8c0 3.7 7 3 7 7 0 1.2-.8 2.2-2 2.7" /><path d="M8.5 17.5c.6 1.5 2 2.5 3.6 2.5 1.9 0 3.4-1.2 3.4-2.8 0-3.7-7-3-7-7 0-1.2.8-2.2 2-2.7" /></svg>
         </Link>

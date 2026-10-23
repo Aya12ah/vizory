@@ -242,14 +242,14 @@ export function LeadForm({ flow, lang, title, lede, note }: { flow: Flow; lang: 
       {/* The bar, fixed to the bottom of the screen; the form keeps its height free below the step.
           Its background reaches on below it: Safari on iPad can leave a strip under fixed elements
           when its toolbar shrinks, and the page should not show through there. */}
-      <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg" data-lead-bar>
+      <div ref={bar} className="fixed inset-x-0 bottom-0 z-10 bg-bg border-t border-line after:absolute after:top-full after:inset-x-0 after:h-[50vh] after:bg-bg transition-[background-color] duration-300 ease-[ease] after:transition-[background-color] duration-300 ease-[ease]" data-lead-bar>
       <div className="box-border max-w-[1120px] mx-auto px-(--gutter) flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] phone:gap-x-3 phone:pt-3">
         {/* From 721px: Back, the progress level with the buttons, Next, and "x of y" small above the
             progress, in a tab standing on the bar's top line (41px above the progress's foot). On a phone
             the progress runs across the top, with "x of y" between the buttons below it. */}
         <button type="button" className={`${buttonSecondary} phone:order-2`} disabled={index === 0} onClick={() => go(index - 1)}>{t.back}</button>
         <div className="relative flex-1 min-w-0 phone:contents">
-          <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px]`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
+          <p className={`absolute bottom-[41px] left-1/2 -translate-x-1/2 px-[10px] pt-[5px] pb-[3px] bg-bg transition-[background-color] duration-300 ease-[ease] border border-b-0 border-line rounded-t-md text-[11px] leading-none text-ink-soft tabular-nums whitespace-nowrap phone:static phone:translate-x-0 phone:p-0 phone:border-0 phone:rounded-none phone:order-3 phone:flex-1 phone:text-center phone:text-[13px]`} data-lead-count><span className="sr-only">{t.stepWord} </span>{t.step(index + 1, steps.length)}</p>
           {/* One segment per step: the steps done and the current one filled. A segment fills from
               the left when its step is reached and empties back to the left on going back (several
               one after the other); a step ahead that can be gone to again stays filled, dimmed. Each

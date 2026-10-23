@@ -52,7 +52,7 @@ export function ContentsBar({ title, sections }: { title: string; sections: Sect
   const now = sections.find((s) => s.id === current);
   return (
     <div ref={ref} className="sticky top-0 z-1 h-0 wide:hidden" data-contents-bar>
-      <div className={`-mx-2 px-2 bg-bg shadow-[0_1px_0_var(--line)] text-[14px] leading-[1.4] ${stuck ? 'visible' : 'invisible'}`}>
+      <div className={`-mx-2 px-2 bg-bg transition-[background-color] duration-300 ease-[ease] shadow-[0_1px_0_var(--line)] text-[14px] leading-[1.4] ${stuck ? 'visible' : 'invisible'}`}>
         <button ref={button} type="button" aria-expanded={open} aria-controls="contents-menu" tabIndex={stuck ? 0 : -1}
           className="group flex items-center gap-2 w-full py-3 px-0 border-0 [background:none] [font:inherit] text-inherit text-left cursor-pointer"
           onClick={() => setOpen(!open)}>

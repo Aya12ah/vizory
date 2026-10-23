@@ -20,7 +20,6 @@ const en = {
     amlr: 'AMLR and the new rules',
   },
   contents: 'Contents',
-  getStarted: 'Describe your needs',
   lead: {
     step: (n: number, total: number) => `${n} of ${total}`,
     stepWord: 'Step',
@@ -80,7 +79,6 @@ const da: typeof en = {
     amlr: 'AMLR og de nye regler',
   },
   contents: 'Indhold',
-  getStarted: 'Beskriv jeres behov',
   lead: {
     step: (n: number, total: number) => `${n} af ${total}`,
     stepWord: 'Trin',

@@ -6,8 +6,8 @@ export const ORG_ID = `${SITE_URL}/#org`;
 export const DANNY_ID = `${SITE_URL}/people#danny-dehghani`;
 
 const ORG_DESCRIPTION = {
-  en: 'Compliance advisory for financial firms: applications, compliance frameworks, compliance operations, mock-inspections and dialogue with national competent authorities.',
-  da: 'Compliance-rådgivning til finansielle virksomheder: ansøgninger, compliance frameworks, drift af compliance, mock-inspektioner og dialog med nationale kompetente myndigheder.',
+  en: 'Compliance advisory for financial firms: applications, compliance frameworks, compliance operations, mock-inspections and government affairs.',
+  da: 'Compliance-rådgivning til finansielle virksomheder: ansøgninger, compliance frameworks, drift af compliance, mock-inspektioner og government affairs.',
 };
 
 export const organisation = (lang: Lang) => ({

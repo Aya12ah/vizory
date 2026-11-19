@@ -1,7 +1,6 @@
 import { ActScope } from '@/components/ActScope';
 import { JsonLd } from '@/components/JsonLd';
-import { LawShortcut } from '@/components/LawShortcut';
-import { Wordmark, wordmarkClass } from '@/components/Wordmark';
+import { HomeWordmark } from '@/components/HomeWordmark';
 import type { Lang } from '@/i18n/lang';
 import { danny, graph, organisation, website } from '@/lib/schema';
 
@@ -14,11 +13,10 @@ export function HomePage({ lang }: { lang: Lang }) {
   return (
     <>
       <JsonLd data={graph(website, organisation(lang), danny)} />
-      <LawShortcut />
         <section>
           <div className="pt-14 pb-20 phone:py-0">
             {/* The wordmark is the logo; the lede is the page's heading for search engines, styled as a lede. */}
-            <p className={`${wordmarkClass} text-[44px] phone:text-[38px]`}><Wordmark /></p>
+            <HomeWordmark className="text-[44px] phone:text-[38px]" />
             <h1 className="lede font-normal text-wrap">{LEDE[lang]}</h1>
             <div className="mt-14 phone:mt-10">
               <ActScope lang={lang} />

@@ -60,10 +60,13 @@ article.p .sn{font-style:italic;font-weight:400;margin-right:2px}
 article.p .l1{padding-left:28px;text-indent:-18px}
 article.p .l2{padding-left:52px;text-indent:-18px}
 article.p .l3{padding-left:76px;text-indent:-18px}
-.rbtn{position:absolute;right:8px;top:8px;font:500 12.5px/1 var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap;display:flex;gap:6px;align-items:center}
+article.p p.par,article.p p.stk{position:relative}
+article.p p.sel{background:var(--accent-soft);border-radius:6px;box-shadow:0 0 0 6px var(--accent-soft)}
+.grp{font:600 12.5px/1.3 var(--sans);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
+.rbtn{position:absolute;right:-132px;top:0;font:500 12.5px/1 var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap;display:flex;gap:6px;align-items:center}
 .rbtn:hover{border-color:var(--accent)}
 .rbtn.none{color:var(--muted);opacity:.0}
-article.p:hover .rbtn.none{opacity:.7}
+article.p p:hover > .rbtn.none{opacity:.7}
 .rbtn .c{background:var(--accent-soft);border-radius:999px;padding:2px 6px;color:var(--ink)}
 .xref{color:inherit;text-decoration:underline dotted var(--muted);text-underline-offset:3px;cursor:pointer}
 .xref:hover{color:var(--accent)}
@@ -150,7 +153,7 @@ details.rc > summary::-webkit-details-marker{display:none}
   .searchwrap{order:3;flex-basis:100%;max-width:none}
   #doc{padding:20px 16px 120px}
   article.p{padding:8px 10px 8px 10px;margin:0 -10px}
-  .rbtn{position:static;display:inline-flex;margin-top:4px}
+  .rbtn{position:static;display:inline-flex;margin:4px 0 0 6px;vertical-align:middle}
   .rbtn.none{display:none}
   #rp{position:fixed;inset:0;width:auto;z-index:20;border:0}
 }
@@ -301,6 +304,94 @@ function expandNr(nr){
   return [...out];
 }
 function remarkIds(L, nr){ const s = new Set(); for(const k of expandNr(nr)) (L.byPar[k] || []).forEach(i => s.add(i)); return [...s]; }
+/* ---------------- stykker ----------------
+   Which stykke (stk.) of a paragraph a remark is about, in today's numbering. Read from the remark's
+   heading ("Til nr. 27 (§ 71, stk. 1, nr. 4, ...)") or from the amending provision ("I § 71, stk. 2, der
+   bliver stk. 3, ..."), then moved along by later bills that inserted or repealed stykker in the same §.
+   A remark that cannot be tied to one stykke (fx »Til § 71« in the original law) belongs to the whole §. */
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const parRe = nr => new RegExp("§ " + reEsc(nr) + "(?![0-9])(?! [a-z](?![a-zæøå]))", "g");
+// Reads "3", "3 og 4", "3-5", "1, nr. 4" after "stk. " ; stops before "2. pkt." and similar
+function readNums(s){
+  const nums = []; let i = 0;
+  for(;;){
+    const m = s.slice(i).match(/^(\d+)(?!\d)(?:\s*[-–]\s*(\d+))?/);
+    if(!m) break;
+    if(/^\.\s*(pkt|[a-zæøå])/.test(s.slice(i + m[0].length))) break;
+    const a = +m[1], b = m[2] ? +m[2] : a; for(let k = a; k <= b && k - a < 30; k++) nums.push(k);
+    i += m[0].length;
+    const sep = s.slice(i).match(/^(?:,\s*|\s+og\s+|\s+eller\s+)(?:stk\.\s*)?(?=\d)/); if(!sep) break;
+    i += sep[0].length;
+  }
+  return { nums, end: i };
+}
+// References "§ nr, stk. X" in a text: [{ nums, rest }] where nums already follow "der bliver stk. Y"
+function stkRefs(text, nr){
+  const out = []; const re = parRe(nr); let m;
+  while((m = re.exec(text))){
+    const after = text.slice(m.index + m[0].length);
+    const s = after.match(/^\s*,?\s*stk\.\s*/); if(!s) continue;
+    const r = readNums(after.slice(s[0].length)); if(!r.nums.length) continue;
+    const rest = after.slice(s[0].length + r.end);
+    const bl = rest.match(/^[^»;]{0,40}?der bliver (?:til )?stk\.\s*/);
+    out.push({ nums: bl ? (readNums(rest.slice(bl[0].length)).nums.length ? readNums(rest.slice(bl[0].length)).nums : r.nums) : r.nums, old: r.nums, rest });
+  }
+  return out;
+}
+function stkMap(L, nr){
+  L._stk = L._stk || {};
+  if(L._stk[nr]) return L._stk[nr];
+  const ids = remarkIds(L, nr);
+  const node = L.law.nodes.find(n => n.t === "p" && n.nr === nr);
+  const count = node ? 1 + (node.html.match(/<p class="stk">/g) || []).length : 1;
+  const own = expandNr(nr);
+  const info = ids.map(i => {
+    const r = L.remarks[i], b = L.bills[r.b];
+    const c = strip(r.c || ""), pre = c.split("»")[0], quoted = c.slice(pre.length);
+    let targets = null, ev = { reset: false, ins: [], rep: [] };
+    for(const k of own){
+      const hr = stkRefs(r.h || "", k), cr = stkRefs(pre, k);
+      if(!targets && hr.length) targets = hr.flatMap(x => x.nums);
+      if(!targets && cr.length) targets = cr.flatMap(x => x.nums);
+      const mentions = parRe(k).test(pre);
+      if((mentions && /affattes/.test(pre) && !cr.length) || new RegExp("»\\s*§ " + reEsc(k) + "\\.").test(quoted)) ev.reset = true;
+      if(mentions && /indsættes/.test(pre) && !/affattes/.test(pre)){
+        const q = [...quoted.matchAll(/(?:^|[»"]\s*|\.\s)Stk\.\s*(\d+)\./g)].map(x => +x[1]);
+        if(q.length){ ev.ins.push(...q); if(!targets) targets = q; }
+      }
+      for(const x of cr) if(/^\s*,?\s*ophæves/.test(x.rest)) ev.rep.push(...x.old);
+    }
+    return { i, d: billDate(b) + "-" + String(r.b).padStart(4, "0"), targets, ev };
+  });
+  const later = info.slice().sort((a, b) => a.d.localeCompare(b.d));
+  const byStk = {}, whole = [], old = [];
+  for(const it of info){
+    // a remark that repeals a stykke is about text that no longer exists
+    let t = it.targets ? [...new Set(it.targets)].filter(s => !it.ev.rep.includes(s)) : null;
+    if(t && !t.length){ old.push(it.i); continue; }
+    let gone = false;
+    const seen = new Set();
+    for(const e of later){
+      if(e.d <= it.d || seen.has(e.d)) continue;
+      seen.add(e.d);
+      // all remarks of the same bill together make up its events
+      const evs = later.filter(x => x.d === e.d).map(x => x.ev);
+      if(evs.some(v => v.reset)){ gone = true; break; }
+      const rep = [...new Set(evs.flatMap(v => v.rep))].sort((a, b) => b - a);
+      const ins = [...new Set(evs.flatMap(v => v.ins))].sort((a, b) => a - b);
+      if(!t) continue;
+      t = t.map(s => { for(const x of rep){ if(s === x) return null; if(s > x) s--; } return s; });
+      if(t.some(s => s === null)){ gone = true; break; }
+      t = t.map(s => { for(const p of ins) if(s >= p) s++; return s; });
+    }
+    if(gone){ old.push(it.i); continue; }
+    if(!t){ whole.push(it.i); continue; }
+    t = t.filter(s => s >= 1 && s <= count);
+    if(!t.length){ old.push(it.i); continue; }
+    for(const s of t) (byStk[s] = byStk[s] || []).push(it.i);
+  }
+  return (L._stk[nr] = { count, byStk, whole, old, all: ids.length });
+}
 function toast(m, ms=3200){ const t=$("#toast"); t.textContent=m; t.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display="none", ms); }
 
 function shortTitle(L){
@@ -450,8 +541,17 @@ function renderLaw(L){
     else if(n.t === "p"){
       const cnt = remarkIds(L, n.nr).length;
       for(const k of expandNr(n.nr)) if(k !== n.nr) S.alias[k] = n.nr;
-      const btn = '<button class="rbtn' + (cnt ? '' : ' none') + '" data-nr="' + esc(n.nr) + '" title="Specielle bemærkninger til § ' + esc(n.nr) + '">Bemærkninger' + (cnt ? ' <span class="c">' + cnt + '</span>' : '') + '</button>';
-      parts.push('<article class="p" id="' + nid(n.nr) + '" data-nr="' + esc(n.nr) + '">' + btn + n.html.replace('<p class="par">', '<p class="par"><span class="pn" data-nr="' + esc(n.nr) + '">' + esc(n.label || ("§ " + n.nr + ".")) + '</span> ') + '</article>');
+      const sm = cnt ? stkMap(L, n.nr) : { count: 1, byStk: {}, whole: [] };
+      let sk = 0;
+      const html = n.html.replace('<p class="par">', '<p class="par"><span class="pn" data-nr="' + esc(n.nr) + '">' + esc(n.label || ("§ " + n.nr + ".")) + '</span> ')
+        .replace(/<p class="(par|stk)">([\s\S]*?)<\/p>/g, (all, cls, inner) => {
+          const m = cls === "stk" && inner.match(/Stk\.\s*(\d+)\./); sk = m ? +m[1] : sk + 1;
+          const c = (sm.byStk[sk] || []).length + sm.whole.length;
+          const label = "§ " + n.nr + (sm.count > 1 ? ", stk. " + sk : "");
+          const btn = '<button class="rbtn' + (c ? '' : ' none') + '" data-nr="' + esc(n.nr) + '" data-stk="' + sk + '" title="Specielle bemærkninger til ' + esc(label) + '">Bemærkninger' + (c ? ' <span class="c">' + c + '</span>' : '') + '</button>';
+          return '<p class="' + cls + '" data-stk="' + sk + '">' + inner + btn + '</p>';
+        });
+      parts.push('<article class="p" id="' + nid(n.nr) + '" data-nr="' + esc(n.nr) + '">' + html + '</article>');
     }
     else if(n.t === "x"){ parts.push('<div class="x">' + n.html + '</div>'); }
     else if(n.t === "ik" || n.t === "bilag"){ parts.push('<details class="block"><summary>' + esc(n.title || (n.t === "ik" ? "Ikrafttrædelsesbestemmelser" : "Bilag")) + '</summary>' + n.html + '</details>'); }
@@ -508,33 +608,38 @@ function openPanel(title, sub, body){
   $("#rpTitle").textContent = title; $("#rpSub").innerHTML = sub; $("#rpBody").innerHTML = body; $("#rpBody").scrollTop = 0;
   $("#rp").classList.add("open");
 }
-function closeRemarks(){ $("#rp").classList.remove("open"); $$("article.p.sel").forEach(a => a.classList.remove("sel")); S.sel = null; }
-function openRemarks(nr, focusIdx){
+function closeRemarks(){ $("#rp").classList.remove("open"); $$("#doc .sel").forEach(a => a.classList.remove("sel")); S.sel = null; S.selStk = undefined; }
+function openRemarks(nr, focusIdx, stk){
   const L = S.cur; if(!L) return;
   if(nr !== "_" && S.alias[nr] && !L.law.nodes.some(n => n.t === "p" && n.nr === nr)) nr = S.alias[nr];
-  S.sel = nr;
-  $$("article.p.sel").forEach(a => a.classList.remove("sel"));
-  const art = document.getElementById(nid(nr)); if(art) art.classList.add("sel");
-  const ids = nr === "_" ? (L.byPar["_"] || []).slice() : remarkIds(L, nr);
-  const items = ids.map(i => ({ i, r: L.remarks[i], b: L.bills[L.remarks[i].b] }));
-  items.sort((a, b) => { const d = billDate(a.b).localeCompare(billDate(b.b)); return S.order === "new" ? -d : d; });
-  const node = L.law.nodes.find(n => n.t === "p" && n.nr === nr);
-  let body = '';
-  if(node) body += '<div class="ptext">' + node.html + '</div>';
-  if(!items.length) body += '<div class="empty">Der blev ikke fundet specielle bemærkninger, som henviser direkte til denne bestemmelse.<br><br>Bestemmelsen kan være indsat ved en lov, hvis lovforslag ikke ligger på Retsinformation, eller være ændret i forbindelse med en ny­nummerering.</div>';
-  else body += '<div class="note">Bemærkningerne er koblet automatisk ud fra lovforslagenes henvisninger. Ældre bemærkninger kan henvise til en nummerering, der senere er ændret.</div>';
-  items.forEach((it, k) => {
+  S.sel = nr; S.selStk = stk;
+  $$("#doc .sel").forEach(a => a.classList.remove("sel"));
+  const art = document.getElementById(nid(nr));
+  if(art){
+    let el = stk ? art.querySelector('p[data-stk="' + stk + '"]') : art;
+    if(el) el.classList.add("sel");
+    // the numbered items (1), 2) ...) under a stykke belong to it
+    if(stk) while(el && (el = el.nextElementSibling) && !el.matches("p.par, p.stk")) if(el.tagName === "P") el.classList.add("sel");
+  }
+  const sm = nr !== "_" && stk ? stkMap(L, nr) : null;
+  const sorted = ids => ids.map(i => ({ i, r: L.remarks[i], b: L.bills[L.remarks[i].b] }))
+    .sort((a, b) => { const d = billDate(a.b).localeCompare(billDate(b.b)); return S.order === "new" ? -d : d; });
+  const own = sorted(sm ? (sm.byStk[stk] || []) : nr === "_" ? (L.byPar["_"] || []).slice() : remarkIds(L, nr));
+  const whole = sm ? sorted(sm.whole) : [];
+  const card = (it, open) => {
     const b = it.b, r = it.r;
-    const yr = (b.lov || "").match(/\d{4}$/);
-    body += '<details class="rc" data-i="' + it.i + '"' + ((focusIdx != null ? it.i === focusIdx : k === 0) ? ' open' : '') + '><summary>' +
-      '<div class="k">' + (b.original ? '<span class="tag orig">Oprindelig lov</span>' : b.later ? '<span class="tag" style="background:var(--mark)">Ikke indarbejdet</span>' : '<span class="tag">Ændring</span>') + '<span>' + esc(b.lov || "") + '</span><span>· ' + esc(b.short) + '</span></div>' +
-      '<div class="hd">' + esc(r.h || "") + '</div>' +
-      '<div class="bt">' + esc((b.lovTitle || b.title || "").replace(/^Forslag til /, "")) + '</div></summary><div class="body">' +
-      (r.c ? '<div class="chg"><span class="lbl">Ændringsbestemmelsen</span>' + r.c + '</div>' : '') +
-      r.x +
-      '<div class="links"><a href="' + RI + b.eli + '" target="_blank" rel="noopener">Åbn lovforslaget ↗</a>' + (b.lovEli ? '<a href="' + RI + b.lovEli + '" target="_blank" rel="noopener">Åbn loven ↗</a>' : '') + '</div></div></details>';
-  });
-  openPanel(nr === "_" ? "Bemærkninger uden paragrafhenvisning" : "Bemærkninger til § " + nr, esc(shortTitle(L)) + ' · ' + items.length + ' afsnit fra ' + new Set(items.map(x => x.r.b)).size + ' lovforslag', body);
+    return '<details class="rc" data-i="' + it.i + '"' + (open ? ' open' : '') + '><summary>' +
+      '<div class="k">' + (b.later ? '<span class="tag" style="background:var(--mark)">Ikke indarbejdet</span>' : '') + '<span>' + esc(b.lov || b.short) + '</span></div>' +
+      '<div class="hd">' + esc(r.h || "") + '</div></summary><div class="body">' + r.x + '</div></details>';
+  };
+  const first = focusIdx != null ? focusIdx : (own[0] || whole[0] || {}).i;
+  let body = own.map(it => card(it, it.i === first)).join("");
+  if(whole.length) body += (own.length ? '<div class="grp">Til hele § ' + esc(nr) + '</div>' : '') + whole.map(it => card(it, it.i === first)).join("");
+  if(!own.length && !whole.length) body = '<div class="empty">Ingen specielle bemærkninger.</div>';
+  if(sm && sm.all > own.length + whole.length) body += '<p><a href="#" class="allrem" data-nr="' + esc(nr) + '">Alle bemærkninger til § ' + esc(nr) + ' (' + sm.all + ')</a></p>';
+  const label = nr === "_" ? "" : "§ " + nr + (sm && sm.count > 1 ? ", stk. " + stk : "");
+  const all = own.concat(whole);
+  openPanel(nr === "_" ? "Bemærkninger uden paragrafhenvisning" : "Bemærkninger til " + label, esc(shortTitle(L)) + ' · ' + all.length + ' afsnit fra ' + new Set(all.map(x => x.r.b)).size + ' lovforslag', body);
   $("#rpExpand").textContent = "Fold alle ud";
   if(focusIdx != null){ const d = $('#rpBody details[data-i="' + focusIdx + '"]'); if(d) setTimeout(() => d.scrollIntoView({ block: "start" }), 30); }
   if(nr !== "_") setHash(L.eli, nr);
@@ -632,10 +737,11 @@ function bind(){
   $("#srClose").onclick = closeSearch;
   $("#srScope").onclick = e => { const v = e.target.dataset.v; if(!v) return; S.scope = v; $$("#srScope button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); doSearch(); };
   $("#rpClose").onclick = closeRemarks;
-  $("#rpOrder").onclick = e => { const v = e.target.dataset.v; if(!v) return; S.order = v; $$("#rpOrder button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); if(S.sel) openRemarks(S.sel); };
+  $("#rpOrder").onclick = e => { const v = e.target.dataset.v; if(!v) return; S.order = v; $$("#rpOrder button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); if(S.sel) openRemarks(S.sel, null, S.selStk); };
+  $("#rpBody").addEventListener("click", e => { const a = e.target.closest(".allrem"); if(a){ e.preventDefault(); openRemarks(a.dataset.nr); } });
   $("#rpExpand").onclick = () => { const ds = $$("#rpBody details.rc"); const open = ds.some(d => !d.open); ds.forEach(d => d.open = open); $("#rpExpand").textContent = open ? "Fold alle sammen" : "Fold alle ud"; };
   $("#doc").addEventListener("click", e => {
-    const rb = e.target.closest(".rbtn, .pn"); if(rb){ openRemarks(rb.dataset.nr); return; }
+    const rb = e.target.closest(".rbtn, .pn"); if(rb){ openRemarks(rb.dataset.nr, null, rb.dataset.stk ? +rb.dataset.stk : undefined); return; }
     const x = e.target.closest(".xref"); if(x){ goPar(x.dataset.go); return; }
   });
   $("#toc").addEventListener("click", e => { const a = e.target.closest("a[data-to]"); if(!a) return; e.preventDefault(); const el = document.getElementById(a.dataset.to); if(el) el.scrollIntoView({ block: "start" }); $("#toc").classList.remove("open"); });

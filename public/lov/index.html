@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lovopslag</title>
+<style>
+:root{
+  --bg:#f7f6f2; --panel:#ffffff; --ink:#1d1d1b; --muted:#6b6a64; --line:#e3e0d7; --accent:#2f6f4f; --accent-ink:#fff;
+  --accent-soft:#e6f0ea; --mark:#fbe7a1; --hover:#f0eee7; --shadow:0 6px 24px rgba(0,0,0,.08);
+  --serif: "Iowan Old Style","Charter","Georgia",serif; --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#1b1c1a; --panel:#232522; --ink:#e9e7e1; --muted:#a3a097; --line:#383a35; --accent:#7cc39b; --accent-ink:#10251a;
+  --accent-soft:#2a3a30; --mark:#6b5a1d; --hover:#2c2e2a; --shadow:0 6px 24px rgba(0,0,0,.4); }
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);display:flex;flex-direction:column}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;z-index:5}
+.brand{font-weight:700;letter-spacing:.2px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand svg{width:22px;height:22px}
+select,input[type=search]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+#lawSel{max-width:280px}
+.searchwrap{flex:1;display:flex;gap:8px;min-width:0;max-width:720px}
+#q{flex:1;min-width:0}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:3px 8px;font-size:13px}
+.iconbtn{border:0;background:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--muted)}
+.iconbtn:hover{background:var(--hover);color:var(--ink)}
+main{flex:1;display:flex;min-height:0;position:relative}
+#toc{width:270px;flex:0 0 auto;overflow:auto;border-right:1px solid var(--line);background:var(--panel);padding:12px 8px 40px;font-size:13.5px}
+#toc .t1{font-weight:700;margin:14px 8px 4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+#toc a{display:block;padding:4px 8px;border-radius:6px;color:var(--ink);text-decoration:none}
+#toc a:hover{background:var(--hover)}
+#toc a .n{color:var(--muted);margin-right:6px}
+#toc a.active{background:var(--accent-soft)}
+#reader{flex:1;overflow:auto;scroll-behavior:auto}
+#doc{max-width:860px;margin:0 auto;padding:28px 40px 120px}
+#doc h1.lt{font:600 26px/1.25 var(--serif);margin:0 0 6px}
+.lawmeta{color:var(--muted);font-size:13px;margin-bottom:22px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.intro{font:14px/1.55 var(--serif);color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 12px;margin-bottom:26px}
+.h1{font:700 15px/1.3 var(--sans);text-align:center;margin:40px 0 4px;text-transform:uppercase;letter-spacing:.6px}
+.h1 + .h1s, .h1s{font:600 17px/1.35 var(--serif);text-align:center;margin:0 0 20px}
+.h2{font:600 14px/1.3 var(--sans);text-align:center;margin:34px 0 2px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.h2s{font:italic 18px/1.35 var(--serif);text-align:center;margin:0 0 18px}
+.h3{font:italic 16px/1.4 var(--serif);margin:26px 0 8px;color:var(--ink)}
+article.p{position:relative;font:16.5px/1.62 var(--serif);padding:8px 140px 8px 14px;margin:0 -14px;border-radius:8px;scroll-margin-top:16px}
+article.p:hover{background:var(--hover)}
+article.p.sel{background:var(--accent-soft)}
+article.p.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{background:var(--mark)}100%{background:transparent}}
+article.p p{margin:0 0 6px}
+article.p .pn{font-weight:700;margin-right:4px;cursor:pointer}
+article.p .sn{font-style:italic;font-weight:400;margin-right:2px}
+article.p .l1{padding-left:28px;text-indent:-18px}
+article.p .l2{padding-left:52px;text-indent:-18px}
+article.p .l3{padding-left:76px;text-indent:-18px}
+.rbtn{position:absolute;right:8px;top:8px;font:500 12.5px/1 var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:999px;padding:6px 10px;cursor:pointer;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.rbtn:hover{border-color:var(--accent)}
+.rbtn.none{color:var(--muted);opacity:.0}
+article.p:hover .rbtn.none{opacity:.7}
+.rbtn .c{background:var(--accent-soft);border-radius:999px;padding:2px 6px;color:var(--ink)}
+.xref{color:inherit;text-decoration:underline dotted var(--muted);text-underline-offset:3px;cursor:pointer}
+.xref:hover{color:var(--accent)}
+.tbl{overflow-x:auto;margin:8px 0}
+.tbl table{border-collapse:collapse;font:13.5px/1.4 var(--sans)}
+.tbl td,.tbl th{border:1px solid var(--line);padding:4px 6px;vertical-align:top}
+.tbl p{margin:0}
+.block{font:15px/1.6 var(--serif);margin:18px 0;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.block summary{cursor:pointer;font:600 14px var(--sans)}
+.block p.cp{text-align:center;font-weight:700;margin-top:12px}
+mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
+
+/* Remarks panel */
+#rp{width:min(560px,46vw);flex:0 0 auto;border-left:1px solid var(--line);background:var(--panel);display:none;flex-direction:column;min-height:0}
+#rp.open{display:flex}
+#rp .rh{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+#rp .rh .row{display:flex;align-items:center;gap:8px}
+#rp .rh h2{font:600 18px/1.3 var(--serif);margin:0;flex:1}
+#rp .rh .sub{color:var(--muted);font-size:12.5px;margin-top:4px}
+#rp .tools{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center}
+#rp .rb{overflow:auto;padding:12px 16px 80px;flex:1}
+.ptext{font:14px/1.55 var(--serif);background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:14px;max-height:180px;overflow:auto;border:1px solid var(--line)}
+.ptext p{margin:0 0 4px}
+details.rc{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--panel)}
+details.rc[open]{box-shadow:var(--shadow)}
+details.rc > summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+details.rc > summary::-webkit-details-marker{display:none}
+.rc .k{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.tag{font:600 11px/1 var(--sans);padding:4px 6px;border-radius:5px;background:var(--accent-soft);color:var(--ink);letter-spacing:.2px}
+.tag.orig{background:var(--accent);color:var(--accent-ink)}
+.rc .hd{font:600 14px/1.35 var(--sans)}
+.rc .bt{font-size:12.5px;color:var(--muted);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rc .body{padding:0 14px 14px;font:15px/1.6 var(--serif)}
+.rc .body p{margin:0 0 10px}
+.rc .chg{font:13.5px/1.5 var(--serif);background:var(--bg);border-left:3px solid var(--accent);padding:8px 10px;margin:0 0 12px;border-radius:0 6px 6px 0}
+.rc .chg p{margin:0 0 4px}
+.rc .chg .lbl{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px}
+.rc .links{font:13px var(--sans);display:flex;gap:12px;margin-top:6px}
+.note{font-size:12.5px;color:var(--muted);line-height:1.45;background:var(--bg);border-radius:8px;padding:8px 10px;margin:8px 0 14px}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+
+/* Search results */
+#sr{position:absolute;left:0;top:0;bottom:0;width:min(520px,100%);background:var(--panel);border-right:1px solid var(--line);box-shadow:var(--shadow);display:none;flex-direction:column;z-index:4}
+#sr.open{display:flex}
+#sr .sh{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#sr .sh .cnt{flex:1;color:var(--muted);font-size:13px}
+#sr .sb{overflow:auto;flex:1;padding:6px 8px 60px}
+.hit{display:block;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.hit:hover{background:var(--hover)}
+.hit .ht{font-weight:600;font-size:14px;display:flex;gap:8px;align-items:baseline}
+.hit .ht .lw{font-weight:400;color:var(--muted);font-size:12px}
+.hit .sn2{font:14px/1.45 var(--serif);color:var(--muted);margin-top:2px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:none;padding:5px 10px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+
+/* Home */
+#home{max-width:920px;margin:0 auto;padding:36px 28px 100px}
+#home h1{font:600 30px/1.2 var(--serif);margin:0 0 6px}
+#home .lead{color:var(--muted);margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:34px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:box-shadow .15s}
+.card:hover{box-shadow:var(--shadow)}
+.card .ct{font:600 16px/1.3 var(--serif)}
+.card .cm{color:var(--muted);font-size:12.5px}
+.card .ca{display:flex;gap:6px;margin-top:6px}
+.steps{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 24px}
+.steps h2{font:600 19px var(--serif);margin:0 0 12px}
+.steps ol{margin:0;padding-left:20px}
+.steps li{margin-bottom:14px}
+.bm{display:inline-block;padding:8px 14px;border-radius:8px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;cursor:grab;margin:4px 0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);margin-top:8px}
+.drop.over{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.quick a{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;text-decoration:none}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;display:none;z-index:50;max-width:90vw}
+.hide{display:none!important}
+.mobile-only{display:none}
+
+@media (max-width: 1100px){ #toc{display:none} #toc.open{display:block;position:absolute;left:0;top:0;bottom:0;z-index:3;box-shadow:var(--shadow)} .mobile-only{display:inline-flex} }
+@media (max-width: 860px){
+  header{flex-wrap:wrap;padding:8px 10px;gap:8px}
+  #lawSel{max-width:none;flex:1}
+  .searchwrap{order:3;flex-basis:100%;max-width:none}
+  #doc{padding:20px 16px 120px}
+  article.p{padding:8px 10px 8px 10px;margin:0 -10px}
+  .rbtn{position:static;display:inline-flex;margin-top:4px}
+  .rbtn.none{display:none}
+  #rp{position:fixed;inset:0;width:auto;z-index:20;border:0}
+}
+@media print{ header,#toc,#rp,#sr,.rbtn{display:none!important} #reader{overflow:visible} }
+</style>
+</head>
+<body>
+<header>
+  <button class="iconbtn mobile-only" id="tocBtn" title="Indholdsfortegnelse" aria-label="Indholdsfortegnelse"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <div class="brand" id="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 7h14M7 7l-3 7a3 3 0 0 0 6 0L7 7zm10 0l-3 7a3 3 0 0 0 6 0l-3-7zM8 21h8"/></svg>Lovopslag</div>
+  <select id="lawSel" aria-label="Vælg lov"></select>
+  <div class="searchwrap">
+    <input type="search" id="q" placeholder="Søg i loven – fx »§ 25 a« eller »tilladelse betalingsinstitut«" autocomplete="off">
+  </div>
+  <button class="btn" id="addBtn">+ Tilføj lov</button>
+</header>
+<main>
+  <nav id="toc" aria-label="Indholdsfortegnelse"></nav>
+  <div id="reader"><div id="doc"></div><div id="home" class="hide"></div></div>
+  <aside id="rp" aria-label="Bemærkninger">
+    <div class="rh">
+      <div class="row"><h2 id="rpTitle">Bemærkninger</h2><button class="iconbtn" id="rpClose" title="Luk" aria-label="Luk">✕</button></div>
+      <div class="sub" id="rpSub"></div>
+      <div class="tools">
+        <div class="seg" id="rpOrder"><button data-v="new" class="on">Nyeste først</button><button data-v="old">Ældste først</button></div>
+        <button class="btn small" id="rpExpand">Fold alle ud</button>
+      </div>
+    </div>
+    <div class="rb" id="rpBody"></div>
+  </aside>
+  <section id="sr" aria-label="Søgeresultater">
+    <div class="sh">
+      <span class="cnt" id="srCnt"></span>
+      <div class="seg" id="srScope"><button data-v="law" class="on">Denne lov</button><button data-v="all">Alle love</button><button data-v="rem">Bemærkninger</button></div>
+      <button class="iconbtn" id="srClose" aria-label="Luk søgning">✕</button>
+    </div>
+    <div class="sb" id="srBody"></div>
+  </section>
+</main>
+<div id="toast"></div>
+<input type="file" id="file" accept=".json,application/json" multiple class="hide">
+
+<script>
+"use strict";
+const BOOKMARKLET = "javascript:!function()%7Bif(!%2Fretsinformation%5C.dk%24%2F.test(location.hostname))return%20void%20alert(%22%C3%85bn%20loven%20p%C3%A5%20www.retsinformation.dk%20f%C3%B8rst%2C%20og%20klik%20s%C3%A5%20p%C3%A5%20bogm%C3%A6rket%20igen.%22)%3Bconst%20e%3D!!window.__lovopslagTest%3Bif(window.__lovopslagRunning%26%26!e)return%3Bwindow.__lovopslagRunning%3D!0%3Bconst%20t%3Ddocument.createElement(%22div%22)%3Bt.style.cssText%3D%22position%3Afixed%3Bz-index%3A2147483647%3Bright%3A20px%3Bbottom%3A20px%3Bwidth%3A420px%3Bmax-height%3A70vh%3Boverflow%3Aauto%3Bbackground%3A%23fff%3Bcolor%3A%231a1a1a%3Bborder%3A1px%20solid%20%23ccc%3Bborder-radius%3A10px%3Bbox-shadow%3A0%208px%2030px%20rgba(0%2C0%2C0%2C.25)%3Bfont%3A14px%2F1.45%20system-ui%2C-apple-system%2Csans-serif%3Bpadding%3A16px%22%2Ct.innerHTML%3D'%3Cdiv%20style%3D%22display%3Aflex%3Bjustify-content%3Aspace-between%3Balign-items%3Acenter%3Bmargin-bottom%3A8px%22%3E%3Cb%20style%3D%22font-size%3A15px%22%3ELovopslag%20%E2%80%93%20import%3C%2Fb%3E%3Cbutton%20id%3D%22lx-x%22%20style%3D%22border%3A0%3Bbackground%3Anone%3Bfont-size%3A18px%3Bcursor%3Apointer%22%3E%C3%97%3C%2Fbutton%3E%3C%2Fdiv%3E%3Cdiv%20id%3D%22lx-st%22%20style%3D%22margin-bottom%3A6px%22%3EStarter%E2%80%A6%3C%2Fdiv%3E%3Cdiv%20id%3D%22lx-pr%22%20style%3D%22height%3A6px%3Bbackground%3A%23eee%3Bborder-radius%3A3px%3Boverflow%3Ahidden%3Bmargin-bottom%3A8px%22%3E%3Cdiv%20id%3D%22lx-bar%22%20style%3D%22height%3A100%25%3Bwidth%3A0%3Bbackground%3A%232f6f4f%3Btransition%3Awidth%20.2s%22%3E%3C%2Fdiv%3E%3C%2Fdiv%3E%3Cdiv%20id%3D%22lx-log%22%20style%3D%22font-size%3A12px%3Bcolor%3A%23555%3Bwhite-space%3Apre-wrap%22%3E%3C%2Fdiv%3E%3Cdiv%20id%3D%22lx-dl%22%3E%3C%2Fdiv%3E'%2Ce%7C%7Cdocument.body.appendChild(t)%3Bconst%20n%3De%3D%3Et.querySelector(%22%23%22%2Be)%3Bn(%22lx-x%22).onclick%3D()%3D%3E%7Bt.remove()%2Cwindow.__lovopslagRunning%3D!1%7D%3Bconst%20i%3De%3D%3E%7Bn(%22lx-st%22).textContent%3De%7D%2Co%3Dt%3D%3E%7Bn(%22lx-log%22).textContent%2B%3Dt%2B%22%5Cn%22%2Ce%26%26console.log(%22%5Blovopslag%5D%20%22%2Bt)%7D%2Cs%3De%3D%3E%7Bn(%22lx-bar%22).style.width%3DMath.round(100*e)%2B%22%25%22%7D%2Cl%3Dasync%20e%3D%3E%7Bfor(let%20t%3D0%3Bt%3C4%3Bt%2B%2B)%7Btry%7Bconst%20t%3Dnew%20AbortController%2Cn%3DsetTimeout(()%3D%3Et.abort()%2C45e3)%2Ci%3Dawait%20fetch(%22%2Fapi%2Fdocument%22%2Be%2C%7Bmethod%3A%22POST%22%2Cheaders%3A%7B%22Content-Type%22%3A%22application%2Fjson%22%7D%2Cbody%3A%22%7B%7D%22%2Csignal%3At.signal%7D)%3Bif(clearTimeout(n)%2Ci.ok)%7Bconst%20e%3Dawait%20i.json()%3Breturn%20Array.isArray(e)%3Fe%5B0%5D%3Ae%7D%7Dcatch(e)%7B%7Dawait%20new%20Promise(e%3D%3EsetTimeout(e%2C800*(t%2B1)))%7Dreturn%20null%7D%2Cr%3De%3D%3E(new%20DOMParser).parseFromString('%3Cdiv%20id%3D%22root%22%3E'%2Be%2B%22%3C%2Fdiv%3E%22%2C%22text%2Fhtml%22)%2Ca%3De%3D%3E(e.textContent%7C%7C%22%22).replace(%2F%5Cs%2B%2Fg%2C%22%20%22).trim()%2Cc%3De%3D%3Ee.replace(%2F%5B%3C%3E%26%5D%2Fg%2Ce%3D%3E(%7B%22%3C%22%3A%22%26lt%3B%22%2C%22%3E%22%3A%22%26gt%3B%22%2C%22%26%22%3A%22%26amp%3B%22%7D%5Be%5D))%2Cd%3D%7BI%3A1%2CB%3A1%2CSUB%3A1%2CSUP%3A1%2CBR%3A1%2CTABLE%3A1%2CTBODY%3A1%2CTHEAD%3A1%2CTR%3A1%2CTD%3A1%2CTH%3A1%2CUL%3A1%2COL%3A1%2CLI%3A1%7D%3Bfunction%20f(e)%7Blet%20t%3D%22%22%3Bfor(const%20n%20of%20e.childNodes)%7Bif(3%3D%3D%3Dn.nodeType)%7Bt%2B%3Dc(n.textContent.replace(%2F%5Cs%2B%2Fg%2C%22%20%22))%3Bcontinue%7Dif(1!%3D%3Dn.nodeType)continue%3Bconst%20e%3D%22string%22%3D%3Dtypeof%20n.className%3Fn.className%3A%22%22%3Blet%20i%3Dn.tagName%3Bif(%2FFodnoteHenvisning%2F.test(e))t%2B%3D%22%3Csup%3E%22%2Bc(n.textContent.trim().replace(%2F%5C)%24%2F%2C%22%22))%2B%22%3C%2Fsup%3E%22%3Belse%20if(%22SPAN%22%3D%3D%3Di%26%26%2FItalic%2F.test(e)%26%26%2FBold%2F.test(e))t%2B%3D%22%3Cb%3E%3Ci%3E%22%2Bf(n)%2B%22%3C%2Fi%3E%3C%2Fb%3E%22%3Belse%20if(%22SPAN%22%3D%3D%3Di%26%26%2FItalic%2F.test(e)%3Fi%3D%22I%22%3A%22SPAN%22%3D%3D%3Di%26%26%2FBold%2F.test(e)%3Fi%3D%22B%22%3A%22EM%22%3D%3D%3Di%3Fi%3D%22I%22%3A%22STRONG%22%3D%3D%3Di%26%26(i%3D%22B%22)%2Cd%5Bi%5D)%7Bconst%20e%3Di.toLowerCase()%2Co%3D%22TD%22%3D%3D%3Di%7C%7C%22TH%22%3D%3D%3Di%3F(n.colSpan%3E1%3F'%20colspan%3D%22'%2Bn.colSpan%2B'%22'%3A%22%22)%2B(n.rowSpan%3E1%3F'%20rowspan%3D%22'%2Bn.rowSpan%2B'%22'%3A%22%22)%3A%22%22%3Bt%2B%3D%22BR%22%3D%3D%3Di%3F%22%3Cbr%3E%22%3A%22%3C%22%2Be%2Bo%2B%22%3E%22%2Bf(n)%2B%22%3C%2F%22%2Be%2B%22%3E%22%7Delse%20if(%22P%22%3D%3D%3Di)%7Bconst%20e%3Df(n)%3Be.trim()%26%26(t%2B%3D%22%3Cp%3E%22%2Be.trim()%2B%22%3C%2Fp%3E%22)%7Delse%20t%2B%3Df(n)%7Dreturn%20t%7Dconst%20g%3De%3D%3Ee.replace(%2F%5Cs%2B%2Fg%2C%22%20%22).trim().toLowerCase().replace(%2F%5E%C2%A7%C2%A7%3F%5Cs*%2F%2C%22%22).replace(%2F%5C.%24%2F%2C%22%22).replace(%2F%5Cs*%5B-%E2%80%93%5D%5Cs*%2Fg%2C%22-%22)%3Bfunction%20h(e)%7Bconst%20t%3Dr(e).getElementById(%22root%22)%2Cn%3D%7Btitle%3A%22%22%2Cintro%3A%5B%5D%2Cnodes%3A%5B%5D%2Cfootnotes%3A%5B%5D%7D%2Ci%3Dt.querySelector(%22.Titel2%22)%3Bif(i)%7Bconst%20e%3Di.cloneNode(!0)%3Be.querySelectorAll(%22.FodnoteHenvisning%22).forEach(e%3D%3Ee.remove())%2Cn.title%3Da(e)%7Dlet%20o%3Dnull%2Cs%3D%22main%22%2Cl%3Dnull%3Bconst%20d%3Dt.querySelectorAll(%22.Indledning2%2C.Indledning%2C.Afsnit%2C.AfsnitOverskrift%2C.Kapitel%2C.KapitelOverskrift2%2C.ParagrafGruppeOverskrift%2C.Paragraf%2C.Stk2%2C.Liste1%2C.Liste2%2C.Liste3%2C.TekstGenerel%2C.IKraftStreg%2C.IkraftTekst%2C.CentreretParagraf%2C.BilagStreg%2C.Bilag%2C.BilagTekst%2C.Containertable%2C.Fodnote%2C.Givet%22)%3Bfor(const%20e%20of%20d)%7Bconst%20t%3De.classList%3Bif(e.closest(%22.toc%22))continue%3Bif(e.closest(%22.Containertable%22)%26%26!t.contains(%22Containertable%22))continue%3Bif(t.contains(%22Indledning2%22)%7C%7Ct.contains(%22Indledning%22))%7Bn.intro.push(a(e))%3Bcontinue%7Dif(t.contains(%22Fodnote%22))%7Bn.footnotes.push(f(e))%3Bcontinue%7Dif(t.contains(%22Givet%22))continue%3Bif(t.contains(%22IKraftStreg%22)%7C%7Ct.contains(%22BilagStreg%22))%7Bs%3Dt.contains(%22IKraftStreg%22)%3F%22ikraft%22%3A%22bilag%22%2Co%3Dnull%2Cl%3Dnull%3Bcontinue%7Dif(t.contains(%22IkraftTekst%22))%7Bl%3D%7Bt%3A%22ik%22%2Ctitle%3Aa(e)%2Chtml%3A%22%22%7D%2Cn.nodes.push(l)%3Bcontinue%7Dif(t.contains(%22Bilag%22)%26%26!t.contains(%22BilagTekst%22))%7Bl%3D%7Bt%3A%22bilag%22%2Ctitle%3Aa(e)%2Chtml%3A%22%22%7D%2Cn.nodes.push(l)%2Cs%3D%22bilag%22%3Bcontinue%7Dif(%22main%22!%3D%3Ds)%7Bif(l%7C%7C(l%3D%7Bt%3A%22ikraft%22%3D%3D%3Ds%3F%22ik%22%3A%22bilag%22%2Ctitle%3A%22%22%2Chtml%3A%22%22%7D%2Cn.nodes.push(l))%2Ct.contains(%22BilagTekst%22)%26%26!l.html)%7Bl.title%2B%3D(l.title%3F%22%20%E2%80%93%20%22%3A%22%22)%2Ba(e)%3Bcontinue%7Dconst%20i%3Dt.contains(%22CentreretParagraf%22)%3F%22cp%22%3At.contains(%22Stk2%22)%3F%22stk%22%3A%2FListe%2F.test(e.className)%3F%22l1%22%3A%22%22%3Bl.html%2B%3Dt.contains(%22Containertable%22)%3F'%3Cdiv%20class%3D%22tbl%22%3E'%2Bf(e)%2B%22%3C%2Fdiv%3E%22%3A%22%3Cp%22%2B(i%3F'%20class%3D%22'%2Bi%2B'%22'%3A%22%22)%2B%22%3E%22%2Bf(e).trim()%2B%22%3C%2Fp%3E%22%3Bcontinue%7Dif(t.contains(%22Afsnit%22))%7Bn.nodes.push(%7Bt%3A%22h1%22%2Clabel%3Aa(e)%2Ctitle%3A%22%22%7D)%2Co%3Dnull%3Bcontinue%7Dif(t.contains(%22AfsnitOverskrift%22))%7Bconst%20t%3Dn.nodes%5Bn.nodes.length-1%5D%3Bt%26%26%22h1%22%3D%3D%3Dt.t%26%26!t.title%3Ft.title%3Da(e)%3An.nodes.push(%7Bt%3A%22h1%22%2Clabel%3A%22%22%2Ctitle%3Aa(e)%7D)%3Bcontinue%7Dif(t.contains(%22Kapitel%22))%7Bn.nodes.push(%7Bt%3A%22h2%22%2Clabel%3Aa(e)%2Ctitle%3A%22%22%7D)%2Co%3Dnull%3Bcontinue%7Dif(t.contains(%22KapitelOverskrift2%22))%7Bconst%20t%3Dn.nodes%5Bn.nodes.length-1%5D%3Bt%26%26%22h2%22%3D%3D%3Dt.t%26%26!t.title%3Ft.title%3Da(e)%3An.nodes.push(%7Bt%3A%22h2%22%2Clabel%3A%22%22%2Ctitle%3Aa(e)%7D)%3Bcontinue%7Dif(t.contains(%22ParagrafGruppeOverskrift%22))%7Bn.nodes.push(%7Bt%3A%22h3%22%2Ctitle%3Aa(e)%7D)%2Co%3Dnull%3Bcontinue%7Dif(t.contains(%22Paragraf%22))%7Bconst%20t%3De.querySelector(%22.ParagrafNr%22)%3Blet%20i%3Df(e).trim()%3Bif(t)%7Bconst%20e%3Dc(t.textContent.replace(%2F%5Cs%2B%2Fg%2C%22%20%22))%2Cn%3Di.indexOf(e.trim())%3Bn%3E%3D0%26%26(i%3Di.slice(0%2Cn)%2Bi.slice(n%2Be.trim().length))%7Do%3D%7Bt%3A%22p%22%2Cnr%3At%3Fg(t.textContent)%3A%22%22%2Clabel%3At%3Fa(t)%3A%22%22%2Chtml%3A'%3Cp%20class%3D%22par%22%3E'%2Bi.trim()%2B%22%3C%2Fp%3E%22%7D%2Cn.nodes.push(o)%3Bcontinue%7Dif(t.contains(%22Containertable%22))%7Bconst%20t%3D'%3Cdiv%20class%3D%22tbl%22%3E'%2Bf(e)%2B%22%3C%2Fdiv%3E%22%3Bo%3Fo.html%2B%3Dt%3An.nodes.push(%7Bt%3A%22x%22%2Chtml%3At%7D)%3Bcontinue%7Dconst%20i%3Dt.contains(%22Stk2%22)%3F%22stk%22%3At.contains(%22Liste1%22)%3F%22l1%22%3At.contains(%22Liste2%22)%3F%22l2%22%3At.contains(%22Liste3%22)%3F%22l3%22%3A%22gen%22%3Blet%20r%3Df(e).trim()%3Bconst%20d%3De.querySelector(%22.StkNr%22)%3Bif(d)%7Bconst%20e%3Dc(d.textContent.replace(%2F%5Cs%2B%2Fg%2C%22%20%22)).trim()%2Ct%3Dr.indexOf(e)%3Bt%3E%3D0%26%26(r%3Dr.slice(0%2Ct)%2Br.slice(t%2Be.length))%2Cr%3D'%3Cb%20class%3D%22sn%22%3E'%2Ba(d)%2B%22%3C%2Fb%3E%20%22%2Br.trim()%7Dconst%20h%3D'%3Cp%20class%3D%22'%2Bi%2B'%22%3E'%2Br%2B%22%3C%2Fp%3E%22%3Bo%3Fo.html%2B%3Dh%3An.nodes.push(%7Bt%3A%22x%22%2Chtml%3Ah%7D)%7Dif(!n.intro.length)%7Bconst%20e%3D(t.textContent%7C%7C%22%22).replace(%2F%5Cs%2B%2Fg%2C%22%20%22).match(%2FHerved%20bekendtg%C3%B8res.%7B0%2C1500%7D%3F%5Cd%7B4%7D%5C.(%3F%3D%5Cs)%2F)%3Be%26%26n.intro.push(e%5B0%5D)%7Dreturn%20n%7Dfunction%20p(e)%7Bconst%20t%3De.join(%22%20%22)%2Cn%3Dt.split(%2F(%3F%3C%3D%5Cd%7B4%7D)%5C.%5Cs%2F)%5B0%5D%7C%7Ct%2Ci%3Dn.split(%2Fmed%20de%20%C3%A6ndringer%7Cmed%20den%20%C3%A6ndring%2F)%5B0%5D%2Co%3Di.match(%2F(lovbekendtg%C3%B8relse%7Clov)%20nr%5C.%20(%5Cd%2B)%20af%20(%5Cd%2B)%5C.%20(%5Cw%2B)%20(%5Cd%7B4%7D)%2F)%2Cs%3Do%3F%7Bkind%3A%22lov%22%3D%3D%3Do%5B1%5D%3F%22LOV%22%3A%22LBK%22%2Celi%3A%22%2Feli%2Flta%2F%22%2Bo%5B5%5D%2B%22%2F%22%2Bo%5B2%5D%2Clabel%3Ao%5B0%5D%7D%3Anull%2Cl%3D%5B%5D%2Cr%3Dn.slice(i.length)%2Ca%3D%2F(%3F%3A(%C2%A7%20%5Cd%2B(%3F%3A%20%5Ba-z%5D(%3F!%5Ba-z%C3%A6%C3%B8%C3%A5%5D))%3F)(%3F%3A%2C%20nr%5C.%20%5B%5E%C2%A7%5D*%3F%2C)%3F%20i%20)%3Flov%20nr%5C.%20(%5Cd%2B)%20af%20(%5Cd%2B)%5C.%20(%5Cw%2B)%20(%5Cd%7B4%7D)%2Fg%3Blet%20c%3Bfor(%3Bc%3Da.exec(r)%3B)l.push(%7Bsec%3Ac%5B1%5D%3Fc%5B1%5D.replace(%22%C2%A7%20%22%2C%22%22)%3Anull%2Celi%3A%22%2Feli%2Flta%2F%22%2Bc%5B5%5D%2B%22%2F%22%2Bc%5B2%5D%2Clabel%3A%22lov%20nr.%20%22%2Bc%5B2%5D%2B%22%20af%20%22%2Bc%5B3%5D%2B%22.%20%22%2Bc%5B4%5D%2B%22%20%22%2Bc%5B5%5D%7D)%3Breturn%7Bbase%3As%2Cam%3Al%7D%7Dfunction%20u(e)%7Bconst%20t%3D%5B%5D%3Be%3De.replace(%2F%E2%80%93%2Fg%2C%22-%22)%3Bfor(let%20n%20of%20e.split(%2F%2C%7C%20og%20%7C%20samt%20%2F))%7Bif(n%3Dn.trim()%2C!n)continue%3Bconst%20e%3Dn.match(%2F%5E(%5Cd%2B)(%3F%3A%20(%5Ba-z%5D))%3F%5Cs*-%5Cs*(%5Cd%2B)(%3F%3A%20(%5Ba-z%5D))%3F%24%2F)%3Bif(e)%7Bconst%20n%3D%2Be%5B1%5D%2Ci%3D%2Be%5B3%5D%3Bif(n%3D%3D%3Di%26%26e%5B2%5D%26%26e%5B4%5D)for(let%20i%3De%5B2%5D.charCodeAt(0)%3Bi%3C%3De%5B4%5D.charCodeAt(0)%3Bi%2B%2B)t.push(n%2B%22%20%22%2BString.fromCharCode(i))%3Belse%20if(i%3E%3Dn%26%26i-n%3C80)%7Be%5B2%5D%26%26t.push(n%2B%22%20%22%2Be%5B2%5D)%3Bfor(let%20o%3De%5B2%5D%3Fn%2B1%3An%3Bo%3C%3Di%3Bo%2B%2B)t.push(String(o))%3Be%5B4%5D%26%26t.push(i%2B%22%20%22%2Be%5B4%5D)%7Dcontinue%7Dconst%20i%3Dn.match(%2F%5E(%5Cd%2B)%20(%5Ba-z%5D)%5Cs*-%5Cs*(%5Ba-z%5D)%24%2F)%3Bif(i)%7Bfor(let%20e%3Di%5B2%5D.charCodeAt(0)%3Be%3C%3Di%5B3%5D.charCodeAt(0)%3Be%2B%2B)t.push(i%5B1%5D%2B%22%20%22%2BString.fromCharCode(e))%3Bcontinue%7Dconst%20o%3Dn.match(%2F%5E(%5Cd%2B)(%3F%3A%20(%5Ba-z%5D))%3F%24%2F)%3Bo%26%26t.push(o%5B1%5D%2B(o%5B2%5D%3F%22%20%22%2Bo%5B2%5D%3A%22%22))%7Dreturn%20t%7Dfunction%20m(e)%7Bconst%20t%3D(e%3De.replace(%2F%5E%5Cs*%5Cd%2B%5C.%5Cs*%2F%2C%22%22)).replace(%2F%5Cs%2B%2Fg%2C%22%20%22).split(%22%C2%BB%22)%5B0%5D%2Cn%3Dnew%20Set%2Ci%3D%5B%5D%3Blet%20o%3Bconst%20s%3De.replace(%2F%5B%20%5Ct%5D%2B%2Fg%2C%22%20%22).match(%2F%C2%BB%5B%5E%C2%AB%5D*(%C2%AB%7C%24)%2Fg)%7C%7C%5B%5D%3Bfor(const%20e%20of%20s)%7Bconst%20t%3D%2F(%3F%3A%5E%C2%BB%7C%5Cn)%5Cs*%C2%BB%3F%C2%A7%20(%5Cd%2B(%3F%3A%20%5Ba-z%5D(%3F!%5Ba-z%C3%A6%C3%B8%C3%A5%5D))%3F)%5C.%5Cs%2Fg%3Bfor(%3Bo%3Dt.exec(e)%3B)i.push(o%5B1%5D)%7Dconst%20l%3D%2F%5E%5Cs*I%20%C2%A7%2F.test(t)%3Bif(!(%2F%5E%5Cs*(Efter%7CF%C3%B8r)%20(kapitel%7C%C2%A7%7Coverskriften)%2Fi.test(t)%26%26i.length))%7Bconst%20e%3D%2F%C2%A7%C2%A7%20((%3F%3A%5Cd%2B(%3F%3A%20%5Ba-z%5D(%3F!%5Ba-z%C3%A6%C3%B8%C3%A5%5D))%3F(%3F%3A%5Cs*(%3F%3A-%7C%E2%80%93%7C%2C%7Cog)%5Cs*)%3F)%2B)%2Fg%3Bfor(%3Bo%3De.exec(t)%3B)u(o%5B1%5D).forEach(e%3D%3En.add(e))%3Bconst%20i%3D%2F(%3F%3C!%C2%A7)%C2%A7%20(%5Cd%2B(%3F%3A%20%5Ba-z%5D(%3F!%5Ba-z%C3%A6%C3%B8%C3%A5%5D))%3F)%2Fg%3Bfor(%3Bo%3Di.exec(t)%3B)n.add(o%5B1%5D)%7Dreturn%20l%7C%7Ci.forEach(e%3D%3En.add(e))%2C%5B...n%5D%7Dfunction%20b(e%2Ct)%7Bconst%20n%3D%5B...r(e).getElementById(%22root%22).querySelectorAll(%22p%2C%20div.Containertable%22)%5D.filter(e%3D%3E!(e.closest(%22.toc%22)%7C%7C%22P%22%3D%3D%3De.tagName%26%26e.closest(%22.Containertable%22)))%3Blet%20i%3Dn.findIndex(e%3D%3E%2F%5EBem%C3%A6rkninger%20til%20lovforslagets%20enkelte%20bestemmelser%24%2Fi.test(a(e)))%3Bi%3C0%26%26(i%3Dn.findIndex(e%3D%3E%2F%5ETil%20%C2%A7%201%24%2F.test(a(e))))%3Bconst%20o%3Dn.slice(0%2Ci%3C0%3Fn.length%3Ai)%2Cs%3D%7B%7D%3Blet%20l%3Dnull%2Cc%3Dnull%3Bfor(const%20e%20of%20o)%7Bconst%20n%3De.classList%2Ci%3Da(e)%3Bif((n.contains(%22CentreretParagraf%22)%7C%7Cn.contains(%22CParagrafnummer%22))%26%26%2F%5E%C2%A7%20%5Cd%2B(%20%5Ba-z%5D)%3F%5C.%3F%24%2F.test(i))%7Bconst%20e%3Di.replace(%22%C2%A7%20%22%2C%22%22).replace(%22.%22%2C%22%22)%3Bl%3D%7Bnr%3Ae%2Cintro%3A%22%22%2Citems%3A%7B%7D%2Ctext%3A%22%22%7D%2Cs%5Be%5D%3Dl%2Cc%3Dnull%3Bcontinue%7Dif(t.original%26%26n.contains(%22Paragraf%22)%26%26e.querySelector(%22.ParagrafNr%22))%7Bconst%20t%3Dg(a(e.querySelector(%22.ParagrafNr%22)))%3Bl%3D%7Bnr%3At%2Cintro%3Ai%2Citems%3A%7B%7D%2Ctext%3Ai%7D%2Cs%5Bt%5D%3Dl%2Cc%3Dnull%3Bcontinue%7Dif(!t.original%26%26n.contains(%22Paragraf%22)%26%26e.querySelector(%22.ParagrafNr%22)%26%26%2F%5E%C2%A7%2F.test(a(e.querySelector(%22.ParagrafNr%22)))%26%26%2Ff%C3%B8lgende%20%C3%A6ndring%2F.test(i))%7Bconst%20t%3Da(e.querySelector(%22.ParagrafNr%22))%2Cn%3Dg(t)%2Co%3Di.slice(t.length).trim()%3Bl%3D%7Bnr%3An%2Cintro%3Ao%2Citems%3A%7B%7D%2Ctext%3Ao%7D%2Cs%5Bn%5D%3Dl%2Cc%3Dnull%3Bcontinue%7Dconst%20o%3D(i.match(%2F%C2%BB%2Fg)%7C%7C%5B%5D).length-(i.match(%2F%C2%AB%2Fg)%7C%7C%5B%5D).length%3Bif(t.original%7C%7C!n.contains(%22Paragraf%22)%7C%7C!e.querySelector(%22.ParagrafNr%22)%7C%7Cc%26%26c.q%3E0%7C%7C%2F%5E%C2%BB%2F.test(i))%7Bif(l)%7Bif(n.contains(%22AendringMedNummer%22)%7C%7Cn.contains(%22Aendringspunkt%22))%7Bconst%20t%3Da(e.querySelector(%22.AendringNr%22)%7C%7Ce).match(%2F%5E(%5Cd%2B)%2F)%3Bc%3D%7Bnr%3At%3Ft%5B1%5D%3A%22%3F%22%2Ctext%3Ai%2Cq%3Ao%2Chtml%3A%22%3Cp%3E%22%2Bf(e).trim()%2B%22%3C%2Fp%3E%22%7D%2Cl.items%5Bc.nr%5D%3Dc%3Bcontinue%7Dc%3F(c.q%3E0%7C%7C%2F%5E%C2%BB%2F.test(i))%26%26(c.q%2B%3Do%2Cc.text%2B%3D%22%5Cn%22%2Bi%2Cc.html.length%3C5e3%26%26(c.html%2B%3D%22%3Cp%3E%22%2Bf(e).trim()%2B%22%3C%2Fp%3E%22))%3A(l.intro%7C%7C(l.intro%3Di)%2Cl.text%2B%3D%22%5Cn%22%2Bi)%7D%7Delse%20l%3Dnull%2Cc%3Dnull%7Dconst%20d%3D%5B%5D%3Blet%20h%3Dnull%2Cp%3Dnull%3Bif(i%3E%3D0)for(const%20e%20of%20n.slice(i%2B1))%7Bif(e.classList.contains(%22BilagStreg%22)%7C%7Ce.classList.contains(%22Bilag%22)%7C%7Ce.classList.contains(%22Fodnote%22))break%3Bconst%20t%3Da(e)%3Bif(%2F%5E(Bilag%20%5Cd%2B%7CLovforslaget%20sammenholdt%20med%20g%C3%A6ldende%20lov)%24%2Fi.test(t))break%3Blet%20n%3Bif(t.length%3C40%26%26%2F%5ETil%20(kapitel%7Cafsnit%7Cbilag)%20%2Fi.test(t))%7Bh%3Dnull%2Cp%3Dnull%3Bcontinue%7Dif(t.length%3C60%26%26(n%3Dt.match(%2F%5ETil%20%C2%A7%C2%A7%3F%20(.%2B)%24%2F)))%7Bh%3D%7Bhead%3At%2Csecs%3Au(n%5B1%5D)%2Cparas%3A%5B%5D%2Cnrs%3A%5B%5D%7D%2Cd.push(h)%2Cp%3Dnull%3Bcontinue%7Dif(t.length%3C400%26%26(n%3Dt.match(%2F%5ETil%20nr%5C.%20(%5B%5Cd%20%2Cog%5C-%E2%80%93%5D%2B)(.*)%24%2F)))%7Bh%7C%7C(h%3D%7Bhead%3A%22%22%2Csecs%3A%5B%5D%2Cparas%3A%5B%5D%2Cnrs%3A%5B%5D%7D%2Cd.push(h))%2Cp%3D%7Bhead%3At%2Cnrs%3Au(n%5B1%5D)%2Cparas%3A%5B%5D%7D%2Ch.nrs.push(p)%3Bcontinue%7Dif(!t)continue%3Bconst%20i%3D%22DIV%22%3D%3D%3De.tagName%3F'%3Cdiv%20class%3D%22tbl%22%3E'%2Bf(e)%2B%22%3C%2Fdiv%3E%22%3A%22%3Cp%3E%22%2Bf(e).trim()%2B%22%3C%2Fp%3E%22%3Bp%3Fp.paras.push(i)%3Ah%26%26h.paras.push(i)%7Dreturn%7Bsecs%3As%2Crem%3Ad%7D%7Dasync%20function%20v(e)%7Bi(%22Henter%20loven%E2%80%A6%22)%3Bconst%20t%3Dawait%20l(e)%3Bif(!t%7C%7C!t.documentHtml)throw%20new%20Error(%22Kunne%20ikke%20hente%20dokumentet.%22)%3Bif(!%2F%5E(LBK%7CLOV)%20%2F.test(t.shortName%7C%7C%22%22))throw%20new%20Error(%22Dette%20dokument%20(%22%2B(t.shortName%7C%7C%22%3F%22)%2B%22)%20er%20ikke%20en%20lov%20eller%20lovbekendtg%C3%B8relse.%22)%3Bconst%20n%3Dh(t.documentHtml)%2Cr%3Dfunction(e)%7Bconst%20t%3D%5B%5D%3Blet%20n%3De.replace(%2F%5EBekendtg%C3%B8relse%20af%20%2Fi%2C%22%22).replace(%2F%5Cd%5C)%24%2F%2C%22%22).trim()%3Bconst%20i%3Dn.match(%2F%5C((%5B%5E)%5D%2B)%5C)%5Cs*%24%2F)%3Breturn%20i%26%26(t.push(i%5B1%5D.toLowerCase())%2Cn%3Dn.replace(%2F%5Cs*%5C(%5B%5E)%5D%2B%5C)%5Cs*%24%2F%2C%22%22))%2Ct.unshift(n.toLowerCase())%2Ct%7D(n.title)%3Bo(n.title%2B%22%20(%22%2Bt.shortName%2B%22)%22%2B(t.isHistorical%3F%22%20%E2%80%93%20OBS%3A%20historisk%20version%22%3A%22%22))%3Bconst%20a%3D%5B%5D%3Blet%20d%3Dn%2Cf%3Dt%2Cg%3D0%2Cv%3Dnull%3Bconst%20k%3Dnew%20Set(%5Be%5D)%3Bfor(%2F%5ELOV%20%2F.test(t.shortName)%26%26!%2Fom%20%C3%A6ndring%20af%2Fi.test(n.title)%26%26(v%3De)%2Ci(%22F%C3%B8lger%20lovens%20historik%E2%80%A6%22)%3B!v%26%26g%2B%2B%3C150%3B)%7Bconst%7Bbase%3Ae%2Cam%3At%7D%3Dp(d.intro)%3Bif(t.forEach(e%3D%3E%7Ba.find(t%3D%3Et.eli%3D%3D%3De.eli)%7C%7Ca.push(e)%7D)%2C!e)%7Bo(%22Kunne%20ikke%20l%C3%A6se%20grundlaget%20i%20%22%2Bf.shortName)%3Bbreak%7Dif(%22LOV%22%3D%3D%3De.kind)%7Bv%3De.eli%3Bbreak%7Dif(k.has(e.eli))break%3Bif(k.add(e.eli)%2Cf%3Dawait%20l(e.eli)%2C!f)%7Bo(%22Kunne%20ikke%20hente%20%22%2Be.label)%3Bbreak%7Do(%22%C2%B7%20%22%2Bf.shortName)%2Cd%3Dh(f.documentHtml)%7Dlet%20x%3D%5B%5D%3Btry%7Bconst%20e%3D((await(await%20fetch(%22%2Fapi%2Fdocument%2F%22%2Bt.id%2B%22%2Freferences%2F0%22)).json()).referenceGroups%7C%7C%5B%5D).find(e%3D%3E%2FSenere%20%C3%A6ndringer%2Fi.test(e.header%7C%7C%22%22))%3Bx%3D(e%26%26e.references%7C%7C%5B%5D).filter(e%3D%3E%2F%5ELOV%20%2F.test(e.shortName%7C%7C%22%22)%26%26e.eliPath%26%26!a.find(t%3D%3Et.eli%3D%3D%3De.eliPath)).map(e%3D%3E%7Bconst%20t%3D(e.shortName%7C%7C%22%22).match(%2F%C2%A7%20(%5Cd%2B(%3F%3A%20%5Ba-z%5D)%3F)%5Cs*%24%2F)%3Breturn%7Beli%3Ae.eliPath%2Clabel%3A(e.shortName%7C%7C%22%22).trim()%2Ctitle%3Ae.title%2Csec%3At%3Ft%5B1%5D%3Anull%2Clater%3A!0%7D%7D)%7Dcatch(e)%7B%7Do(%22Fundet%3A%20oprindelig%20lov%20%2B%20%22%2Ba.length%2B%22%20%C3%A6ndringslove%22%2B(x.length%3F%22%20%2B%20%22%2Bx.length%2B%22%20senere%20%C3%A6ndring(er)%2C%20som%20ikke%20er%20indarbejdet%20i%20teksten%22%3A%22%22))%3Bconst%20w%3D%5B%5D%2Cy%3D%5B%5D%2CS%3D%7B%7D%2CC%3D%5B%5D%2CL%3D%5B%5D%3Bv%26%26L.push(%7Beli%3Av%2Coriginal%3A!0%7D)%2Ca.forEach(e%3D%3EL.push(%7B...e%2Coriginal%3A!1%7D))%2Cx.forEach(e%3D%3EL.push(%7B...e%2Coriginal%3A!1%7D))%3Blet%20N%3D0%3Breturn%20i(%22Henter%20lovforslag%20og%20bem%C3%A6rkninger%E2%80%A6%20(0%2F%22%2BL.length%2B%22)%22)%2Cawait%20async%20function(e%2Ct%2Cn)%7Blet%20i%3D0%3Bawait%20Promise.all(Array.from(%7Blength%3At%7D%2Casync()%3D%3E%7Bfor(%3Bi%3Ce.length%3B)%7Bconst%20t%3Di%2B%2B%3Bawait%20n(e%5Bt%5D%2Ct)%7D%7D))%7D(L%2C4%2Casync%20e%3D%3E%7Btry%7Bconst%20t%3Dawait%20async%20function(e)%7Bconst%20t%3Dawait%20l(e)%3Bif(!t)return%20null%3Bconst%20n%3D(t.caseHistoryReferenceGroup%7C%7C%5B%5D).flatMap(e%3D%3Ee.references%7C%7C%5B%5D)%3Breturn%7Blov%3At%2Cref%3An.find(e%3D%3E400%3D%3D%3De.documentTypeId)%7C%7Cn.find(e%3D%3E410%3D%3D%3De.documentTypeId)%7C%7Cnull%7D%7D(e.eli)%3Bif(!t%7C%7C!t.ref)return%20void%20C.push(%22Intet%20lovforslag%20fundet%20for%20%22%2B(t%26%26t.lov%3Ft.lov.shortName%3Ae.eli))%3Bconst%20n%3Dawait%20l(t.ref.eliUri)%3Bif(!n)return%20void%20C.push(%22Kunne%20ikke%20hente%20%22%2Bt.ref.shortName)%3Bconst%20i%3Db(n.documentHtml%2C%7Boriginal%3Ae.original%7D)%2Co%3Dw.length%2Cs%3D%7Bshort%3At.ref.shortName%2Ctitle%3An.title%2Celi%3At.ref.eliUri%2Clov%3At.lov.shortName%2ClovTitle%3At.lov.title%2ClovEli%3Ae.eli%2Coriginal%3Ae.original%2Clater%3A!!e.later%2Csec%3Anull%2Cn%3A0%7D%3Bw.push(s)%3Bconst%20a%3D(e%2Ct)%3D%3E%7Be.length%7C%7C(e%3D%5B%22_%22%5D)%3Bconst%20n%3Dy.length%3By.push(%7Bb%3Ao%2C...t%7D)%2Ce.forEach(e%3D%3E(S%5Be%5D%3DS%5Be%5D%7C%7C%5B%5D).push(n))%2Cs.n%2B%2B%7D%3Bif(e.original)%7Bfor(const%20e%20of%20i.rem)%7Bconst%20t%3De.paras.concat(e.nrs.flatMap(e%3D%3E%5B%22%3Cp%3E%3Ci%3E%22%2Bc(e.head)%2B%22%3C%2Fi%3E%3C%2Fp%3E%22%2C...e.paras%5D))%3Bt.length%26%26a(e.secs%2C%7Bh%3Ae.head%2Cx%3At.join(%22%22)%7D)%7Dreturn%7Dconst%20d%3De%3D%3Ee%26%26r.some(t%3D%3Ee.intro.toLowerCase().includes(t))%3Blet%20f%3De.sec%3Bif(!f%7C%7C!i.secs%5Bf%5D%7C%7C!d(i.secs%5Bf%5D))%7Bconst%20e%3DObject.values(i.secs).filter(d)%3Be.length%3Ff%3De%5B0%5D.nr%3A1%3D%3D%3DObject.keys(i.secs).length%26%26(f%3DObject.keys(i.secs)%5B0%5D)%7Ds.sec%3Df%3Bconst%20g%3Di.secs%5Bf%5D%3Bif(!g)return%20void%20C.push(%22Fandt%20ikke%20%C3%A6ndringsparagraffen%20i%20%22%2Bs.short)%3Blet%20h%3Di.rem.find(e%3D%3Ee.secs.includes(f))%3Bif(h%7C%7C!i.rem.length%7C%7C1!%3D%3DObject.keys(i.secs).length%26%26i.rem%5B0%5D.secs.length%7C%7C(h%3Di.rem%5B0%5D)%2C!h)return%20void%20C.push(%22Ingen%20specielle%20bem%C3%A6rkninger%20til%20%C2%A7%20%22%2Bf%2B%22%20i%20%22%2Bs.short)%3Bconst%20p%3Dg.items%3Bif(h.nrs.length%26%26Object.keys(p).length)%7Bfor(const%20e%20of%20h.nrs)%7Blet%20t%3D%5B%5D%3Bconst%20n%3D%5B%5D%3Bfor(const%20i%20of%20e.nrs)%7Bconst%20e%3Dp%5Bi%5D%3Be%26%26(t.push(...m(e.text))%2Cn.push(e.html))%7Dif(!t.length)%7Bconst%20n%3De.head.match(%2F%5C(%C2%A7%C2%A7%3F%20(%5B%5E%2C)%5D*%3F)(%3F%3A%2C%7C%5Cs%2Bi%5Cs%7C%5C))%2F)%3Bn%26%26(t%3Du(n%5B1%5D))%7Da(%5B...new%20Set(t)%5D%2C%7Bh%3Ae.head%2Cc%3An.join(%22%22).slice(0%2C5e3)%2Cx%3Ae.paras.join(%22%22)%7D)%7Dh.paras.length%26%26a(%5B%22_%22%5D%2C%7Bh%3Ah.head%2Cx%3Ah.paras.join(%22%22)%7D)%7Delse%7Bconst%20e%3DObject.keys(p).length%3FObject.values(p).flatMap(e%3D%3Em(e.text))%3Am(g.text)%3Ba(%5B...new%20Set(e)%5D%2C%7Bh%3Ah.head%2Cx%3Ah.paras.concat(h.nrs.flatMap(e%3D%3E%5B%22%3Cp%3E%3Ci%3E%22%2Bc(e.head)%2B%22%3C%2Fi%3E%3C%2Fp%3E%22%2C...e.paras%5D)).join(%22%22)%7D)%7D%7Dcatch(t)%7BC.push(%22Fejl%20ved%20%22%2Be.eli%2B%22%3A%20%22%2Bt.message)%7Dfinally%7BN%2B%2B%2Cs(N%2FL.length)%2Ci(%22Henter%20lovforslag%20og%20bem%C3%A6rkninger%E2%80%A6%20(%22%2BN%2B%22%2F%22%2BL.length%2B%22)%22)%7D%7D)%2CC.forEach(e%3D%3Eo(%22!%20%22%2Be))%2C%7Bformat%3A%22lovopslag%22%2Cv%3A1%2Celi%3Ae%2Cshort%3At.shortName%2Ctitle%3An.title%2Cnames%3Ar%2Chistorical%3A!!t.isHistorical%2Clater%3Ax.map(e%3D%3E(%7Beli%3Ae.eli%2Clabel%3Ae.label%2Ctitle%3Ae.title%7D))%2Cfetched%3A(new%20Date).toISOString()%2Claw%3An%2Cbills%3Aw%2Cremarks%3Ay%2CbyPar%3AS%2Cproblems%3AC%7D%7Dif(e)return%20void(window.LX2%3D%7Brun%3Av%2CparseLaw%3Ah%2CparseBill%3Ab%2CparseIntro%3Ap%2CextractTargets%3Am%2CexpandList%3Au%2Cbox%3At%7D)%3Bconst%20k%3Dlocation.pathname.match(%2F%5C%2Feli%5C%2F(lta%7Caccn)%5C%2F%5B%5E%3F%23%5D%2B%2F)%3Bif(!k)return%20i(%22%C3%85bn%20en%20lov%20eller%20lovbekendtg%C3%B8relse%20(adressen%20skal%20indeholde%20%2Feli%2Flta%2F%E2%80%A6)%2C%20og%20pr%C3%B8v%20igen.%22)%2Cvoid(window.__lovopslagRunning%3D!1)%3Bv(k%5B0%5D.replace(%2F%5C%2F(dan%7Cpdf%7Chtml)%24%2F%2C%22%22)).then(e%3D%3E%7Bconst%20t%3DJSON.stringify(e)%3Blet%20o%3De.title.replace(%2F%5EBekendtg%C3%B8relse%20af%20%2Fi%2C%22%22).trim()%3Bconst%20l%3Do.match(%2F%5C((%5B%5E)%5D%2B)%5C)%5Cs*%24%2F)%3Bl%26%26(o%3Dl%5B1%5D)%3Bconst%20r%3D(o.toLowerCase().replace(%2F%C3%A6%2Fg%2C%22ae%22).replace(%2F%C3%B8%2Fg%2C%22oe%22).replace(%2F%C3%A5%2Fg%2C%22aa%22).replace(%2F%5B%5Ea-z0-9%5D%2B%2Fg%2C%22-%22).replace(%2F%5E-%7C-%24%2Fg%2C%22%22).slice(0%2C60)%7C%7C%22lov%22)%2B%22.lovpakke.json%22%2Ca%3DURL.createObjectURL(new%20Blob(%5Bt%5D%2C%7Btype%3A%22application%2Fjson%22%7D))%2Cc%3Ddocument.createElement(%22a%22)%3Bc.href%3Da%2Cc.download%3Dr%2Cc.textContent%3D%22Gem%20%22%2Br%2B%22%20(%22%2B(t.length%2F1e6).toFixed(1)%2B%22%20MB)%22%2Cc.style.cssText%3D%22display%3Ainline-block%3Bmargin-top%3A10px%3Bpadding%3A8px%2012px%3Bbackground%3A%232f6f4f%3Bcolor%3A%23fff%3Bborder-radius%3A6px%3Btext-decoration%3Anone%22%2Cn(%22lx-dl%22).appendChild(c)%2Ci(%22F%C3%A6rdig%3A%20%22%2Be.law.nodes.filter(e%3D%3E%22p%22%3D%3D%3De.t).length%2B%22%20paragraffer%2C%20%22%2Be.remarks.length%2B%22%20bem%C3%A6rkninger%20fra%20%22%2Be.bills.length%2B%22%20lovforslag.%22)%2Cs(1)%2Cc.click()%2Cwindow.__lovopslagRunning%3D!1%7D).catch(e%3D%3E%7Bi(%22Fejl%3A%20%22%2Be.message)%2Cwindow.__lovopslagRunning%3D!1%7D)%7D()%3B";
+const EXTRACTOR_SRC = "!function(){if(!/retsinformation\\.dk$/.test(location.hostname))return void alert(\"Åbn loven på www.retsinformation.dk først, og klik så på bogmærket igen.\");const e=!!window.__lovopslagTest;if(window.__lovopslagRunning&&!e)return;window.__lovopslagRunning=!0;const t=document.createElement(\"div\");t.style.cssText=\"position:fixed;z-index:2147483647;right:20px;bottom:20px;width:420px;max-height:70vh;overflow:auto;background:#fff;color:#1a1a1a;border:1px solid #ccc;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);font:14px/1.45 system-ui,-apple-system,sans-serif;padding:16px\",t.innerHTML='<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:8px\"><b style=\"font-size:15px\">Lovopslag – import</b><button id=\"lx-x\" style=\"border:0;background:none;font-size:18px;cursor:pointer\">×</button></div><div id=\"lx-st\" style=\"margin-bottom:6px\">Starter…</div><div id=\"lx-pr\" style=\"height:6px;background:#eee;border-radius:3px;overflow:hidden;margin-bottom:8px\"><div id=\"lx-bar\" style=\"height:100%;width:0;background:#2f6f4f;transition:width .2s\"></div></div><div id=\"lx-log\" style=\"font-size:12px;color:#555;white-space:pre-wrap\"></div><div id=\"lx-dl\"></div>',e||document.body.appendChild(t);const n=e=>t.querySelector(\"#\"+e);n(\"lx-x\").onclick=()=>{t.remove(),window.__lovopslagRunning=!1};const i=e=>{n(\"lx-st\").textContent=e},o=t=>{n(\"lx-log\").textContent+=t+\"\\n\",e&&console.log(\"[lovopslag] \"+t)},s=e=>{n(\"lx-bar\").style.width=Math.round(100*e)+\"%\"},l=async e=>{for(let t=0;t<4;t++){try{const t=new AbortController,n=setTimeout(()=>t.abort(),45e3),i=await fetch(\"/api/document\"+e,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:\"{}\",signal:t.signal});if(clearTimeout(n),i.ok){const e=await i.json();return Array.isArray(e)?e[0]:e}}catch(e){}await new Promise(e=>setTimeout(e,800*(t+1)))}return null},r=e=>(new DOMParser).parseFromString('<div id=\"root\">'+e+\"</div>\",\"text/html\"),a=e=>(e.textContent||\"\").replace(/\\s+/g,\" \").trim(),c=e=>e.replace(/[<>&]/g,e=>({\"<\":\"&lt;\",\">\":\"&gt;\",\"&\":\"&amp;\"}[e])),d={I:1,B:1,SUB:1,SUP:1,BR:1,TABLE:1,TBODY:1,THEAD:1,TR:1,TD:1,TH:1,UL:1,OL:1,LI:1};function f(e){let t=\"\";for(const n of e.childNodes){if(3===n.nodeType){t+=c(n.textContent.replace(/\\s+/g,\" \"));continue}if(1!==n.nodeType)continue;const e=\"string\"==typeof n.className?n.className:\"\";let i=n.tagName;if(/FodnoteHenvisning/.test(e))t+=\"<sup>\"+c(n.textContent.trim().replace(/\\)$/,\"\"))+\"</sup>\";else if(\"SPAN\"===i&&/Italic/.test(e)&&/Bold/.test(e))t+=\"<b><i>\"+f(n)+\"</i></b>\";else if(\"SPAN\"===i&&/Italic/.test(e)?i=\"I\":\"SPAN\"===i&&/Bold/.test(e)?i=\"B\":\"EM\"===i?i=\"I\":\"STRONG\"===i&&(i=\"B\"),d[i]){const e=i.toLowerCase(),o=\"TD\"===i||\"TH\"===i?(n.colSpan>1?' colspan=\"'+n.colSpan+'\"':\"\")+(n.rowSpan>1?' rowspan=\"'+n.rowSpan+'\"':\"\"):\"\";t+=\"BR\"===i?\"<br>\":\"<\"+e+o+\">\"+f(n)+\"</\"+e+\">\"}else if(\"P\"===i){const e=f(n);e.trim()&&(t+=\"<p>\"+e.trim()+\"</p>\")}else t+=f(n)}return t}const g=e=>e.replace(/\\s+/g,\" \").trim().toLowerCase().replace(/^§§?\\s*/,\"\").replace(/\\.$/,\"\").replace(/\\s*[-–]\\s*/g,\"-\");function h(e){const t=r(e).getElementById(\"root\"),n={title:\"\",intro:[],nodes:[],footnotes:[]},i=t.querySelector(\".Titel2\");if(i){const e=i.cloneNode(!0);e.querySelectorAll(\".FodnoteHenvisning\").forEach(e=>e.remove()),n.title=a(e)}let o=null,s=\"main\",l=null;const d=t.querySelectorAll(\".Indledning2,.Indledning,.Afsnit,.AfsnitOverskrift,.Kapitel,.KapitelOverskrift2,.ParagrafGruppeOverskrift,.Paragraf,.Stk2,.Liste1,.Liste2,.Liste3,.TekstGenerel,.IKraftStreg,.IkraftTekst,.CentreretParagraf,.BilagStreg,.Bilag,.BilagTekst,.Containertable,.Fodnote,.Givet\");for(const e of d){const t=e.classList;if(e.closest(\".toc\"))continue;if(e.closest(\".Containertable\")&&!t.contains(\"Containertable\"))continue;if(t.contains(\"Indledning2\")||t.contains(\"Indledning\")){n.intro.push(a(e));continue}if(t.contains(\"Fodnote\")){n.footnotes.push(f(e));continue}if(t.contains(\"Givet\"))continue;if(t.contains(\"IKraftStreg\")||t.contains(\"BilagStreg\")){s=t.contains(\"IKraftStreg\")?\"ikraft\":\"bilag\",o=null,l=null;continue}if(t.contains(\"IkraftTekst\")){l={t:\"ik\",title:a(e),html:\"\"},n.nodes.push(l);continue}if(t.contains(\"Bilag\")&&!t.contains(\"BilagTekst\")){l={t:\"bilag\",title:a(e),html:\"\"},n.nodes.push(l),s=\"bilag\";continue}if(\"main\"!==s){if(l||(l={t:\"ikraft\"===s?\"ik\":\"bilag\",title:\"\",html:\"\"},n.nodes.push(l)),t.contains(\"BilagTekst\")&&!l.html){l.title+=(l.title?\" – \":\"\")+a(e);continue}const i=t.contains(\"CentreretParagraf\")?\"cp\":t.contains(\"Stk2\")?\"stk\":/Liste/.test(e.className)?\"l1\":\"\";l.html+=t.contains(\"Containertable\")?'<div class=\"tbl\">'+f(e)+\"</div>\":\"<p\"+(i?' class=\"'+i+'\"':\"\")+\">\"+f(e).trim()+\"</p>\";continue}if(t.contains(\"Afsnit\")){n.nodes.push({t:\"h1\",label:a(e),title:\"\"}),o=null;continue}if(t.contains(\"AfsnitOverskrift\")){const t=n.nodes[n.nodes.length-1];t&&\"h1\"===t.t&&!t.title?t.title=a(e):n.nodes.push({t:\"h1\",label:\"\",title:a(e)});continue}if(t.contains(\"Kapitel\")){n.nodes.push({t:\"h2\",label:a(e),title:\"\"}),o=null;continue}if(t.contains(\"KapitelOverskrift2\")){const t=n.nodes[n.nodes.length-1];t&&\"h2\"===t.t&&!t.title?t.title=a(e):n.nodes.push({t:\"h2\",label:\"\",title:a(e)});continue}if(t.contains(\"ParagrafGruppeOverskrift\")){n.nodes.push({t:\"h3\",title:a(e)}),o=null;continue}if(t.contains(\"Paragraf\")){const t=e.querySelector(\".ParagrafNr\");let i=f(e).trim();if(t){const e=c(t.textContent.replace(/\\s+/g,\" \")),n=i.indexOf(e.trim());n>=0&&(i=i.slice(0,n)+i.slice(n+e.trim().length))}o={t:\"p\",nr:t?g(t.textContent):\"\",label:t?a(t):\"\",html:'<p class=\"par\">'+i.trim()+\"</p>\"},n.nodes.push(o);continue}if(t.contains(\"Containertable\")){const t='<div class=\"tbl\">'+f(e)+\"</div>\";o?o.html+=t:n.nodes.push({t:\"x\",html:t});continue}const i=t.contains(\"Stk2\")?\"stk\":t.contains(\"Liste1\")?\"l1\":t.contains(\"Liste2\")?\"l2\":t.contains(\"Liste3\")?\"l3\":\"gen\";let r=f(e).trim();const d=e.querySelector(\".StkNr\");if(d){const e=c(d.textContent.replace(/\\s+/g,\" \")).trim(),t=r.indexOf(e);t>=0&&(r=r.slice(0,t)+r.slice(t+e.length)),r='<b class=\"sn\">'+a(d)+\"</b> \"+r.trim()}const h='<p class=\"'+i+'\">'+r+\"</p>\";o?o.html+=h:n.nodes.push({t:\"x\",html:h})}if(!n.intro.length){const e=(t.textContent||\"\").replace(/\\s+/g,\" \").match(/Herved bekendtgøres.{0,1500}?\\d{4}\\.(?=\\s)/);e&&n.intro.push(e[0])}return n}function p(e){const t=e.join(\" \"),n=t.split(/(?<=\\d{4})\\.\\s/)[0]||t,i=n.split(/med de ændringer|med den ændring/)[0],o=i.match(/(lovbekendtgørelse|lov) nr\\. (\\d+) af (\\d+)\\. (\\w+) (\\d{4})/),s=o?{kind:\"lov\"===o[1]?\"LOV\":\"LBK\",eli:\"/eli/lta/\"+o[5]+\"/\"+o[2],label:o[0]}:null,l=[],r=n.slice(i.length),a=/(?:(§ \\d+(?: [a-z](?![a-zæøå]))?)(?:, nr\\. [^§]*?,)? i )?lov nr\\. (\\d+) af (\\d+)\\. (\\w+) (\\d{4})/g;let c;for(;c=a.exec(r);)l.push({sec:c[1]?c[1].replace(\"§ \",\"\"):null,eli:\"/eli/lta/\"+c[5]+\"/\"+c[2],label:\"lov nr. \"+c[2]+\" af \"+c[3]+\". \"+c[4]+\" \"+c[5]});return{base:s,am:l}}function u(e){const t=[];e=e.replace(/–/g,\"-\");for(let n of e.split(/,| og | samt /)){if(n=n.trim(),!n)continue;const e=n.match(/^(\\d+)(?: ([a-z]))?\\s*-\\s*(\\d+)(?: ([a-z]))?$/);if(e){const n=+e[1],i=+e[3];if(n===i&&e[2]&&e[4])for(let i=e[2].charCodeAt(0);i<=e[4].charCodeAt(0);i++)t.push(n+\" \"+String.fromCharCode(i));else if(i>=n&&i-n<80){e[2]&&t.push(n+\" \"+e[2]);for(let o=e[2]?n+1:n;o<=i;o++)t.push(String(o));e[4]&&t.push(i+\" \"+e[4])}continue}const i=n.match(/^(\\d+) ([a-z])\\s*-\\s*([a-z])$/);if(i){for(let e=i[2].charCodeAt(0);e<=i[3].charCodeAt(0);e++)t.push(i[1]+\" \"+String.fromCharCode(e));continue}const o=n.match(/^(\\d+)(?: ([a-z]))?$/);o&&t.push(o[1]+(o[2]?\" \"+o[2]:\"\"))}return t}function m(e){const t=(e=e.replace(/^\\s*\\d+\\.\\s*/,\"\")).replace(/\\s+/g,\" \").split(\"»\")[0],n=new Set,i=[];let o;const s=e.replace(/[ \\t]+/g,\" \").match(/»[^«]*(«|$)/g)||[];for(const e of s){const t=/(?:^»|\\n)\\s*»?§ (\\d+(?: [a-z](?![a-zæøå]))?)\\.\\s/g;for(;o=t.exec(e);)i.push(o[1])}const l=/^\\s*I §/.test(t);if(!(/^\\s*(Efter|Før) (kapitel|§|overskriften)/i.test(t)&&i.length)){const e=/§§ ((?:\\d+(?: [a-z](?![a-zæøå]))?(?:\\s*(?:-|–|,|og)\\s*)?)+)/g;for(;o=e.exec(t);)u(o[1]).forEach(e=>n.add(e));const i=/(?<!§)§ (\\d+(?: [a-z](?![a-zæøå]))?)/g;for(;o=i.exec(t);)n.add(o[1])}return l||i.forEach(e=>n.add(e)),[...n]}function b(e,t){const n=[...r(e).getElementById(\"root\").querySelectorAll(\"p, div.Containertable\")].filter(e=>!(e.closest(\".toc\")||\"P\"===e.tagName&&e.closest(\".Containertable\")));let i=n.findIndex(e=>/^Bemærkninger til lovforslagets enkelte bestemmelser$/i.test(a(e)));i<0&&(i=n.findIndex(e=>/^Til § 1$/.test(a(e))));const o=n.slice(0,i<0?n.length:i),s={};let l=null,c=null;for(const e of o){const n=e.classList,i=a(e);if((n.contains(\"CentreretParagraf\")||n.contains(\"CParagrafnummer\"))&&/^§ \\d+( [a-z])?\\.?$/.test(i)){const e=i.replace(\"§ \",\"\").replace(\".\",\"\");l={nr:e,intro:\"\",items:{},text:\"\"},s[e]=l,c=null;continue}if(t.original&&n.contains(\"Paragraf\")&&e.querySelector(\".ParagrafNr\")){const t=g(a(e.querySelector(\".ParagrafNr\")));l={nr:t,intro:i,items:{},text:i},s[t]=l,c=null;continue}if(!t.original&&n.contains(\"Paragraf\")&&e.querySelector(\".ParagrafNr\")&&/^§/.test(a(e.querySelector(\".ParagrafNr\")))&&/følgende ændring/.test(i)){const t=a(e.querySelector(\".ParagrafNr\")),n=g(t),o=i.slice(t.length).trim();l={nr:n,intro:o,items:{},text:o},s[n]=l,c=null;continue}const o=(i.match(/»/g)||[]).length-(i.match(/«/g)||[]).length;if(t.original||!n.contains(\"Paragraf\")||!e.querySelector(\".ParagrafNr\")||c&&c.q>0||/^»/.test(i)){if(l){if(n.contains(\"AendringMedNummer\")||n.contains(\"Aendringspunkt\")){const t=a(e.querySelector(\".AendringNr\")||e).match(/^(\\d+)/);c={nr:t?t[1]:\"?\",text:i,q:o,html:\"<p>\"+f(e).trim()+\"</p>\"},l.items[c.nr]=c;continue}c?(c.q>0||/^»/.test(i))&&(c.q+=o,c.text+=\"\\n\"+i,c.html.length<5e3&&(c.html+=\"<p>\"+f(e).trim()+\"</p>\")):(l.intro||(l.intro=i),l.text+=\"\\n\"+i)}}else l=null,c=null}const d=[];let h=null,p=null;if(i>=0)for(const e of n.slice(i+1)){if(e.classList.contains(\"BilagStreg\")||e.classList.contains(\"Bilag\")||e.classList.contains(\"Fodnote\"))break;const t=a(e);if(/^(Bilag \\d+|Lovforslaget sammenholdt med gældende lov)$/i.test(t))break;let n;if(t.length<40&&/^Til (kapitel|afsnit|bilag) /i.test(t)){h=null,p=null;continue}if(t.length<60&&(n=t.match(/^Til §§? (.+)$/))){h={head:t,secs:u(n[1]),paras:[],nrs:[]},d.push(h),p=null;continue}if(t.length<400&&(n=t.match(/^Til nr\\. ([\\d ,og\\-–]+)(.*)$/))){h||(h={head:\"\",secs:[],paras:[],nrs:[]},d.push(h)),p={head:t,nrs:u(n[1]),paras:[]},h.nrs.push(p);continue}if(!t)continue;const i=\"DIV\"===e.tagName?'<div class=\"tbl\">'+f(e)+\"</div>\":\"<p>\"+f(e).trim()+\"</p>\";p?p.paras.push(i):h&&h.paras.push(i)}return{secs:s,rem:d}}async function v(e){i(\"Henter loven…\");const t=await l(e);if(!t||!t.documentHtml)throw new Error(\"Kunne ikke hente dokumentet.\");if(!/^(LBK|LOV) /.test(t.shortName||\"\"))throw new Error(\"Dette dokument (\"+(t.shortName||\"?\")+\") er ikke en lov eller lovbekendtgørelse.\");const n=h(t.documentHtml),r=function(e){const t=[];let n=e.replace(/^Bekendtgørelse af /i,\"\").replace(/\\d\\)$/,\"\").trim();const i=n.match(/\\(([^)]+)\\)\\s*$/);return i&&(t.push(i[1].toLowerCase()),n=n.replace(/\\s*\\([^)]+\\)\\s*$/,\"\")),t.unshift(n.toLowerCase()),t}(n.title);o(n.title+\" (\"+t.shortName+\")\"+(t.isHistorical?\" – OBS: historisk version\":\"\"));const a=[];let d=n,f=t,g=0,v=null;const k=new Set([e]);for(/^LOV /.test(t.shortName)&&!/om ændring af/i.test(n.title)&&(v=e),i(\"Følger lovens historik…\");!v&&g++<150;){const{base:e,am:t}=p(d.intro);if(t.forEach(e=>{a.find(t=>t.eli===e.eli)||a.push(e)}),!e){o(\"Kunne ikke læse grundlaget i \"+f.shortName);break}if(\"LOV\"===e.kind){v=e.eli;break}if(k.has(e.eli))break;if(k.add(e.eli),f=await l(e.eli),!f){o(\"Kunne ikke hente \"+e.label);break}o(\"· \"+f.shortName),d=h(f.documentHtml)}let x=[];try{const e=((await(await fetch(\"/api/document/\"+t.id+\"/references/0\")).json()).referenceGroups||[]).find(e=>/Senere ændringer/i.test(e.header||\"\"));x=(e&&e.references||[]).filter(e=>/^LOV /.test(e.shortName||\"\")&&e.eliPath&&!a.find(t=>t.eli===e.eliPath)).map(e=>{const t=(e.shortName||\"\").match(/§ (\\d+(?: [a-z])?)\\s*$/);return{eli:e.eliPath,label:(e.shortName||\"\").trim(),title:e.title,sec:t?t[1]:null,later:!0}})}catch(e){}o(\"Fundet: oprindelig lov + \"+a.length+\" ændringslove\"+(x.length?\" + \"+x.length+\" senere ændring(er), som ikke er indarbejdet i teksten\":\"\"));const w=[],y=[],S={},C=[],L=[];v&&L.push({eli:v,original:!0}),a.forEach(e=>L.push({...e,original:!1})),x.forEach(e=>L.push({...e,original:!1}));let N=0;return i(\"Henter lovforslag og bemærkninger… (0/\"+L.length+\")\"),await async function(e,t,n){let i=0;await Promise.all(Array.from({length:t},async()=>{for(;i<e.length;){const t=i++;await n(e[t],t)}}))}(L,4,async e=>{try{const t=await async function(e){const t=await l(e);if(!t)return null;const n=(t.caseHistoryReferenceGroup||[]).flatMap(e=>e.references||[]);return{lov:t,ref:n.find(e=>400===e.documentTypeId)||n.find(e=>410===e.documentTypeId)||null}}(e.eli);if(!t||!t.ref)return void C.push(\"Intet lovforslag fundet for \"+(t&&t.lov?t.lov.shortName:e.eli));const n=await l(t.ref.eliUri);if(!n)return void C.push(\"Kunne ikke hente \"+t.ref.shortName);const i=b(n.documentHtml,{original:e.original}),o=w.length,s={short:t.ref.shortName,title:n.title,eli:t.ref.eliUri,lov:t.lov.shortName,lovTitle:t.lov.title,lovEli:e.eli,original:e.original,later:!!e.later,sec:null,n:0};w.push(s);const a=(e,t)=>{e.length||(e=[\"_\"]);const n=y.length;y.push({b:o,...t}),e.forEach(e=>(S[e]=S[e]||[]).push(n)),s.n++};if(e.original){for(const e of i.rem){const t=e.paras.concat(e.nrs.flatMap(e=>[\"<p><i>\"+c(e.head)+\"</i></p>\",...e.paras]));t.length&&a(e.secs,{h:e.head,x:t.join(\"\")})}return}const d=e=>e&&r.some(t=>e.intro.toLowerCase().includes(t));let f=e.sec;if(!f||!i.secs[f]||!d(i.secs[f])){const e=Object.values(i.secs).filter(d);e.length?f=e[0].nr:1===Object.keys(i.secs).length&&(f=Object.keys(i.secs)[0])}s.sec=f;const g=i.secs[f];if(!g)return void C.push(\"Fandt ikke ændringsparagraffen i \"+s.short);let h=i.rem.find(e=>e.secs.includes(f));if(h||!i.rem.length||1!==Object.keys(i.secs).length&&i.rem[0].secs.length||(h=i.rem[0]),!h)return void C.push(\"Ingen specielle bemærkninger til § \"+f+\" i \"+s.short);const p=g.items;if(h.nrs.length&&Object.keys(p).length){for(const e of h.nrs){let t=[];const n=[];for(const i of e.nrs){const e=p[i];e&&(t.push(...m(e.text)),n.push(e.html))}if(!t.length){const n=e.head.match(/\\(§§? ([^,)]*?)(?:,|\\s+i\\s|\\))/);n&&(t=u(n[1]))}a([...new Set(t)],{h:e.head,c:n.join(\"\").slice(0,5e3),x:e.paras.join(\"\")})}h.paras.length&&a([\"_\"],{h:h.head,x:h.paras.join(\"\")})}else{const e=Object.keys(p).length?Object.values(p).flatMap(e=>m(e.text)):m(g.text);a([...new Set(e)],{h:h.head,x:h.paras.concat(h.nrs.flatMap(e=>[\"<p><i>\"+c(e.head)+\"</i></p>\",...e.paras])).join(\"\")})}}catch(t){C.push(\"Fejl ved \"+e.eli+\": \"+t.message)}finally{N++,s(N/L.length),i(\"Henter lovforslag og bemærkninger… (\"+N+\"/\"+L.length+\")\")}}),C.forEach(e=>o(\"! \"+e)),{format:\"lovopslag\",v:1,eli:e,short:t.shortName,title:n.title,names:r,historical:!!t.isHistorical,later:x.map(e=>({eli:e.eli,label:e.label,title:e.title})),fetched:(new Date).toISOString(),law:n,bills:w,remarks:y,byPar:S,problems:C}}if(e)return void(window.LX2={run:v,parseLaw:h,parseBill:b,parseIntro:p,extractTargets:m,expandList:u,box:t});const k=location.pathname.match(/\\/eli\\/(lta|accn)\\/[^?#]+/);if(!k)return i(\"Åbn en lov eller lovbekendtgørelse (adressen skal indeholde /eli/lta/…), og prøv igen.\"),void(window.__lovopslagRunning=!1);v(k[0].replace(/\\/(dan|pdf|html)$/,\"\")).then(e=>{const t=JSON.stringify(e);let o=e.title.replace(/^Bekendtgørelse af /i,\"\").trim();const l=o.match(/\\(([^)]+)\\)\\s*$/);l&&(o=l[1]);const r=(o.toLowerCase().replace(/æ/g,\"ae\").replace(/ø/g,\"oe\").replace(/å/g,\"aa\").replace(/[^a-z0-9]+/g,\"-\").replace(/^-|-$/g,\"\").slice(0,60)||\"lov\")+\".lovpakke.json\",a=URL.createObjectURL(new Blob([t],{type:\"application/json\"})),c=document.createElement(\"a\");c.href=a,c.download=r,c.textContent=\"Gem \"+r+\" (\"+(t.length/1e6).toFixed(1)+\" MB)\",c.style.cssText=\"display:inline-block;margin-top:10px;padding:8px 12px;background:#2f6f4f;color:#fff;border-radius:6px;text-decoration:none\",n(\"lx-dl\").appendChild(c),i(\"Færdig: \"+e.law.nodes.filter(e=>\"p\"===e.t).length+\" paragraffer, \"+e.remarks.length+\" bemærkninger fra \"+e.bills.length+\" lovforslag.\"),s(1),c.click(),window.__lovopslagRunning=!1}).catch(e=>{i(\"Fejl: \"+e.message),window.__lovopslagRunning=!1})}();";
+const RI = "https://www.retsinformation.dk";
+let EMBED = false; try { EMBED = window.self !== window.top && window.top.location.origin !== location.origin; } catch(e) { EMBED = true; }
+const QUICK = [
+  ["Lov om finansiel virksomhed", "/eli/lta/2026/432"],
+  ["Lov om betalinger", "/eli/lta/2026/463"],
+  ["Hvidvaskloven", "/eli/lta/2026/433"],
+  ["Lov om spil", "/eli/lta/2025/1182"]
+];
+
+/* ---------------- storage ---------------- */
+const DB = {
+  db: null, mem: new Map(),
+  async open(){
+    try{
+      this.db = await new Promise((res, rej) => {
+        const r = indexedDB.open("lovopslag", 1);
+        r.onupgradeneeded = () => r.result.createObjectStore("laws", { keyPath: "eli" });
+        r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+      });
+    }catch(e){ this.db = null; toast("Kunne ikke åbne lokal lagring – lovene gemmes kun i denne session."); }
+  },
+  tx(mode){ return this.db.transaction("laws", mode).objectStore("laws"); },
+  async all(){
+    if(!this.db) return [...this.mem.values()];
+    return new Promise((res, rej) => { const r = this.tx("readonly").getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  },
+  async put(v){
+    this.mem.set(v.eli, v);
+    if(!this.db) return;
+    return new Promise((res, rej) => { const r = this.tx("readwrite").put(v); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
+  },
+  async del(k){
+    this.mem.delete(k);
+    if(!this.db) return;
+    return new Promise((res, rej) => { const r = this.tx("readwrite").delete(k); r.onsuccess = () => res(); r.onerror = () => rej(r.error); });
+  }
+};
+
+/* ---------------- permanent lagring i Claude (db + assets) ---------------- */
+const Cloud = {
+  ready: false, db: null, assets: null, uid: null,
+  async init(){
+    try{
+      if(!window.claude || typeof window.claude.use !== "function") return false;
+      const [db, user, assets] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("assets")]);
+      if(!db || !user || !assets) return false;
+      const uid = await user.id(); if(!uid) return false;
+      Object.assign(this, { db, assets, uid, ready: true });
+      return true;
+    }catch(e){ return false; }
+  },
+  col(){ return this.db.collection("data/users/" + this.uid); },
+  key(eli){ return "law" + eli.replace(/[^A-Za-z0-9]+/g, "_"); },
+  async list(){ const snap = await this.col().get(); return snap.docs.filter(d => d.exists && d.id.startsWith("law")).map(d => d.data()); },
+  async save(pack){
+    const blob = new Blob([JSON.stringify(pack)], { type: "application/json" });
+    const a = await this.assets.upload(blob);
+    await this.col().doc(this.key(pack.eli)).set({ eli: pack.eli, title: pack.title, short: pack.short, fetched: pack.fetched, asset: a.id, url: a.url || ("/_blob/" + a.id), size: a.sizeBytes || blob.size });
+  },
+  async load(meta){ const r = await fetch(meta.url || ("/_blob/" + meta.asset)); if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); },
+  async del(eli){
+    try{ const ref = this.col().doc(this.key(eli)); const d = await ref.get(); await ref.delete(); if(d.exists && d.data().asset){ try{ await this.assets.delete(d.data().asset); }catch(e){} } }catch(e){}
+  }
+};
+async function syncCloud(){
+  const ok = await Cloud.init();
+  S.cloud = ok;
+  if(!ok){ if(!S.cur) route(); return; }
+  let metas = [];
+  try{ metas = await Cloud.list(); }catch(e){ S.cloud = false; return; }
+  let changed = 0;
+  // upload laws that so far only live in this browser
+  for(const L of S.laws){ if(!metas.find(m => m.eli === L.eli)){ try{ await Cloud.save(L); changed++; }catch(e){} } }
+  const missing = metas.filter(m => !S.laws.find(l => l.eli === m.eli && l.fetched === m.fetched));
+  if(missing.length) toast("Henter " + missing.length + (missing.length === 1 ? " lov" : " love") + " fra din Claude-konto…", 8000);
+  for(const m of missing){
+    try{ const o = await Cloud.load(m); if(validPack(o)){ S.laws = S.laws.filter(l => l.eli !== o.eli).concat(o); await DB.put(o).catch(()=>{}); changed++; } }catch(e){ toast("Kunne ikke hente " + (m.title || m.eli) + "."); }
+  }
+  S.laws.sort((a,b)=>shortTitle(a).localeCompare(shortTitle(b),"da"));
+  if(missing.length) toast("Dine love er hentet.");
+  fillSelect();
+  if(!S.cur || changed) route();
+}
+
+/* ---------------- state ---------------- */
+const S = { cloud: false, laws: [], cur: null, sel: null, order: "new", scope: "law", idx: new Map(), alias: {} };
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const strip = h => h.replace(/<[^>]+>/g, " ").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&").replace(/\s+/g, " ").trim();
+const nid = nr => "p-" + nr.replace(/\s+/g, "-");
+// "82-84" -> 82,83,84 ; "69 c og 69 d" -> 69 c, 69 d ; "5 a-5 c" -> 5 a, 5 b, 5 c
+function expandNr(nr){
+  const out = new Set([nr]);
+  for(let part of nr.split(/,| og /)){
+    part = part.trim(); if(!part) continue; out.add(part);
+    const r = part.match(/^(\d+)(?: ([a-z]))?-(\d+)(?: ([a-z]))?$/);
+    if(r){ const a=+r[1], b=+r[3];
+      if(a===b && r[2] && r[4]) for(let c=r[2].charCodeAt(0); c<=r[4].charCodeAt(0); c++) out.add(a+" "+String.fromCharCode(c));
+      else if(b>=a && b-a<100){ for(let i=a;i<=b;i++) out.add(String(i)); if(r[2]) out.add(a+" "+r[2]); if(r[4]) out.add(b+" "+r[4]); } }
+  }
+  return [...out];
+}
+function remarkIds(L, nr){ const s = new Set(); for(const k of expandNr(nr)) (L.byPar[k] || []).forEach(i => s.add(i)); return [...s]; }
+function toast(m, ms=3200){ const t=$("#toast"); t.textContent=m; t.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display="none", ms); }
+
+function shortTitle(L){
+  let t = L.title.replace(/^Bekendtgørelse af /i, "");
+  const p = t.match(/\(([^)]+)\)\s*$/); if(p) return p[1][0].toUpperCase() + p[1].slice(1);
+  return t[0].toUpperCase() + t.slice(1);
+}
+function billDate(b){
+  const m = (b.lov||"").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if(m) return m[3]+m[2]+m[1];
+  const s = (b.short||"").match(/^(\d{4})/); return s ? s[1]+"0000" : "0";
+}
+function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString("da-DK",{day:"numeric",month:"long",year:"numeric"}); }catch(e){ return iso; } }
+
+/* ---------------- loading ---------------- */
+async function init(){
+  await DB.open();
+  let stored = []; try{ stored = await DB.all(); }catch(e){}
+  S.laws = stored.sort((a,b)=>shortTitle(a).localeCompare(shortTitle(b),"da"));
+  bind();
+  route();
+  if(EMBED) syncCloud(); else loadServerPacks();
+}
+/* Lovpakker, der ligger på hjemmesiden i mappen lovpakker/ (listet i lovpakker/liste.json) */
+const DEFAULT_PACKS = ["lov-om-finansiel-virksomhed.lovpakke.json", "lov-om-betalinger.lovpakke.json", "hvidvaskloven.lovpakke.json", "lov-om-spil.lovpakke.json"];
+async function loadServerPacks(){
+  if(location.protocol === "file:") return;
+  let files = null;
+  try{ const r = await fetch("lovpakker/liste.json", { cache: "no-cache" }); if(r.ok){ const j = await r.json(); files = Array.isArray(j) ? j : (j.filer || j.files); } }catch(e){}
+  if(!Array.isArray(files)) files = DEFAULT_PACKS;
+  let n = 0;
+  await Promise.all(files.map(async f => {
+    try{
+      const r = await fetch("lovpakker/" + encodeURIComponent(f).replace(/%2F/g, "/"), { cache: "no-cache" });
+      if(!r.ok) return;
+      const o = await r.json(); if(!validPack(o)) return;
+      o.fromServer = true;
+      const ex = S.laws.find(l => l.eli === o.eli || l.title === o.title);
+      if(ex && !ex.fromServer && ex.fetched > o.fetched) return; // en nyere lokalt importeret version vinder
+      S.laws = S.laws.filter(l => l !== ex).concat(o); n++;
+    }catch(e){}
+  }));
+  if(!n) return;
+  S.server = true;
+  S.laws.sort((a,b)=>shortTitle(a).localeCompare(shortTitle(b),"da"));
+  fillSelect();
+  if(!S.cur) route();
+}
+function validPack(o){ return o && o.format === "lovopslag" && o.law && Array.isArray(o.law.nodes) && o.eli; }
+async function importFiles(files){
+  let n = 0;
+  for(const f of files){
+    try{
+      const o = JSON.parse(await f.text());
+      if(!validPack(o)) { toast(f.name + " er ikke en lovpakke fra Lovopslag."); continue; }
+      // replace older version of same law (same title) if present
+      const same = S.laws.filter(l => l.eli !== o.eli && l.title === o.title);
+      for(const s of same){ await DB.del(s.eli).catch(()=>{}); if(S.cloud) await Cloud.del(s.eli); }
+      await DB.put(o).catch(()=>{}); n++;
+      if(S.cloud){ toast("Gemmer " + shortTitle(o) + " i din Claude-konto…", 20000); try{ await Cloud.save(o); }catch(e){ toast("Loven kunne ikke gemmes permanent: " + (e && e.message || e)); } }
+      S.laws = S.laws.filter(l => l.eli !== o.eli && l.title !== o.title).concat(o).sort((a,b)=>shortTitle(a).localeCompare(shortTitle(b),"da"));
+      S.idx.delete(o.eli);
+      location.hash = "#/" + encodeURIComponent(o.eli);
+    }catch(e){ toast("Kunne ikke læse " + f.name + ": " + e.message); }
+  }
+  if(n) toast(n === 1 ? "Loven er tilføjet." : n + " love er tilføjet.");
+  fillSelect();
+}
+
+/* ---------------- routing ---------------- */
+function route(){
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  fillSelect();
+  if(!h || h === "tilfoej"){ showHome(h === "tilfoej"); return; }
+  const m = h.match(/^(\/eli\/[^#]+?)(?:\/§(.+))?$/);
+  const L = m && S.laws.find(l => l.eli === m[1]);
+  if(!L){ showHome(false); return; }
+  if(S.cur !== L) renderLaw(L);
+  if(m[2]) goPar(m[2].trim(), true);
+}
+function setHash(eli, nr){ const h = "#/" + encodeURIComponent(eli) + (nr ? "/§" + encodeURIComponent(nr) : ""); if(location.hash !== h) history.replaceState(null, "", h); }
+
+function fillSelect(){
+  const sel = $("#lawSel");
+  sel.innerHTML = '<option value="">' + (S.laws.length ? "Vælg lov…" : "Ingen love endnu") + '</option>' + S.laws.map(l => '<option value="'+esc(l.eli)+'">'+esc(shortTitle(l))+'</option>').join("");
+  sel.value = S.cur ? S.cur.eli : "";
+}
+
+/* ---------------- home ---------------- */
+function showHome(focusAdd){
+  S.cur = null; closeRemarks(); closeSearch();
+  $("#doc").classList.add("hide"); $("#toc").innerHTML = ""; $("#toc").style.display = "none";
+  const H = $("#home"); H.classList.remove("hide");
+  const cards = S.laws.map(l => {
+    const pars = l.law.nodes.filter(n=>n.t==="p").length;
+    return '<div class="card" data-eli="'+esc(l.eli)+'"><div class="ct">'+esc(shortTitle(l))+'</div><div class="cm">'+esc(l.short)+(l.historical?' · historisk version':'')+'</div><div class="cm">'+pars+' paragraffer · '+l.remarks.length+' bemærkninger fra '+l.bills.length+' lovforslag</div><div class="cm">Hentet '+fmtDate(l.fetched)+'</div><div class="ca">'+(l.fromServer ? '<span class="cm">Fra hjemmesiden</span>' : (EMBED?'':'<button class="btn small" data-act="exp">Eksportér</button>')+'<button class="btn small" data-act="del">Fjern</button>')+'</div></div>';
+  }).join("");
+  H.innerHTML = '<h1>Lovopslag</h1><p class="lead">Dit personlige opslagsværk: læs lovene, søg i bestemmelserne og åbn de specielle bemærkninger ved siden af hver paragraf.</p>' +
+    (S.laws.length ? '<div class="cards">'+cards+'</div>' : '') +
+    (S.laws.length ? '<p style="color:var(--muted);font-size:13px;margin:-20px 0 26px">' + (S.cloud ? '✓ Lovene er gemt i din Claude-konto og er her, når du åbner appen igen.' : S.server ? '✓ Lovene hentes fra mappen <code>lovpakker</code> på din hjemmeside og er tilgængelige fra alle enheder.' + (S.laws.some(l => !l.fromServer) ? ' Love uden mærket »Fra hjemmesiden« ligger kun i denne browser.' : '') : 'Lovene er gemt i denne browser. Læg filerne i mappen <code>lovpakker</code> på din hjemmeside for at have dem på alle enheder.') + '</p>' : '') +
+    '<div class="steps" id="addSec"><h2>Tilføj en lov</h2><ol>' +
+    '<li><b>Træk knappen op i din bogmærkelinje</b> (gøres kun én gang):<br><a class="bm" id="bmLink" href="#" title="Træk mig til bogmærkelinjen">⤓ Hent til Lovopslag</a><br><span class="cm" style="color:var(--muted);font-size:13px">Kan du ikke trække den? <a href="#" id="copyBm">Kopiér bogmærke-koden</a> og opret et nyt bogmærke med koden som adresse – eller <a href="#" id="copySrc">kopiér scriptet</a> og indsæt det i browserens konsol på Retsinformation.</span></li>' +
+    '<li><b>Åbn den gældende lov på Retsinformation</b>. Genveje:<div class="quick">' + QUICK.map(q => '<a target="_blank" rel="noopener" href="'+RI+q[1]+'">'+esc(q[0])+' ↗</a>').join("") + '</div><span style="color:var(--muted);font-size:13px">Tjek at der står »Gældende« øverst – findes der en nyere lovbekendtgørelse, så brug den.</span></li>' +
+    '<li><b>Klik på bogmærket.</b> Værktøjet henter loven, alle ændringslove og de tilhørende lovforslag og kobler de specielle bemærkninger til paragrafferne. Det tager fra et halvt til et par minutter (lov om finansiel virksomhed er den største). Til sidst gemmes en <code>.lovpakke.json</code>-fil.</li>' +
+    (EMBED ? '' : '<li><b>Læg filen i mappen <code>lovpakker</code> på din hjemmeside</b> og udgiv siden igen. Bruger du andre filnavne end standardnavnene, så skriv dem i <code>lovpakker/liste.json</code>. Så er loven tilgængelig fra alle dine enheder.<br><span style="color:var(--muted);font-size:13px">Vil du prøve en fil af først, kan du lægge den ind herunder. Så gemmes den kun i denne browser.</span></li>') +
+    '<li><b>' + (EMBED ? 'Læg filen ind her:' : 'Eller læg filen ind lokalt:') + '</b><div class="drop" id="drop">Træk .lovpakke.json-filer hertil – eller <a href="#" id="pick">vælg filer</a></div></li></ol></div>';
+  const bm = $("#bmLink"); bm.setAttribute("href", BOOKMARKLET);
+  bm.addEventListener("click", e => { e.preventDefault(); toast("Træk knappen op i bogmærkelinjen – den virker kun på retsinformation.dk."); });
+  $("#copyBm").onclick = e => { e.preventDefault(); copy(BOOKMARKLET, "Bogmærke-koden er kopieret."); };
+  $("#copySrc").onclick = e => { e.preventDefault(); copy(EXTRACTOR_SRC, "Scriptet er kopieret – indsæt det i konsollen på lovens side på retsinformation.dk."); };
+  $("#pick").onclick = e => { e.preventDefault(); $("#file").click(); };
+  const d = $("#drop");
+  d.ondragover = e => { e.preventDefault(); d.classList.add("over"); };
+  d.ondragleave = () => d.classList.remove("over");
+  d.ondrop = e => { e.preventDefault(); d.classList.remove("over"); importFiles([...e.dataTransfer.files]); };
+  $$(".card", H).forEach(c => c.onclick = async e => {
+    const eli = c.dataset.eli, L = S.laws.find(l=>l.eli===eli); const act = e.target.dataset.act;
+    if(act === "del"){ e.stopPropagation(); e.target.dataset.act = "del2"; e.target.textContent = "Klik igen for at fjerne"; e.target.style.borderColor = "#b4442c"; setTimeout(() => { if(e.target.isConnected){ e.target.dataset.act = "del"; e.target.textContent = "Fjern"; e.target.style.borderColor = ""; } }, 4000); return; }
+    if(act === "del2"){ e.stopPropagation(); await DB.del(eli).catch(()=>{}); if(S.cloud) await Cloud.del(eli); S.laws = S.laws.filter(l=>l.eli!==eli); showHome(); fillSelect(); toast("Loven er fjernet."); return; }
+    if(act === "exp"){ e.stopPropagation(); download(L); return; }
+    location.hash = "#/" + encodeURIComponent(eli);
+  });
+  if(focusAdd) $("#addSec").scrollIntoView();
+  document.title = "Lovopslag";
+}
+function copy(t, msg){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>toast(msg)).catch(()=>{ const ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy"); toast(msg);}catch(e){ toast("Kunne ikke kopiere."); } ta.remove(); }); }
+function download(L){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(L)],{type:"application/json"})); a.download=(L.short||"lov").replace(/[^\wæøåÆØÅ]+/g,"-")+".lovpakke.json"; a.click(); }
+
+/* ---------------- reader ---------------- */
+function renderLaw(L){
+  S.cur = L; S.sel = null; closeRemarks(); closeSearch();
+  $("#home").classList.add("hide"); const D = $("#doc"); D.classList.remove("hide"); $("#toc").style.display = "";
+  document.title = shortTitle(L) + " – Lovopslag";
+  const byPar = L.byPar || {}; S.alias = {};
+  const parts = [];
+  parts.push('<h1 class="lt">' + esc(L.title.replace(/^Bekendtgørelse af /i, "").replace(/^./, c=>c.toUpperCase())) + '</h1>');
+  parts.push('<div class="lawmeta"><span>' + esc(L.short) + '</span>' + (L.historical ? '<span class="tag">Historisk version</span>' : '') + '<a href="' + RI + L.eli + '" target="_blank" rel="noopener">Retsinformation ↗</a><span>Hentet ' + fmtDate(L.fetched) + '</span><span>' + L.bills.length + ' lovforslag med bemærkninger</span>' + (L.problems && L.problems.length ? '<a href="#" id="probs">' + L.problems.length + ' advarsler</a>' : '') + '</div>');
+  if(L.later && L.later.length) parts.push('<div class="note" style="font-size:13.5px"><b>Senere ændringer, som endnu ikke er indarbejdet i lovteksten:</b> ' + L.later.map(l => '<a href="' + RI + l.eli + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>' + (l.title ? ' – ' + esc(l.title.replace(/^Lov om ændring af /, "")) : '')).join("; ") + '. Bemærkningerne fra disse lovforslag er markeret »Ikke indarbejdet«.</div>');
+  if(L.law.intro && L.law.intro.length) parts.push('<div class="intro">' + L.law.intro.map(esc).join("<br>") + '</div>');
+  const toc = [];
+  let i = 0;
+  for(const n of L.law.nodes){
+    i++;
+    if(n.t === "h1"){ const id = "h-" + i; parts.push('<div class="h1" id="'+id+'">' + esc(n.label) + '</div>' + (n.title ? '<div class="h1s">' + esc(n.title) + '</div>' : '')); toc.push('<div class="t1">' + esc(n.label + (n.title ? " · " + n.title : "")) + '</div>'); }
+    else if(n.t === "h2"){ const id = "h-" + i; parts.push('<div class="h2" id="'+id+'">' + esc(n.label) + '</div>' + (n.title ? '<div class="h2s">' + esc(n.title) + '</div>' : '')); toc.push('<a href="#" data-to="'+id+'"><span class="n">' + esc(n.label.replace("Kapitel ", "Kap. ")) + '</span>' + esc(n.title) + '</a>'); }
+    else if(n.t === "h3"){ parts.push('<div class="h3">' + esc(n.title) + '</div>'); }
+    else if(n.t === "p"){
+      const cnt = remarkIds(L, n.nr).length;
+      for(const k of expandNr(n.nr)) if(k !== n.nr) S.alias[k] = n.nr;
+      const btn = '<button class="rbtn' + (cnt ? '' : ' none') + '" data-nr="' + esc(n.nr) + '" title="Specielle bemærkninger til § ' + esc(n.nr) + '">Bemærkninger' + (cnt ? ' <span class="c">' + cnt + '</span>' : '') + '</button>';
+      parts.push('<article class="p" id="' + nid(n.nr) + '" data-nr="' + esc(n.nr) + '">' + btn + n.html.replace('<p class="par">', '<p class="par"><span class="pn" data-nr="' + esc(n.nr) + '">' + esc(n.label || ("§ " + n.nr + ".")) + '</span> ') + '</article>');
+    }
+    else if(n.t === "x"){ parts.push('<div class="x">' + n.html + '</div>'); }
+    else if(n.t === "ik" || n.t === "bilag"){ parts.push('<details class="block"><summary>' + esc(n.title || (n.t === "ik" ? "Ikrafttrædelsesbestemmelser" : "Bilag")) + '</summary>' + n.html + '</details>'); }
+  }
+  if(L.law.footnotes && L.law.footnotes.length) parts.push('<details class="block"><summary>Fodnoter</summary>' + L.law.footnotes.join("") + '</details>');
+  const gen = (byPar["_"] || []).length;
+  if(gen) parts.push('<p style="margin-top:30px"><button class="btn" id="genBtn">Bemærkninger uden paragrafhenvisning (' + gen + ')</button></p>');
+  D.innerHTML = parts.join("");
+  linkify(D, L);
+  $("#toc").innerHTML = toc.join("") || '<div class="empty">Ingen kapitler</div>';
+  $("#reader").scrollTop = 0;
+  const pb = $("#probs"); if(pb) pb.onclick = e => { e.preventDefault(); showProblems(L); };
+  const gb = $("#genBtn"); if(gb) gb.onclick = () => openRemarks("_");
+  fillSelect();
+}
+// Make in-law cross references (»§ 25«, »§§ 7-10 a«) clickable when they refer to this law
+function linkify(root, L){
+  const exists = new Set(L.law.nodes.filter(n=>n.t==="p").map(n=>n.nr));
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => (/§/.test(n.nodeValue) && n.parentElement.closest("article.p") && !n.parentElement.closest(".pn,.rbtn,a")) ? 1 : 3 });
+  const nodes = []; while(walker.nextNode()) nodes.push(walker.currentNode);
+  const re = /§§? (\d+(?: [a-z](?![a-zæøå]))?)/g;
+  for(const tn of nodes){
+    const s = tn.nodeValue; let m, last = 0, out = null;
+    re.lastIndex = 0;
+    while((m = re.exec(s))){
+      const after = s.slice(m.index + m[0].length, m.index + m[0].length + 70);
+      if(/^(?:,? ?(?:stk\.|nr\.|litra|\d|[a-z]\b|og|-|–)[^.;:»«§]*?)?,? i (?!denne lov)(?:lov|[a-zæøå]+loven|forordning|direktiv|bekendtgørelse|[A-ZÆØÅ])/.test(after) || /^ i (?!denne)/.test(after)) continue;
+      if(!exists.has(m[1])) continue;
+      out = out || document.createDocumentFragment();
+      out.appendChild(document.createTextNode(s.slice(last, m.index)));
+      const a = document.createElement("a"); a.className = "xref"; a.dataset.go = m[1]; a.textContent = m[0];
+      out.appendChild(a); last = m.index + m[0].length;
+    }
+    if(out){ out.appendChild(document.createTextNode(s.slice(last))); tn.parentNode.replaceChild(out, tn); }
+  }
+}
+function goPar(nr, fromRoute){
+  if(!S.cur) return false;
+  nr = nr.toLowerCase().replace(/^§\s*/, "").replace(/\s+/g, " ").trim();
+  if(!document.getElementById(nid(nr)) && S.alias && S.alias[nr]) nr = S.alias[nr];
+  const el = document.getElementById(nid(nr));
+  if(!el) { toast("§ " + nr + " findes ikke i denne lov."); return false; }
+  el.scrollIntoView({ block: "start" });
+  el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+  if(!fromRoute) setHash(S.cur.eli, nr);
+  return true;
+}
+function showProblems(L){
+  openPanel("Advarsler fra importen", esc(L.short), '<div class="note">Disse lovforslag kunne ikke kobles automatisk. Bemærkningerne kan læses direkte på Retsinformation.</div><ul style="font-size:14px">' + L.problems.map(p => '<li>' + esc(p) + '</li>').join("") + '</ul>');
+}
+
+/* ---------------- remarks ---------------- */
+function openPanel(title, sub, body){
+  $("#rpTitle").textContent = title; $("#rpSub").innerHTML = sub; $("#rpBody").innerHTML = body; $("#rpBody").scrollTop = 0;
+  $("#rp").classList.add("open");
+}
+function closeRemarks(){ $("#rp").classList.remove("open"); $$("article.p.sel").forEach(a => a.classList.remove("sel")); S.sel = null; }
+function openRemarks(nr, focusIdx){
+  const L = S.cur; if(!L) return;
+  if(nr !== "_" && S.alias[nr] && !L.law.nodes.some(n => n.t === "p" && n.nr === nr)) nr = S.alias[nr];
+  S.sel = nr;
+  $$("article.p.sel").forEach(a => a.classList.remove("sel"));
+  const art = document.getElementById(nid(nr)); if(art) art.classList.add("sel");
+  const ids = nr === "_" ? (L.byPar["_"] || []).slice() : remarkIds(L, nr);
+  const items = ids.map(i => ({ i, r: L.remarks[i], b: L.bills[L.remarks[i].b] }));
+  items.sort((a, b) => { const d = billDate(a.b).localeCompare(billDate(b.b)); return S.order === "new" ? -d : d; });
+  const node = L.law.nodes.find(n => n.t === "p" && n.nr === nr);
+  let body = '';
+  if(node) body += '<div class="ptext">' + node.html + '</div>';
+  if(!items.length) body += '<div class="empty">Der blev ikke fundet specielle bemærkninger, som henviser direkte til denne bestemmelse.<br><br>Bestemmelsen kan være indsat ved en lov, hvis lovforslag ikke ligger på Retsinformation, eller være ændret i forbindelse med en ny­nummerering.</div>';
+  else body += '<div class="note">Bemærkningerne er koblet automatisk ud fra lovforslagenes henvisninger. Ældre bemærkninger kan henvise til en nummerering, der senere er ændret.</div>';
+  items.forEach((it, k) => {
+    const b = it.b, r = it.r;
+    const yr = (b.lov || "").match(/\d{4}$/);
+    body += '<details class="rc" data-i="' + it.i + '"' + ((focusIdx != null ? it.i === focusIdx : k === 0) ? ' open' : '') + '><summary>' +
+      '<div class="k">' + (b.original ? '<span class="tag orig">Oprindelig lov</span>' : b.later ? '<span class="tag" style="background:var(--mark)">Ikke indarbejdet</span>' : '<span class="tag">Ændring</span>') + '<span>' + esc(b.lov || "") + '</span><span>· ' + esc(b.short) + '</span></div>' +
+      '<div class="hd">' + esc(r.h || "") + '</div>' +
+      '<div class="bt">' + esc((b.lovTitle || b.title || "").replace(/^Forslag til /, "")) + '</div></summary><div class="body">' +
+      (r.c ? '<div class="chg"><span class="lbl">Ændringsbestemmelsen</span>' + r.c + '</div>' : '') +
+      r.x +
+      '<div class="links"><a href="' + RI + b.eli + '" target="_blank" rel="noopener">Åbn lovforslaget ↗</a>' + (b.lovEli ? '<a href="' + RI + b.lovEli + '" target="_blank" rel="noopener">Åbn loven ↗</a>' : '') + '</div></div></details>';
+  });
+  openPanel(nr === "_" ? "Bemærkninger uden paragrafhenvisning" : "Bemærkninger til § " + nr, esc(shortTitle(L)) + ' · ' + items.length + ' afsnit fra ' + new Set(items.map(x => x.r.b)).size + ' lovforslag', body);
+  $("#rpExpand").textContent = "Fold alle ud";
+  if(focusIdx != null){ const d = $('#rpBody details[data-i="' + focusIdx + '"]'); if(d) setTimeout(() => d.scrollIntoView({ block: "start" }), 30); }
+  if(nr !== "_") setHash(L.eli, nr);
+}
+
+/* ---------------- search ---------------- */
+function textIndex(L){
+  if(S.idx.has(L.eli)) return S.idx.get(L.eli);
+  const pars = L.law.nodes.filter(n => n.t === "p").map(n => { const t = strip(n.html); return { nr: n.nr, label: n.label || ("§ " + n.nr), t, l: t.toLowerCase() }; });
+  let rem = null;
+  const ix = { pars, get rem(){ if(!rem){ rem = L.remarks.map((r, i) => { const t = strip((r.h || "") + " · " + r.x); return { i, t, l: t.toLowerCase() }; }); } return rem; } };
+  S.idx.set(L.eli, ix); return ix;
+}
+function parseQuery(q){
+  const terms = []; q.replace(/"([^"]+)"|»([^«]+)«|(\S+)/g, (m, a, b, c) => { const t = (a || b || c || "").toLowerCase(); if(t) terms.push(t); });
+  return terms;
+}
+function snippet(t, terms){
+  const l = t.toLowerCase(); let pos = l.indexOf(terms[0]); if(pos < 0) pos = 0;
+  const start = Math.max(0, pos - 80), end = Math.min(t.length, pos + 180);
+  let s = (start > 0 ? "…" : "") + t.slice(start, end) + (end < t.length ? "…" : "");
+  s = esc(s);
+  for(const term of terms){ if(term.length < 2) continue; s = s.replace(new RegExp("(" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>"); }
+  return s;
+}
+function doSearch(){
+  const q = $("#q").value.trim();
+  if(!q){ closeSearch(); return; }
+  const pm = q.match(/^(?:§\s*)?(\d+)(?:\s*([a-zA-Z]))?\.?$/);
+  const terms = parseQuery(q.replace(/^§\s*/, ""));
+  let hits = [];
+  const laws = S.scope === "all" || !S.cur ? S.laws : [S.cur];
+  if(S.scope === "rem" && S.cur){
+    const ix = textIndex(S.cur);
+    for(const r of ix.rem){ if(terms.every(t => r.l.includes(t))){ hits.push({ type: "rem", L: S.cur, r }); if(hits.length >= 300) break; } }
+  } else {
+    if(pm){
+      const nr = pm[1] + (pm[2] ? " " + pm[2].toLowerCase() : "");
+      for(const L of laws){ const n = L.law.nodes.find(n => n.t === "p" && (n.nr === nr || expandNr(n.nr).includes(nr))); if(n) hits.push({ type: "par", L, p: { nr: n.nr, label: n.label || "§ " + n.nr, t: strip(n.html) }, exact: true }); }
+      if(hits.length === 1 && laws.length === 1){ closeSearch(); goPar(hits[0].p.nr); return; }
+    }
+    if(!pm){
+      for(const L of laws){ const ix = textIndex(L); for(const p of ix.pars){ if(terms.every(t => p.l.includes(t))){ hits.push({ type: "par", L, p }); if(hits.length >= 500) break; } } }
+    }
+  }
+  renderHits(hits, terms, q);
+}
+function renderHits(hits, terms, q){
+  const B = $("#srBody");
+  $("#srCnt").textContent = hits.length ? hits.length + (hits.length >= 300 ? "+" : "") + " resultater" : "Ingen resultater";
+  B.innerHTML = hits.map((h, k) => {
+    if(h.type === "rem"){
+      const b = h.L.bills[h.L.remarks[h.r.i].b];
+      const tgs = Object.entries(h.L.byPar).filter(([nr, ids]) => ids.includes(h.r.i)).map(([nr]) => nr);
+      return '<a class="hit" data-k="' + k + '"><div class="ht">' + (tgs.length && tgs[0] !== "_" ? "§ " + esc(tgs.slice(0,3).join(", §")) : "Generelt") + ' <span class="lw">' + esc(b.short) + ' · ' + esc(h.L.remarks[h.r.i].h || "") + '</span></div><div class="sn2">' + snippet(h.r.t, terms) + '</div></a>';
+    }
+    return '<a class="hit" data-k="' + k + '"><div class="ht">' + esc(h.p.label.replace(/\.$/, "")) + (S.scope === "all" ? ' <span class="lw">' + esc(shortTitle(h.L)) + '</span>' : '') + '</div><div class="sn2">' + snippet(h.p.t, terms.length ? terms : [""]) + '</div></a>';
+  }).join("") || '<div class="empty">Ingen bestemmelser matcher »' + esc(q) + '«.' + (S.scope === "law" ? '<br><br>Prøv »Alle love« eller »Bemærkninger«.' : '') + '</div>';
+  $$(".hit", B).forEach(a => a.onclick = () => {
+    const h = hits[+a.dataset.k];
+    if(S.cur !== h.L) renderLaw(h.L);
+    if(h.type === "rem"){
+      const tgs = Object.entries(h.L.byPar).filter(([nr, ids]) => ids.includes(h.r.i)).map(([nr]) => nr);
+      const nr = tgs[0] || "_"; if(nr !== "_") goPar(nr); openRemarks(nr, h.r.i);
+      setTimeout(() => highlightIn($("#rpBody details[data-i='" + h.r.i + "']"), terms), 60);
+    } else { goPar(h.p.nr); highlightIn(document.getElementById(nid(h.p.nr)), terms); }
+    if(window.innerWidth < 860) closeSearch();
+  });
+  $("#sr").classList.add("open");
+}
+function highlightIn(el, terms){
+  if(!el) return;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); const nodes = []; while(walker.nextNode()) nodes.push(walker.currentNode);
+  const ts = terms.filter(t => t.length > 1); if(!ts.length) return;
+  const re = new RegExp("(" + ts.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "gi");
+  for(const tn of nodes){
+    if(tn.parentElement.closest("mark,.rbtn,summary")) continue;
+    const s = tn.nodeValue; if(!re.test(s)) continue; re.lastIndex = 0;
+    const span = document.createElement("span"); span.innerHTML = esc(s).replace(re, "<mark>$1</mark>");
+    tn.parentNode.replaceChild(span, tn);
+  }
+}
+function closeSearch(){ $("#sr").classList.remove("open"); }
+
+/* ---------------- events ---------------- */
+function bind(){
+  window.addEventListener("hashchange", route);
+  $("#brand").onclick = () => { location.hash = ""; };
+  $("#addBtn").onclick = () => { if(location.hash === "#/tilfoej") showHome(true); else location.hash = "#/tilfoej"; };
+  $("#lawSel").onchange = e => { if(e.target.value) location.hash = "#/" + encodeURIComponent(e.target.value); else location.hash = ""; };
+  $("#file").onchange = e => { importFiles([...e.target.files]); e.target.value = ""; };
+  $("#tocBtn").onclick = () => $("#toc").classList.toggle("open");
+  let t; $("#q").addEventListener("input", () => { clearTimeout(t); t = setTimeout(doSearch, 220); });
+  $("#q").addEventListener("keydown", e => { if(e.key === "Enter"){ clearTimeout(t); doSearch(); } if(e.key === "Escape"){ $("#q").value = ""; closeSearch(); } });
+  $("#srClose").onclick = closeSearch;
+  $("#srScope").onclick = e => { const v = e.target.dataset.v; if(!v) return; S.scope = v; $$("#srScope button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); doSearch(); };
+  $("#rpClose").onclick = closeRemarks;
+  $("#rpOrder").onclick = e => { const v = e.target.dataset.v; if(!v) return; S.order = v; $$("#rpOrder button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); if(S.sel) openRemarks(S.sel); };
+  $("#rpExpand").onclick = () => { const ds = $$("#rpBody details.rc"); const open = ds.some(d => !d.open); ds.forEach(d => d.open = open); $("#rpExpand").textContent = open ? "Fold alle sammen" : "Fold alle ud"; };
+  $("#doc").addEventListener("click", e => {
+    const rb = e.target.closest(".rbtn, .pn"); if(rb){ openRemarks(rb.dataset.nr); return; }
+    const x = e.target.closest(".xref"); if(x){ goPar(x.dataset.go); return; }
+  });
+  $("#toc").addEventListener("click", e => { const a = e.target.closest("a[data-to]"); if(!a) return; e.preventDefault(); const el = document.getElementById(a.dataset.to); if(el) el.scrollIntoView({ block: "start" }); $("#toc").classList.remove("open"); });
+  document.addEventListener("keydown", e => {
+    if((e.key === "/" || (e.key === "k" && (e.metaKey || e.ctrlKey))) && document.activeElement !== $("#q")){ e.preventDefault(); $("#q").focus(); $("#q").select(); }
+    if(e.key === "Escape" && document.activeElement !== $("#q")){ closeRemarks(); closeSearch(); }
+  });
+  // drag & drop anywhere
+  document.addEventListener("dragover", e => { if(e.dataTransfer && [...e.dataTransfer.types].includes("Files")) e.preventDefault(); });
+  document.addEventListener("drop", e => { if(e.target.closest && e.target.closest("#drop")) return; if(e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); importFiles([...e.dataTransfer.files]); } });
+  // highlight active chapter in toc
+  $("#reader").addEventListener("scroll", () => { clearTimeout(bind._s); bind._s = setTimeout(syncToc, 120); });
+}
+function syncToc(){
+  const links = $$("#toc a[data-to]"); if(!links.length) return;
+  const top = $("#reader").getBoundingClientRect().top + 40; let cur = null;
+  for(const a of links){ const el = document.getElementById(a.dataset.to); if(el && el.getBoundingClientRect().top <= top) cur = a; else if(el) break; }
+  links.forEach(a => a.classList.toggle("active", a === cur));
+}
+init();
+</script>
+</body>
+</html>
